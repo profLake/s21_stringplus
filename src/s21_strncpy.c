@@ -1,7 +1,7 @@
 #include "s21_string.h"
 
-char *strncpy(char *dest, const char *src, size_t n) {
-    size_t i;
+char *strncpy(char *dest, const char *src, s21_size_t n) {
+    s21_size_t i;
     int m;
     
     m = 0;
