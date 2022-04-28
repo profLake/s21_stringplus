@@ -1,0 +1,16 @@
+check:
+	clear
+	gcc -Wall -Wextra -Werror \
+		./tests/unit_tests.c \
+		./s21_strlen.c \
+		./s21_memcmp.c \
+		./s21_memcpy.c \
+		./s21_strchr.c \
+		./s21_strcpy.c \
+		./s21_strncmp.c \
+		-o ./tests/unit_tests.out \
+		-lcheck -lsubunit -lrt -lpthread -lm
+		####-lsubunit -lrt -lpthread --- lcheck probably uses these
+		####	libraries. It's needed on linux
+	./tests/unit_tests.out
+
