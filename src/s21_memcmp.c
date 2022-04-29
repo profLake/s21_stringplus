@@ -9,7 +9,7 @@ int s21_memcmp(const void *str1, const void *str2, s21_size_t n) {
             return p1[i] - p2[i];
             #endif
             #ifdef __APPLE__
-            return p1[i] < p2[i]; -1 : 1;
+            return p1[i] < p2[i] ? -1 : 1;
             #endif
     }
     return 0;
