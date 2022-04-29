@@ -7,7 +7,7 @@
 CC=gcc
 CFLAGS=-c -Wall -Wextra -Werror
 LDFLAGS=
-SOURCES=s21_*.c
+SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
@@ -15,14 +15,14 @@ all: $(SOURCES) $(EXECUTABLE)
 
 
 %.o: %.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(CFLAGS) $^ -o $@
 
 
 s21_string.a: $(OBJECTS)
 	ar -rcs $@ $^
-	
 
-check2: $(OBJECTS) ./tests/unit_tests.o
+
+check2: ./tests/unit_tests.c $(SOURCES)
 	$(CC) -fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/unit_tests.out \
@@ -47,7 +47,7 @@ check:
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm \
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-		####	используетэти библиотеки
+		####	использует эти библиотеки
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
 	./tests/unit_tests.out
