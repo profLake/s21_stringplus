@@ -11,7 +11,7 @@ void *s21_memchr(const void *str, int c, s21_size_t n) {
     return ret;
 }
 
-int main() {
+/*int main() {
     char str[] = "ityuq";
     char *c = s21_memchr(str,'y', 5);
     printf ("%s\n",str);
@@ -20,3 +20,4 @@ int main() {
     printf ("%s\n",str);
       return 0;
 }
+*/

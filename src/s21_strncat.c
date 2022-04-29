@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "s21_string.h"
 
 char *s21_strncat(char *dest, const char *src, s21_size_t n) {
     size_t k = 0;
@@ -14,7 +15,7 @@ char *s21_strncat(char *dest, const char *src, s21_size_t n) {
     }
     return (char*)dest;
 }
-int main() {
+/*int main() {
     char ruk[5] = "joui";
    char dob[5] = "lah_";
     s21_strncat(ruk, dob, 4);
@@ -24,3 +25,4 @@ int main() {
    
     return 0;
 }
+*/

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#include "s21_string.h"
 size_t s21_strspn(const char *str1, const char *str2) {
     int pol = 0;
     s21_size_t l = 0, k = 0;
@@ -23,9 +23,10 @@ size_t s21_strspn(const char *str1, const char *str2) {
     }
     return l;
 }
-int main() {
+/*int main() {
     char str1[20] = "0123456789";
     char str2[20] = "210";
     printf("%ld",  s21_strspn(str1, str2));
     return 0;
 }
+*/
