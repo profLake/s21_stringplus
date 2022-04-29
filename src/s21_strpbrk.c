@@ -1,24 +1,12 @@
-#include <stdio.h>
-#include <string.h>
+#include "s21_string.h"
 
 char *s21_strpbrk(const char *str1, const char *str2) {
-    char* num = NULL;
-    for (s21_size_t i = 0; *(str2 + i) != '\0'; i++) {
-            for (s21_size_t j = 0; *(str1 + j) != '\0'; j++) {
-                if (*(str2 + i) == *(str1 + j)) {
-                    num = (char*)str1 + j;
-                }
+    for (s21_size_t i = 0; *(str1 + i) != '\0'; i++) {
+        for (s21_size_t k = 0; *(str2 + k) != '\0'; k++) {
+            if (*(str1 + i) == *(str2 + k)) {
+                return (char*)(str1 + i);
             }
-            if (num != NULL) {
-                break;
         }
     }
-    return num;
-}
-int main() {
-    char str1[20] = "0123456789";
-    char str2[20] = "369";
-    char* isym = s21_strpbrk(str1, str2);
-    printf ("%ld\n", isym - str1 + 1);
-    return 0;
+    return s21_NULL;
 }

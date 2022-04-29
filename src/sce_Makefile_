@@ -8,9 +8,11 @@ check:
 		./s21_strchr.c \
 		./s21_strcpy.c \
 		./s21_strncmp.c \
+        ./s21_strpbrk.c \
+        ./s21_strtok.c \
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm
-		####-lsubunit -lrt -lpthread --- lcheck probably uses these
-		####	libraries. It's needed on linux
+		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+		####    используетэти библиотеки
 	./tests/unit_tests.out
 

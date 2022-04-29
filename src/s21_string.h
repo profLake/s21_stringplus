@@ -1,7 +1,7 @@
 
 
 typedef unsigned long s21_size_t;
-#define s21_NULL 0
+#define s21_NULL (void*)0
 
 /* The order is keeped from the task. There are 20. НЕ МЕНЯТЬ */
 void *memchr(const void *str, int c, s21_size_t n);
