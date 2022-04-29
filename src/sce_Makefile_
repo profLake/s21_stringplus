@@ -1,6 +1,7 @@
 check:
 	clear
 	gcc -Wall -Wextra -Werror \
+		-fprofile-arcs -ftest-coverage \
 		./tests/unit_tests.c \
 		./s21_strlen.c \
 		./s21_memcmp.c \
@@ -8,11 +9,25 @@ check:
 		./s21_strchr.c \
 		./s21_strcpy.c \
 		./s21_strncmp.c \
-        ./s21_strpbrk.c \
-        ./s21_strtok.c \
+		./s21_strpbrk.c \
+		./s21_strtok.c \
+		./s21_strerror.c \
 		-o ./tests/unit_tests.out \
-		-lcheck -lsubunit -lrt -lpthread -lm
+		-lcheck -lsubunit -lrt -lpthread -lm \
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-		####    используетэти библиотеки
+		####	используетэти библиотеки
+		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
+		####
 	./tests/unit_tests.out
+
+clean:
+	rm --force \
+        ./tests/*.gcda \
+        ./tests/*.gcov \
+		./tests/*.gcno \
+		./tests/*.out \
+        ./*.gcda \
+        ./*.gcov \
+        ./*.gcno \
+        ./*.out \
 

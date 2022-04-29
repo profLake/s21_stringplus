@@ -1,5 +1,6 @@
 #include "s21_string.h"
 
-char *strerror(int errnum) {
-
+char *s21_strerror(int errnum) {
+    static const char *strerr[] = s21_error;
+    return (char*)(strerr[errnum - 1]);
 }

@@ -1,15 +1,59 @@
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <check.h>
 #include "../s21_string.h"
-
-#include <stdio.h>
 
 
 START_TEST(test_s21_memcmp)
 {
+    char *str1;
+    char *str2;
+    int n;
     int out;
-    out = s21_memcmp("12347", "12345", 5);
-    ck_assert_int_eq(out, 2);
+    int right;
+
+    str1 = "12345";
+    str2 = "12342";
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "12345";
+    str2 = "12342";
+    n = 4;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "hello";
+    str2 = "hello";
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 50;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 2;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "1234567";
+    str2 = "";
+    n = 6;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -90,6 +134,14 @@ START_TEST(test_s21_strtok)
 }
 END_TEST
 
+START_TEST(test_s21_strerror)
+{
+    ck_assert_str_eq(s21_strerror(1), strerror(1));
+    ck_assert_str_eq(s21_strerror(ENOSYS), strerror(ENOSYS));
+    ck_assert_str_eq(s21_strerror(EEXIST), strerror(EEXIST));
+    ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
+}
+
 
 Suite* s21_string_suite()
 {
@@ -108,21 +160,14 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strlen);
     tcase_add_test(tc_core, test_s21_strpbrk);
     tcase_add_test(tc_core, test_s21_strtok);
+    tcase_add_test(tc_core, test_s21_strerror);
     suite_add_tcase(s, tc_core);
-
-    /* Limits test case */
-    /*tc_limits = tcase_create("Limits");
-
-    tcase_add_test(tc_limits, test_money_create_neg);
-    tcase_add_test(tc_limits, test_money_create_zero);
-    suite_add_tcase(s, tc_limits);
-    */
 
     return s;
 }
 
 
-int main(void)
+int main()
 {
     int number_failed;
     Suite *s;
