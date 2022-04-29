@@ -10,6 +10,7 @@ check:
 		./s21_strncmp.c \
         ./s21_strpbrk.c \
         ./s21_strtok.c \
+        ./s21_strerror.c \
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,

@@ -1,8 +1,8 @@
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <check.h>
 #include "../s21_string.h"
-
-#include <stdio.h>
 
 
 START_TEST(test_s21_memcmp)
@@ -90,6 +90,14 @@ START_TEST(test_s21_strtok)
 }
 END_TEST
 
+START_TEST(test_s21_strerror)
+{
+    ck_assert_str_eq(s21_strerror(1), strerror(1));
+    ck_assert_str_eq(s21_strerror(ENOSYS), strerror(ENOSYS));
+    ck_assert_str_eq(s21_strerror(EEXIST), strerror(EEXIST));
+    ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
+}
+
 
 Suite* s21_string_suite()
 {
@@ -108,21 +116,14 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strlen);
     tcase_add_test(tc_core, test_s21_strpbrk);
     tcase_add_test(tc_core, test_s21_strtok);
+    tcase_add_test(tc_core, test_s21_strerror);
     suite_add_tcase(s, tc_core);
-
-    /* Limits test case */
-    /*tc_limits = tcase_create("Limits");
-
-    tcase_add_test(tc_limits, test_money_create_neg);
-    tcase_add_test(tc_limits, test_money_create_zero);
-    suite_add_tcase(s, tc_limits);
-    */
 
     return s;
 }
 
 
-int main(void)
+int main()
 {
     int number_failed;
     Suite *s;
