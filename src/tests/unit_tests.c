@@ -7,9 +7,53 @@
 
 START_TEST(test_s21_memcmp)
 {
+    char *str1;
+    char *str2;
+    int n;
     int out;
-    out = s21_memcmp("12347", "12345", 5);
-    ck_assert_int_eq(out, 2);
+    int right;
+
+    str1 = "12345";
+    str2 = "12342";
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "12345";
+    str2 = "12342";
+    n = 4;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "hello";
+    str2 = "hello";
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 50;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 2;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "1234567";
+    str2 = "";
+    n = 6;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
