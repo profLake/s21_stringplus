@@ -20,7 +20,7 @@ check:
 		./s21_strncat.c \
 		./s21_strtok.c \
 		-o ./tests/unit_tests.out \
-		-lcheck 
+		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
 		####    используетэти библиотеки
 	./tests/unit_tests.out

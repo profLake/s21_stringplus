@@ -63,6 +63,32 @@ START_TEST(test_s21_strchr)
 }
 END_TEST
 
+START_TEST(test_s21_strcpy)
+{
+    char empty[] = "", empty1[] = "", spaces[] = "    ", spaces1[] = "    ";
+    ck_assert_str_eq(s21_strcpy(empty, ""), strcpy(empty1, ""));
+    ck_assert_str_eq(s21_strcpy(spaces, "/00"), strcpy(spaces1, "/00"));
+    ck_assert_str_eq(s21_strcpy("abc", "dcb"), strcpy("abc", "dcb"));
+    ck_assert_str_eq(s21_strcpy("qwertyuiopasdfg", "WE12#@!hyui."), strcpy("qwertyuiopasdfg", "WE12#@!hyui."));
+    ck_assert_str_eq(s21_strcpy("something", "/0"), strcpy("something", "/0"));
+    ck_assert_str_eq(s21_strcpy("what??", ""), strcpy("what??", ""));
+}
+END_TEST
+
+START_TEST(test_s21_strncpy)
+{
+    char str[28] = "So many test/000/ fu*hh..", str1[28] = "So many test/000/ fu*hh..", src[100] = "   /00never gonna give you up, never gonna let them down...", src1[10] = "", src11[2] = "",src2[9] = "/000/", src3[6] = "/0", src33[6] = "/0", src4[20] = "just like that";
+    
+    ck_assert_str_eq(s21_strncpy(src, str1, 28), strncpy(src, str, 28));
+    ck_assert_str_eq(s21_strncpy(str1, src1, 4), strncpy(str, src1, 4));
+    ck_assert_str_eq(s21_strncpy(src1, str1, 1), strncpy(src11, str, 1));
+    ck_assert_str_eq(s21_strncpy(str1, src2, 5), strncpy(str, src2, 5));
+    ck_assert_str_eq(s21_strncpy(src3, str1, 2), strncpy(src33, str, 2));
+    ck_assert_str_eq(s21_strncpy(str1, src4, 16), strncpy(str, src4, 16));
+    ck_assert_str_eq(s21_strncpy(str1, "3oi", 0), strncpy(str, "3oi", 0));
+}
+END_TEST
+
 START_TEST(test_s21_strspn)
 {
     char src[] = "WE ARE THE CHAMPIONS!", src1[] = "WE ", src2[] = "no we're not";
@@ -92,10 +118,27 @@ START_TEST(test_s21_memcpy)
 }
 END_TEST
 
+START_TEST(test_s21_strcmp)
+{
+    ck_assert_int_eq(s21_strcmp("h", "!fvgb9876"), strcmp("h", "!fvgb9876"));
+    ck_assert_int_eq(s21_strcmp("GHTH", "!.76"), strcmp("GHTH", "!.76"));
+    ck_assert_int_eq(s21_strcmp("", "ryhEF"), strcmp("", "ryhEF"));
+    ck_assert_int_eq(s21_strcmp("1234SZR", ""), strcmp("1234SZR", ""));
+    ck_assert_int_eq(s21_strcmp("Sold it!", "Sold it!"), strcmp("Sold it!", "Sold it!"));
+    ck_assert_int_eq(s21_strcmp("", ""), strcmp("", ""));
+    ck_assert_int_eq(s21_strcmp("\0", "\0"), strcmp("\0", "\0"));
+}
+END_TEST
+
 START_TEST(test_s21_strncmp)
 {
-    ck_assert(s21_strncmp("hello", "hellr", 4) == 0);
-    ck_assert(s21_strncmp("hello", "hellr", 5) < 0);
+    ck_assert_int_eq(s21_strncmp("hello", "hellr", 4), strncmp("hello", "hellr", 4));
+    ck_assert_int_eq(s21_strncmp("hello", "hellr", 5), strncmp("hello", "hellr", 5));
+    ck_assert_int_eq(s21_strncmp("PRISE", "shitty", 5), strncmp("PRISE", "shitty", 5));
+    ck_assert_int_eq(s21_strncmp("sh...", "shout, shout", 5), strncmp("sh...", "shout, shout", 5));
+    ck_assert_int_eq(s21_strncmp(".", ".0123", 3), strncmp(".", ".0123", 3));
+    ck_assert_int_eq(s21_strncmp("", "   endOFemmpty", 3), strncmp("", "   endOFemmpty", 3));
+    ck_assert_int_eq(s21_strncmp("", " endOFsPAACE", 1), strncmp("", " endOFsPAACE", 1));
 }
 END_TEST
 
@@ -171,7 +214,10 @@ int main(void)
     tcase_add_test(tc_core, test_s21_strcspn);
     tcase_add_test(tc_core, test_s21_strchr);
     tcase_add_test(tc_core, test_s21_memcpy);
+    tcase_add_test(tc_core, test_s21_strcmp);
     tcase_add_test(tc_core, test_s21_strncmp);
+    tcase_add_test(tc_core, test_s21_strcpy);
+    tcase_add_test(tc_core, test_s21_strncpy);
     tcase_add_test(tc_core, test_s21_strlen);
     tcase_add_test(tc_core, test_s21_strpbrk);
     tcase_add_test(tc_core, test_s21_strtok);
