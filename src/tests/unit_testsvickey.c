@@ -9,11 +9,36 @@ START_TEST(test_s21_strcat)
 {
     char str[15] = "Hi";
     char str1[15] = "Hi";
-    const char str2[] = ", People!";
-    s21_strcat(str, str2);
-    strcat(str1, str2);
-    ck_assert_str_eq(str, str1);
+    ck_assert_str_eq(s21_strcat(str, ", People!"),  strcat(str1, ", People!"));
+    ck_assert_str_eq(s21_strcat(str, ""), strcat(str1, ""));
+}
+END_TEST
+
+START_TEST(test_s21_memset)
+{
+    char str[30] = "____ zelenoglazoe taksi";
+    char str1[30] = "____ zelenoglazoe taksi";
+    memset(str, 'O', 3);
+    s21_memset(str1, 'O', 3);
     
+    ck_assert_str_eq(str, str1);
+   
+}
+END_TEST
+
+START_TEST(test_s21_memmove)
+{
+    char src[20] = "88, 89, 90";
+    char src1[20] = "88, 89, 90";
+    memmove(src, "86, 87", 5);
+    s21_memmove(src1, "86, 87", 5);
+    
+    ck_assert_str_eq(src, src1);
+    
+    memmove(&src[3], "Q", 1);
+    s21_memmove(&src1[5], "Q", 1);
+    
+    ck_assert_str_ne(src, src1);
 }
 END_TEST
 
@@ -21,7 +46,7 @@ START_TEST(test_s21_memcmp)
 {
     int out;
     out = s21_memcmp("12347", "12345", 5);
-    ck_assert_int_eq(out, 2);
+    ck_assert_int_eq(out, 1);
 }
 END_TEST
 
@@ -34,6 +59,26 @@ START_TEST(test_s21_strchr)
     ck_assert_ptr_eq(s21_strchr(str, 'e'), strchr(str, 'e'));
     ck_assert_ptr_eq(s21_strchr(empt, '4'), strchr(empt, '4'));
     
+    
+}
+END_TEST
+
+START_TEST(test_s21_strspn)
+{
+    char src[] = "WE ARE THE CHAMPIONS!", src1[] = "WE ", src2[] = "no we're not";
+    
+    ck_assert_int_eq(strcspn(src,src1), s21_strcspn(src, src1));
+    ck_assert_int_eq(strcspn(src,src2), s21_strcspn(src, src2));
+    
+}
+END_TEST
+
+START_TEST(test_s21_strcspn)
+{
+    char str1[20] = "1234567890", str2[20] = "098", str[] = "edr";
+    
+    ck_assert_int_eq(strcspn(str1, str2),s21_strcspn(str1, str2));
+    ck_assert_int_eq(strcspn(str, str2),s21_strcspn(str, str2));
     
 }
 END_TEST
@@ -113,13 +158,17 @@ int main(void)
 {
     int number_failed;
     Suite *s21 = suite_create("s21_string");
-    TCase *tc_core = tcase_create("Core");;
+    TCase *tc_core = tcase_create("Core");
     SRunner *sr;
     sr = srunner_create(s21);
     /* Core test case */
     suite_add_tcase(s21, tc_core);
     tcase_add_test(tc_core, test_s21_memcmp);
+    tcase_add_test(tc_core, test_s21_memset);
+    tcase_add_test(tc_core, test_s21_memmove);
     tcase_add_test(tc_core, test_s21_strcat);
+    tcase_add_test(tc_core, test_s21_strspn);
+    tcase_add_test(tc_core, test_s21_strcspn);
     tcase_add_test(tc_core, test_s21_strchr);
     tcase_add_test(tc_core, test_s21_memcpy);
     tcase_add_test(tc_core, test_s21_strncmp);
