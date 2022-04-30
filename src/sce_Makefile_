@@ -5,7 +5,7 @@
 #
 
 CC=gcc
-CFLAGS=-c -Wall -Wextra -Werror
+CFLAGS=-Wall -Wextra -Werror
 LDFLAGS=
 SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
@@ -15,22 +15,32 @@ all: $(SOURCES) $(EXECUTABLE)
 
 
 %.o: %.c
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) -c $(CFLAGS) $^ -o $@
 
 
 s21_string.a: $(OBJECTS)
 	ar -rcs $@ $^
 
 
-check2: ./tests/unit_tests.c $(SOURCES)
-	$(CC) -fprofile-arcs -ftest-coverage \
+gcov_test: check
+	gcov ./tests/*.gcda
+
+
+check: ./tests/unit_tests.c $(SOURCES)
+	clear
+	$(CC) $(CFLAGS) \
+        -fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm
+		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+		####	использует эти библиотеки
+		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
+		####
 	./tests/unit_tests.out
 
 
-check:
+check_old:
 	clear
 	$(CC) -Wall -Wextra -Werror \
 		-fprofile-arcs -ftest-coverage \
@@ -46,10 +56,6 @@ check:
 		./s21_strerror.c \
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm \
-		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-		####	использует эти библиотеки
-		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
-		####
 	./tests/unit_tests.out
 
 
@@ -59,12 +65,12 @@ clean:
 		./tests/*.gcov \
 		./tests/*.gcno \
 		./tests/*.out \
-        ./tests/*.o \
-        ./tests/*.a \
+		./tests/*.o \
+		./tests/*.a \
 		./*.gcda \
 		./*.gcov \
 		./*.gcno \
 		./*.out \
-        ./*.o \
-        ./*.a \
+		./*.o \
+		./*.a \
 

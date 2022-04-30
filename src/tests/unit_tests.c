@@ -5,6 +5,36 @@
 #include "../s21_string.h"
 
 
+START_TEST(test_s21_strstr)
+{
+    char *str1;
+    char *str2;
+
+    str1 = "Simple string";
+    str2 = "ple";
+    ck_assert_str_eq(strstr(str1, str2), s21_strstr(str1, str2));
+    str2 = "in";
+    ck_assert_str_eq(strstr(str1, str2), s21_strstr(str1, str2));
+
+    str1 = "Simple string";
+    str2 = "595";
+    ck_assert_ptr_eq(strstr(str1, str2), s21_strstr(str1, str2));
+}
+
+START_TEST(test_s21_memchr)
+{
+    char *ptr;
+    int value;
+    int n;
+
+    ptr = "123344\0er";
+    value = 'e';
+    n = 50;
+    ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
+    n = 5;
+    ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
+}
+
 START_TEST(test_s21_memcmp)
 {
     char *str1;
@@ -59,7 +89,14 @@ END_TEST
 
 START_TEST(test_s21_strchr)
 {
-    ck_assert(s21_strchr("12347", '4') == "12347" + 3);
+    char *str;
+    int c;
+
+    str = "12347";
+    c = '4';
+    ck_assert_ptr_eq(strchr(str, c), s21_strchr(str, c));
+    c = 'f';
+    ck_assert_ptr_eq(strchr(str, c), s21_strchr(str, c));
 }
 END_TEST
 
@@ -142,6 +179,18 @@ START_TEST(test_s21_strerror)
     ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
 }
 
+START_TEST(test_s21_strcat)
+{
+    char str[15] = "Hi";
+    char str1[15] = "Hi";
+    const char str2[] = ", People!";
+    s21_strcat(str, str2);
+    strcat(str1, str2);
+    ck_assert_str_eq(str, str1);
+    
+}
+END_TEST
+
 
 Suite* s21_string_suite()
 {
@@ -153,6 +202,8 @@ Suite* s21_string_suite()
     /* Core test case */
     tc_core = tcase_create("Core");
 
+    tcase_add_test(tc_core, test_s21_strstr);
+    tcase_add_test(tc_core, test_s21_memchr);
     tcase_add_test(tc_core, test_s21_memcmp);
     tcase_add_test(tc_core, test_s21_strchr);
     tcase_add_test(tc_core, test_s21_memcpy);
@@ -161,6 +212,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strpbrk);
     tcase_add_test(tc_core, test_s21_strtok);
     tcase_add_test(tc_core, test_s21_strerror);
+    tcase_add_test(tc_core, test_s21_strcat);
     suite_add_tcase(s, tc_core);
 
     return s;

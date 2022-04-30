@@ -44,6 +44,7 @@ END_TEST
 
 START_TEST(test_s21_memcmp)
 {
+<<<<<<< HEAD
     int out;
     out = s21_memcmp("12347", "12345", 5);
     ck_assert_int_eq(out, 1);
@@ -96,6 +97,8 @@ START_TEST(test_s21_strspn)
     ck_assert_int_eq(strcspn(src,src1), s21_strcspn(src, src1));
     ck_assert_int_eq(strcspn(src,src2), s21_strcspn(src, src2));
     
+=======
+>>>>>>> 748df4823c70089fd887168856dee9d7b77e9097
 }
 END_TEST
 
