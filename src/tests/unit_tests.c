@@ -171,6 +171,44 @@ START_TEST(test_s21_strcat)
 }
 END_TEST
 
+START_TEST(test_s21_sprintf)
+{
+    char *format;
+    char *buff_right;
+    int right;
+    char buff[500];
+    int out;
+
+
+    format = "hello, %c !";
+    buff_right = "hello, r !";
+    right = 10;
+    out = s21_sprintf(buff, format, 'r');
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%c'!";
+    buff_right = "hello, 'r'!";
+    right = 11;
+    out = s21_sprintf(buff, format, 'r');
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%d'!";
+    buff_right = "hello, '115'!";
+    right = 13;
+    out = s21_sprintf(buff, format, 115);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%d'!";
+    buff_right = "hello, '-119'!";
+    right = 14;
+    out = s21_sprintf(buff, format, -119);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+}
+
 START_TEST(test_s21_int_get_str_len)
 {
     int n;
@@ -188,30 +226,58 @@ START_TEST(test_s21_int_get_str_len)
     ck_assert_int_eq(right, out);
 }
 
-START_TEST(test_s21_sprintf)
+START_TEST(test_s21_frmt_is_tokn)
 {
-    char *format;
-    char out[500];
+    char *str;
+    int right;
+    int out;
+   
+    str  = "%i";
+    right = 1;
+    out = s21_frmt_is_tokn(str);
+    ck_assert_int_eq(right, out);
+   
+    str  = "%-";
+    right = 0;
+    out = s21_frmt_is_tokn(str);
+    ck_assert_int_eq(right, out);
+   
+    str  = "%0.5f";
+    right = 1;
+    out = s21_frmt_is_tokn(str);
+    ck_assert_int_eq(right, out);
+   
+    str  = "%0.^5f";
+    right = 0;
+    out = s21_frmt_is_tokn(str);
+    ck_assert_int_eq(right, out);
+}
+
+START_TEST(test_s21_tokn_skip_part)
+{
+    char *token;
+    unsigned int i;
     char *right;
-
-    format = "hello, %c !";
-    right = "hello, r !";
-    s21_sprintf(out, format, 'r');
+    char *out;
+   
+    token  = ".5s";
+    i = 4;
+    right = token + 3;
+    out = s21_tokn_skip_part(token, i);
     ck_assert_str_eq(right, out);
-
-    format = "hello, '%c'!";
-    right = "hello, 'r'!";
-    s21_sprintf(out, format, 'r');
+   
+    /*
+    token  = "0*.*f";
+    i = 4;
+    right = token + 1;
+    out = s21_tokn_skip_part(token, i);
     ck_assert_str_eq(right, out);
-
-    format = "hello, '%d'!";
-    right = "hello, '115'!";
-    s21_sprintf(out, format, 115);
-    ck_assert_str_eq(right, out);
-
-    format = "hello, '%d'!";
-    right = "hello, '-119'!";
-    s21_sprintf(out, format, -119);
+    */
+   
+    token  = "i";
+    i = 2;
+    right = token + 1;
+    out = s21_tokn_skip_part(token, i);
     ck_assert_str_eq(right, out);
 }
 
@@ -235,8 +301,12 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strtok);
     tcase_add_test(tc_core, test_s21_strerror);
     tcase_add_test(tc_core, test_s21_strcat);
-    tcase_add_test(tc_core, test_s21_int_get_str_len);
+
     tcase_add_test(tc_core, test_s21_sprintf);
+    tcase_add_test(tc_core, test_s21_int_get_str_len);
+    tcase_add_test(tc_core, test_s21_frmt_is_tokn);
+    tcase_add_test(tc_core, test_s21_tokn_skip_part);
+
     suite_add_tcase(s, tc_core);
 
     return s;

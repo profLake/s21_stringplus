@@ -38,21 +38,24 @@ int s21_sprintf(char *target, const char *format, ...);
 
 #define TOKN_SIGN '%'
 #define SPECIFS "cdieEfgGosuxXpn%"
+#define SPECIFS_LENS "hl"
 #define DIGITS "0123456789"
 #define FLAGS "-+ #0"
 #define PRECIS_SIGN '.'
 
+int s21_frmt_is_tokn(const char *format);
+char *s21_tokn_skip_part(const char *token, unsigned int i);
 char s21_tokn_get_flag(const char *token);
 int s21_tokn_get_width(const char *token);
 int s21_tokn_get_precision(const char *token);
-char s21_tokn_get_specif(const char *token);
 int s21_tokn_get_len(const char *token);
+char s21_tokn_get_specif(const char *token);
 int s21_int_get_str_len(int n);
-int s21_frmt_is_tokn(const char *str);
 char* s21_int_to_str(char *target, int n);
 
 
 /* Для s21_strerror() */
+
 #ifdef __APPLE__
 #define s21_error { "Operation not permitted", \
 "No such file or directory", \

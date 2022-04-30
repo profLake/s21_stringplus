@@ -25,10 +25,14 @@ int s21_sprintf(char *target, const char *format, ...) {
                 char tokn_c = va_arg(args, int);
                 *target = tokn_c;
                 target++;
-            } else if (specif == SPECIFS[1]) {
+            } else if (specif == SPECIFS[1] || specif == SPECIFS[2]) {
                 int tokn_int = va_arg(args, int);
                 s21_int_to_str(target, tokn_int);
                 target += s21_int_get_str_len(tokn_int);
+            } else if (specif == SPECIFS[5]) {
+            } else if (specif == SPECIFS[9]) {
+            } else if (specif == SPECIFS[10]) {
+            } else if (specif == SPECIFS[15]) {
             }
 
             format += s21_tokn_get_len(token);
@@ -45,22 +49,42 @@ int s21_sprintf(char *target, const char *format, ...) {
 void s21_tokn_insert_specif(char *target, char *token, void *thing) {
 }
 */
+char *s21_tokn_skip_part(const char *token, unsigned int i) {
+    if (i--)
+        while (s21_strchr(FLAGS, *token))
+            token++;
+    if (i--)
+        while (s21_strchr(DIGITS, *token))
+            token++;
+    if (i--)
+        if (*token == PRECIS_SIGN)
+            token++;
+    if (i--)
+        while (s21_strchr(DIGITS, *token))
+            token++;
+    if (i--)
+        if (s21_strchr(SPECIFS_LENS, *token))
+            token++;
+    if (i--)
+        if (s21_strchr(SPECIFS, *token))
+            token++;
+    return (char*)token;
+}
 
 char s21_tokn_get_flag(const char *token) {
     if (s21_strchr(FLAGS, *token)) {
         return *token;
     }
-    return 0;
+    return '\0';
 }
 
 int s21_tokn_get_width(const char *token) {
-   return atoi(token);
+    token = s21_tokn_skip_part(token, 1);
+    return atoi(token);
 }
 
 int s21_tokn_get_precision(const char *token) {
-    while (s21_strchr(DIGITS, *token)) {
-        token++;
-    }
+    token = s21_tokn_skip_part(token, 2);
     if (*token != PRECIS_SIGN) {
         return 0;
     }
@@ -68,24 +92,20 @@ int s21_tokn_get_precision(const char *token) {
     return atoi(token);
 }
 
-char s21_tokn_get_specif(const char *token) {
-    while (s21_strchr(FLAGS, *token)) {
-        token++;
+char s21_tokn_get_specif_len_descr(const char *token) {
+    token = s21_tokn_skip_part(token, 3);
+    if (s21_strchr(SPECIFS_LENS, *token)) {
+        return *token;
     }
-    while (s21_strchr(DIGITS, *token)) {
-        token++;
-    }
-    if (*token == PRECIS_SIGN) {
-        token++;
-    }
-    while (s21_strchr(DIGITS, *token)) {
-        token++;
-    }
+    return '\0';
+}
 
+char s21_tokn_get_specif(const char *token) {
+    token = s21_tokn_skip_part(token, 4);
     if (s21_strchr(SPECIFS, *token)) {
         return *token;
     }
-    return 0;
+    return '\0';
 }
 
 int s21_tokn_get_len(const char *token) {
