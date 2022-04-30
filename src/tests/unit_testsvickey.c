@@ -44,32 +44,6 @@ END_TEST
 
 START_TEST(test_s21_memcmp)
 {
-    int out;
-    out = s21_memcmp("12347", "12345", 5);
-    ck_assert_int_eq(out, 1);
-}
-END_TEST
-
-START_TEST(test_s21_strchr)
-{
-    const char str[12] = "1234a5E,";
-    char * empt = "";
-    ck_assert_ptr_eq(s21_strchr(str, '3'), strchr(str, '3'));
-    ck_assert_ptr_eq(s21_strchr(str, 'a'), strchr(str, 'a'));
-    ck_assert_ptr_eq(s21_strchr(str, 'e'), strchr(str, 'e'));
-    ck_assert_ptr_eq(s21_strchr(empt, '4'), strchr(empt, '4'));
-    
-    
-}
-END_TEST
-
-START_TEST(test_s21_strspn)
-{
-    char src[] = "WE ARE THE CHAMPIONS!", src1[] = "WE ", src2[] = "no we're not";
-    
-    ck_assert_int_eq(strcspn(src,src1), s21_strcspn(src, src1));
-    ck_assert_int_eq(strcspn(src,src2), s21_strcspn(src, src2));
-    
 }
 END_TEST
 
