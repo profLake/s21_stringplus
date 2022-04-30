@@ -1,46 +1,41 @@
 #include "s21_string.h"
 #include <stdarg.h>
 
-#define TOKN_SIGN '%'
-#define SPECIFS "cdieEfgGosuxXpn%"
-#define DIGITS "0123456789"
-#define FLAGS "-+ #0"
-#define PRECIS_SIGN '.'
-
-char s21_tokn_get_flag_(const char *token);
-int s21_tokn_get_width_(const char *token);
-int s21_tokn_get_precision_(const char *token);
-char s21_tokn_get_specif_(const char *token);
-int s21_tokn_get_len(const char *token);
-
-int s21_sprintf_(char *target, const char *format, ...) {
+int s21_sprintf(char *target, const char *format, ...) {
     char *target_saved = target;
     va_list args;
     va_start(args, format);
 
-    int under_token = 0;
+    int is_token = 0;
     while (*format) {
-        if (*format == TOKN_SIGN) {
-            under_token = 1;
+        if (s21_frmt_is_tokn(format) == 1) {
+            is_token = 1;
             format++;
         }
-        if (under_token == 0) {
+        if (is_token == 0) {
             *target = *format;
             target++;
             format++;
         }
-        if (under_token == 1) {
+        if (is_token == 1) {
             const char *token = format;
-
-            char specif = s21_tokn_get_specif_(token);
+            char specif = s21_tokn_get_specif(token);
 
             if (specif == SPECIFS[0]) {
-                *target = va_arg(args, int);
+                char tokn_c = va_arg(args, int);
+                *target = tokn_c;
                 target++;
+            } else if (specif == SPECIFS[1]) {
+                int tokn_int = va_arg(args, int);
+                s21_int_to_str(target, tokn_int);
+                target += s21_int_get_str_len(tokn_int);
             }
-            under_token = 0;
+
+            format += s21_tokn_get_len(token);
+            is_token = 0;
         }
     }
+    *target = '\0';
 
     va_end(args);
     return target - target_saved;
@@ -51,18 +46,18 @@ void s21_tokn_insert_specif(char *target, char *token, void *thing) {
 }
 */
 
-char s21_tokn_get_flag_(const char *token) {
+char s21_tokn_get_flag(const char *token) {
     if (s21_strchr(FLAGS, *token)) {
         return *token;
     }
     return 0;
 }
 
-int s21_tokn_get_width_(const char *token) {
+int s21_tokn_get_width(const char *token) {
    return atoi(token);
 }
 
-int s21_tokn_get_precision_(const char *token) {
+int s21_tokn_get_precision(const char *token) {
     while (s21_strchr(DIGITS, *token)) {
         token++;
     }
@@ -73,7 +68,7 @@ int s21_tokn_get_precision_(const char *token) {
     return atoi(token);
 }
 
-char s21_tokn_get_specif_(const char *token) {
+char s21_tokn_get_specif(const char *token) {
     while (s21_strchr(FLAGS, *token)) {
         token++;
     }
@@ -113,3 +108,57 @@ int s21_tokn_get_len(const char *token) {
     }
     return 0;
 }
+
+int s21_int_get_str_len(int n) {
+    int result = 0;
+    if (n < 0) {
+        n = -n;
+        result++;
+    }
+         if (n <         10) result += 1;
+    else if (n <        100) result += 2;
+    else if (n <       1000) result += 3;
+    else if (n <      10000) result += 4;
+    else if (n <     100000) result += 5;
+    else if (n <    1000000) result += 6;
+    else if (n <   10000000) result += 7;
+    else if (n <  100000000) result += 8;
+    else if (n < 1000000000) result += 9;
+    return result;
+}
+
+int s21_frmt_is_tokn(const char *format) {
+    int result = 0;
+    if (*format == TOKN_SIGN) {
+        format++;
+        if (s21_tokn_get_len(format) > 0) {
+            result = 1;
+        }
+    }
+    return result;
+}
+
+char* s21_int_to_str(char *target, int n) {
+    static char *buff = NULL;
+    int is_first = 0;
+    if (n < 0) {
+        *target++ = '-';
+        n = -n;
+    }
+    if (buff == NULL) {
+        buff = target;
+        is_first = 1;
+    }
+    if (n / 10) {
+        s21_int_to_str(buff, n / 10);
+        n %= 10;
+    }
+    *buff++ = '0' + n;
+
+    if (is_first) {
+        *buff = '\0';
+        buff = NULL;
+    }
+    return target;
+}
+

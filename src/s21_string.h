@@ -32,127 +32,24 @@ char *s21_strstr(const char *haystack, const char *needle);
 char *s21_strtok(char *str, const char *delim);
 
 
-int sprintf(char *str, const char *format, ...);
+/* Для s21_sprintf() */
 
+int s21_sprintf(char *target, const char *format, ...);
 
-/* Для s21_sprintf() и s21_scanf */
+#define TOKN_SIGN '%'
+#define SPECIFS "cdieEfgGosuxXpn%"
+#define DIGITS "0123456789"
+#define FLAGS "-+ #0"
+#define PRECIS_SIGN '.'
 
-typedef struct P_Token {
-    int width;
-    int precision;
-    int pres_flag;
-    int null_flag;
-    int str_len;
-    int hex;
-    int oct;
-    int exp;
-    int g;
-} P_Token;
-
-typedef struct float_el {
-    int decnpt;
-    int sign;
-    int i;
-    int end;
-    int float_len;
-} float_el;
-
-#define FORMAT_MAX 256
-#define SIZE_CHAR 5
-void s21_clear(char *str);
-int get_format_token(char *format, char *token_str);
-int check_specs(char c);
-int is_dec(char c);
-int get_presicion(char *str);
-int get_num_len(long long number);
-int get_float_len_sprintf(char *str, int start_index);
-int start_processing_p(char *str, char*format, va_list argptr);
-int check_string(const char *str);
-int generate_plus_expo(int decnpt);
-int generate_minus_expo(int decnpt);
-int get_more_than_null(char *tmp_str);
-int skip_nulls(char *str);
-int check_nan(char *str);
-int get_dec_length(char *str);
-int is_expo_str(char *str);
-int get_e_index(char *str);
-
-char *s21_wcharcat(char *destination, const wchar_t *source);
-char *s21_itoa(long num);
-char *s21_parser(const char *format, char *token_str, int *counter);
-char* get_float_copy(char *dest, const char *source, int start_index, int end);
-void *get_hexarr(char *arr, unsigned long num, int x);
-
-void check_flags(char *token_str);
-void processing_f(char *str, va_list argptr, P_Token t);
-void processing_s(char *str, char *token_str, va_list argptr, P_Token t);
-void processing_c(char *str, char *token_str, va_list argptr, P_Token t);
-void processing_d(char *str, char *token_str, va_list argptr, P_Token t);
-void processing_u(char *str, char *token_str, va_list argptr, P_Token t);
-void processing_x(char *str, char *token_str, va_list argptr, P_Token t, int x);
-void processing_o(char *str, char *token_str, va_list argptr, P_Token t);
-void processing_p(char *str, va_list argptr, P_Token t, int x);
-void processing_e(char *str, va_list argptr, P_Token t);
-void processing_g(char *str, va_list argptr, P_Token t);
-void processing_n(char *str, va_list argptr);
-void processing_percent(char *str, P_Token t);
-void main_process(char *str, char *token_str, va_list argptr);
-void write_d_to_string(char *str, char *arg, int len, P_Token t);
-void write_u_to_string(char *str, char *arg, int len, P_Token t);
-void write_f_to_string(char *str, char *num, int sign, P_Token *t);
-void write_f_nothing(char *str, char *num, int sign, int len, P_Token *t);
-void write_f_pluses(char *str, char *num, int sign, int len, P_Token *t);
-void write_f_pluses_spaces(char *str, char *num, int sign, int len, P_Token *t);
-void write_f_minuses_pluses(char *str, char *num, int sign, int len, P_Token *t);
-void write_f_minuses_spaces(char *str, char *num, int sign, int len, P_Token *t);
-void write_f_pluses_(char *str, char *num, int sign, int len, P_Token *t);
-void write_p_to_string(char *str, char *result, int len, P_Token t);
-void write_width_to_str(char *str, int len, P_Token *t);
-void write_pres_to_str(char *str, P_Token *t);
-void write_plus_to_str(char *str, P_Token *t);
-void write_minus_to_str(char *str, int sign, P_Token *t);
-void write_space_to_str(char *str, P_Token *t);
-void add_nulls_to_str(char *str, int float_len, P_Token t);
-void init_parameters(P_Token *t, int len);
-void make_expo_str(double arg, char *str, int decnpt, int *sign, P_Token t);
-void make_double_str(double arg, char *num_str, float_el *f_el, P_Token t);
-void make_long_double_str(long double arg, char *num_str, float_el *f_el, P_Token t);
-void add_lt_ten(char *str, int index, int e);
-void add_gt_ten(char *str, int e);
-void change_letter_e(char *str);
-void round_double_str(double arg, char *num_arr, float_el *f_el);
-void round_long_double_str(long double arg, char *num_arr, float_el *f_el);
-void make_nan_str(char *num_str, float_el f_el, P_Token t);
-void make_notnan_str(char *tmp_str, char *num_str, float_el f_el, P_Token t);
-void remove_dot(char *dest, char *str);
-void copy_e_str(char *dest, char *src);
-void write_e_grid_and_nulls(char *str, char *num, int decs, int sign, P_Token t);
-void init_flags();
-int get_dot_index(char *str);
-int no_dot(char *str);
-
-float_el init_f_el();
-P_Token init_token();
-
-void check_precision(P_Token *t);
-void get_width_pres(char *token_str, va_list argptr, P_Token *t);
-void read_star_width_pres(char *token_str, va_list argptr, P_Token *t);
-void read_nostar_width_pres(char *token_str, P_Token *t);
-void copy_zero_float(char *num_str, const char *tmp_str, int decnpt, int sign, P_Token t);
-void s21_reverse_array(char *a, int n);
-void check_grid_u(char *str, int len, P_Token *t);
-
-void *s21_to_upper(const char *str);
-void *s21_to_lower(const char *str);
-void *s21_insert(const char *src, const char *str, s21_size_t start_index);
-void *s21_trim(const char *src, const char *trim_chars);
-void s21_clear(char *str);
-int del_check(char c, const char *delim);
-int get_first_index(const char *src, const char *trim_chars, int src_len, int chars_len);
-int get_last_index(const char *src, const char *trim_chars, int src_len, int chars_len);
-int chrcmp(char c1, char c2);
-
-unsigned long get_unsigned_arg(char *token_str, va_list argptr);
+char s21_tokn_get_flag(const char *token);
+int s21_tokn_get_width(const char *token);
+int s21_tokn_get_precision(const char *token);
+char s21_tokn_get_specif(const char *token);
+int s21_tokn_get_len(const char *token);
+int s21_int_get_str_len(int n);
+int s21_frmt_is_tokn(const char *str);
+char* s21_int_to_str(char *target, int n);
 
 
 /* Для s21_strerror() */

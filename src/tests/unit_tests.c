@@ -87,32 +87,12 @@ START_TEST(test_s21_memcmp)
 }
 END_TEST
 
-START_TEST(test_s21_strchr)
-{
-    char *str;
-    int c;
-
-    str = "12347";
-    c = '4';
-    ck_assert_ptr_eq(strchr(str, c), s21_strchr(str, c));
-    c = 'f';
-    ck_assert_ptr_eq(strchr(str, c), s21_strchr(str, c));
-}
-END_TEST
-
 START_TEST(test_s21_memcpy)
 {
     char dest[50];
     s21_memcpy(dest, "hello", 4);
     ck_assert(strncmp(dest, "hellr", 4) == 0);
     ck_assert(strncmp(dest, "hellr", 5) != 0);
-}
-END_TEST
-
-START_TEST(test_s21_strncmp)
-{
-    ck_assert(s21_strncmp("hello", "hellr", 4) == 0);
-    ck_assert(s21_strncmp("hello", "hellr", 5) < 0);
 }
 END_TEST
 
@@ -191,6 +171,50 @@ START_TEST(test_s21_strcat)
 }
 END_TEST
 
+START_TEST(test_s21_int_get_str_len)
+{
+    int n;
+    int right;
+    int out;
+
+    n = 19;
+    right = 2;
+    out = s21_int_get_str_len(n);
+    ck_assert_int_eq(right, out);
+
+    n = -99;
+    right = 3;
+    out = s21_int_get_str_len(n);
+    ck_assert_int_eq(right, out);
+}
+
+START_TEST(test_s21_sprintf)
+{
+    char *format;
+    char out[500];
+    char *right;
+
+    format = "hello, %c !";
+    right = "hello, r !";
+    s21_sprintf(out, format, 'r');
+    ck_assert_str_eq(right, out);
+
+    format = "hello, '%c'!";
+    right = "hello, 'r'!";
+    s21_sprintf(out, format, 'r');
+    ck_assert_str_eq(right, out);
+
+    format = "hello, '%d'!";
+    right = "hello, '115'!";
+    s21_sprintf(out, format, 115);
+    ck_assert_str_eq(right, out);
+
+    format = "hello, '%d'!";
+    right = "hello, '-119'!";
+    s21_sprintf(out, format, -119);
+    ck_assert_str_eq(right, out);
+}
+
 
 Suite* s21_string_suite()
 {
@@ -205,14 +229,14 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strstr);
     tcase_add_test(tc_core, test_s21_memchr);
     tcase_add_test(tc_core, test_s21_memcmp);
-    tcase_add_test(tc_core, test_s21_strchr);
     tcase_add_test(tc_core, test_s21_memcpy);
-    tcase_add_test(tc_core, test_s21_strncmp);
     tcase_add_test(tc_core, test_s21_strlen);
     tcase_add_test(tc_core, test_s21_strpbrk);
     tcase_add_test(tc_core, test_s21_strtok);
     tcase_add_test(tc_core, test_s21_strerror);
     tcase_add_test(tc_core, test_s21_strcat);
+    tcase_add_test(tc_core, test_s21_int_get_str_len);
+    tcase_add_test(tc_core, test_s21_sprintf);
     suite_add_tcase(s, tc_core);
 
     return s;
