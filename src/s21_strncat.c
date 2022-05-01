@@ -9,20 +9,10 @@ char *s21_strncat(char *dest, const char *src, s21_size_t n) {
    }
     for (s21_size_t i = 0; i < n; i++) {
         *((char*)dest + i + k) =  *((char*)src + i);
-        if (((char*)src + i) == NULL) {
+        if (*((char*)src + i) == '\0') {
             break;
        }
     }
     return (char*)dest;
 }
-/*int main() {
-    char ruk[5] = "joui";
-   char dob[5] = "lah_";
-    s21_strncat(ruk, dob, 4);
-    for (int i = 0; ruk[i] != '\0'; i++) {
-        printf("%c", ruk[i]);
-    }
-   
-    return 0;
-}
-*/
+
