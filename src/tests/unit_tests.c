@@ -20,6 +20,7 @@ START_TEST(test_s21_strstr)
     str2 = "595";
     ck_assert_ptr_eq(strstr(str1, str2), s21_strstr(str1, str2));
 }
+END_TEST
 
 START_TEST(test_s21_memchr)
 {
@@ -34,6 +35,7 @@ START_TEST(test_s21_memchr)
     n = 5;
     ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
 }
+END_TEST
 
 START_TEST(test_s21_memcmp)
 {
@@ -158,6 +160,7 @@ START_TEST(test_s21_strerror)
     ck_assert_str_eq(s21_strerror(EEXIST), strerror(EEXIST));
     ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
 }
+END_TEST
 
 START_TEST(test_s21_strcat)
 {
@@ -394,6 +397,7 @@ START_TEST(test_s21_int_to_str)
 
     //n = 
 }
+END_TEST
 
 
 Suite* s21_string_suite()
@@ -432,6 +436,10 @@ Suite* s21_string_suite()
 
 int main()
 {
+    char buff[500];
+    char *format = "hello, '%d'!";
+    s21_sprintf(buff, format, 115);
+
     int number_failed;
     Suite *s;
     SRunner *sr;
@@ -442,5 +450,6 @@ int main()
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
+
     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

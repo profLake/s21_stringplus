@@ -11,7 +11,7 @@ SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
-all: $(SOURCES) $(EXECUTABLE)
+all: clean check gcov_test
 
 
 %.o: %.c

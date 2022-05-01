@@ -41,7 +41,7 @@ int s21_sprintf(char *target, const char *format, ...) {
                     s21_int_to_str(target, tokn_int, plus_sign);
                     target += int_width;
                     tokn_width -= int_width;
-                    while (tokn_width) {
+                    while (tokn_width >= 0) {
                         *target = fill_sign;
                         target++;
                         tokn_width--;
@@ -49,7 +49,7 @@ int s21_sprintf(char *target, const char *format, ...) {
                 }
                 if (s21_tokn_have_flag(token, FLAGS[0]) == 0) {
                     tokn_width -= int_width;
-                    while (tokn_width) {
+                    while (tokn_width >= 0) {
                         *target = fill_sign;
                         target++;
                         tokn_width--;
