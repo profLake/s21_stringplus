@@ -22,7 +22,7 @@ s21_string.a: $(OBJECTS)
 	ar -rcs $@ $^
 
 
-gcov_test: check
+gcov_test:
 	gcov ./tests/*.gcda
 
 

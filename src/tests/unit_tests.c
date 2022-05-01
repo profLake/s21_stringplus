@@ -297,6 +297,14 @@ START_TEST(test_s21_tokn_skip_part)
     right = token + 1;
     out = s21_tokn_skip_part(token, i);
     ck_assert_ptr_eq(right, out);
+   
+    /*
+    token  = ".05d";
+    i = 2;
+    right = token + 1;
+    out = s21_tokn_skip_part(token, i);
+    ck_assert_ptr_eq(right, out);
+    */
 }
 END_TEST
 
@@ -363,16 +371,29 @@ START_TEST(test_s21_tokn_get_width)
     int out;
 
     token = "d";
-    right = 1;
+    right = 0;
     out = s21_tokn_get_width(token);
     ck_assert_int_eq(right, out);
 
-    token = ".05f";
-    right = 4;
+    token = "05d";
+    right = 5;
     out = s21_tokn_get_width(token);
     ck_assert_int_eq(right, out);
 }
 END_TEST
+
+START_TEST(test_s21_int_to_str)
+{
+    /*
+    char target[500];
+    int n;
+    int plus_sign;
+    char *right;
+    char *out;
+    */
+
+    //n = 
+}
 
 
 Suite* s21_string_suite()
@@ -402,7 +423,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_tokn_get_len);
     tcase_add_test(tc_core, test_s21_tokn_have_flag);
     tcase_add_test(tc_core, test_s21_tokn_get_width);
-
+    tcase_add_test(tc_core, test_s21_int_to_str);
 
     suite_add_tcase(s, tc_core);
 

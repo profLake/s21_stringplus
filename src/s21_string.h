@@ -38,7 +38,7 @@ int s21_sprintf(char *target, const char *format, ...);
 
 #define TOKN_SIGN '%'
 #define SPECIFS "cdieEfgGosuxXpn%"
-#define SPECIFS_LENS "hl"
+#define SPECIFS_LENS "hlL"
 #define DIGITS "0123456789"
 #define FLAGS "-+ #0"
 #define PRECIS_SIGN '.'
