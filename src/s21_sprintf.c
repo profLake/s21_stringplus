@@ -27,8 +27,36 @@ int s21_sprintf(char *target, const char *format, ...) {
                 target++;
             } else if (specif == SPECIFS[1] || specif == SPECIFS[2]) {
                 int tokn_int = va_arg(args, int);
-                s21_int_to_str(target, tokn_int);
-                target += s21_int_get_str_len(tokn_int);
+                int tokn_width = s21_tokn_get_width(token);
+                int plus_sign = 0;
+                if (s21_tokn_have_flag(token, FLAGS[1])) {
+                    plus_sign = 1;
+                }
+                int int_width = s21_int_get_str_len(tokn_int, plus_sign);
+                char fill_sign = ' ';
+                if (s21_tokn_have_flag(token, FLAGS[4])) {
+                    fill_sign = '0';
+                }
+                if (s21_tokn_have_flag(token, FLAGS[0])) {
+                    s21_int_to_str(target, tokn_int, plus_sign);
+                    target += int_width;
+                    tokn_width -= int_width;
+                    while (tokn_width) {
+                        *target = fill_sign;
+                        target++;
+                        tokn_width--;
+                    }
+                }
+                if (s21_tokn_have_flag(token, FLAGS[0]) == 0) {
+                    tokn_width -= int_width;
+                    while (tokn_width) {
+                        *target = fill_sign;
+                        target++;
+                        tokn_width--;
+                    }
+                    s21_int_to_str(target, tokn_int, plus_sign);
+                    target += s21_int_get_str_len(tokn_int, plus_sign);
+                }
             } else if (specif == SPECIFS[5]) {
             } else if (specif == SPECIFS[9]) {
             } else if (specif == SPECIFS[10]) {
@@ -57,11 +85,11 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
         while (s21_strchr(DIGITS, *token))
             token++;
     if (i--)
-        if (*token == PRECIS_SIGN)
+        if (*token == PRECIS_SIGN) {
             token++;
-    if (i--)
-        while (s21_strchr(DIGITS, *token))
-            token++;
+            while (s21_strchr(DIGITS, *token))
+                token++;
+        }
     if (i--)
         if (s21_strchr(SPECIFS_LENS, *token))
             token++;
@@ -71,11 +99,21 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
     return (char*)token;
 }
 
-char s21_tokn_get_flag(const char *token) {
+char s21_tokn_get_flag(const char *token, int i) {
+    token += i;
     if (s21_strchr(FLAGS, *token)) {
         return *token;
     }
     return '\0';
+}
+
+int s21_tokn_have_flag(const char *token, char flag) {
+    while (s21_strchr(FLAGS, *token)) {
+        if (*token == flag)
+            return 1;
+        token++;
+    }
+    return 0;
 }
 
 int s21_tokn_get_width(const char *token) {
@@ -129,11 +167,14 @@ int s21_tokn_get_len(const char *token) {
     return 0;
 }
 
-int s21_int_get_str_len(int n) {
+int s21_int_get_str_len(int n, int plus_sign) {
     int result = 0;
-    if (n < 0) {
-        n = -n;
+    if (n >= 0 && plus_sign) {
         result++;
+    }
+    if (n < 0) {
+        result++;
+        n = -n;
     }
          if (n <         10) result += 1;
     else if (n <        100) result += 2;
@@ -158,19 +199,22 @@ int s21_frmt_is_tokn(const char *format) {
     return result;
 }
 
-char* s21_int_to_str(char *target, int n) {
+char* s21_int_to_str(char *target, int n, int plus_sign) {
     static char *buff = NULL;
     int is_first = 0;
     if (n < 0) {
         *target++ = '-';
         n = -n;
     }
+    if (n >= 0 && plus_sign) {
+        *target++ = '+';
+    }
     if (buff == NULL) {
         buff = target;
         is_first = 1;
     }
     if (n / 10) {
-        s21_int_to_str(buff, n / 10);
+        s21_int_to_str(buff, n / 10, plus_sign);
         n %= 10;
     }
     *buff++ = '0' + n;

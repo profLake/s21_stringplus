@@ -208,23 +208,34 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 }
+END_TEST
 
 START_TEST(test_s21_int_get_str_len)
 {
     int n;
+    int plus_sign;
     int right;
     int out;
 
     n = 19;
+    plus_sign = 0;
     right = 2;
-    out = s21_int_get_str_len(n);
+    out = s21_int_get_str_len(n, plus_sign);
+    ck_assert_int_eq(right, out);
+
+    n = 19;
+    plus_sign = 1;
+    right = 3;
+    out = s21_int_get_str_len(n, plus_sign);
     ck_assert_int_eq(right, out);
 
     n = -99;
+    plus_sign = 1;
     right = 3;
-    out = s21_int_get_str_len(n);
+    out = s21_int_get_str_len(n, plus_sign);
     ck_assert_int_eq(right, out);
 }
+END_TEST
 
 START_TEST(test_s21_frmt_is_tokn)
 {
@@ -252,6 +263,7 @@ START_TEST(test_s21_frmt_is_tokn)
     out = s21_frmt_is_tokn(str);
     ck_assert_int_eq(right, out);
 }
+END_TEST
 
 START_TEST(test_s21_tokn_skip_part)
 {
@@ -260,26 +272,107 @@ START_TEST(test_s21_tokn_skip_part)
     char *right;
     char *out;
    
+    token  = "c";
+    i = 4;
+    right = token + 0;
+    out = s21_tokn_skip_part(token, i);
+    ck_assert_ptr_eq(right, out);
+   
     token  = ".5s";
     i = 4;
-    right = token + 3;
+    right = token + 2;
     out = s21_tokn_skip_part(token, i);
-    ck_assert_str_eq(right, out);
+    ck_assert_ptr_eq(right, out);
    
     /*
     token  = "0*.*f";
     i = 4;
     right = token + 1;
     out = s21_tokn_skip_part(token, i);
-    ck_assert_str_eq(right, out);
+    ck_assert_ptr_eq(right, out);
     */
    
     token  = "i";
     i = 2;
     right = token + 1;
     out = s21_tokn_skip_part(token, i);
-    ck_assert_str_eq(right, out);
+    ck_assert_ptr_eq(right, out);
 }
+END_TEST
+
+START_TEST(test_s21_tokn_get_len)
+{
+    char * token;
+    int right;
+    int out;
+
+    token = "d";
+    right = 1;
+    out = s21_tokn_get_len(token);
+    ck_assert_int_eq(right, out);
+
+    token = "c";
+    right = 1;
+    out = s21_tokn_get_len(token);
+    ck_assert_int_eq(right, out);
+
+    token = ".5f";
+    right = 3;
+    out = s21_tokn_get_len(token);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
+START_TEST(test_s21_tokn_have_flag)
+{
+    char *token;
+    char flag;
+    int right;
+    int out;
+
+    token = "c";
+    flag = FLAGS[0];
+    right = 0;
+    out = s21_tokn_have_flag(token, flag);
+    ck_assert_int_eq(right, out);
+
+    token = "c hello!";
+    flag = FLAGS[0];
+    right = 0;
+    out = s21_tokn_have_flag(token, flag);
+    ck_assert_int_eq(right, out);
+
+    token = "-0d";
+    flag = FLAGS[0];
+    right = 1;
+    out = s21_tokn_have_flag(token, flag);
+    ck_assert_int_eq(right, out);
+
+    token = "-0d";
+    flag = FLAGS[4];
+    right = 1;
+    out = s21_tokn_have_flag(token, flag);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
+START_TEST(test_s21_tokn_get_width)
+{
+    char *token;
+    int right;
+    int out;
+
+    token = "d";
+    right = 1;
+    out = s21_tokn_get_width(token);
+    ck_assert_int_eq(right, out);
+
+    token = ".05f";
+    right = 4;
+    out = s21_tokn_get_width(token);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
 
 
 Suite* s21_string_suite()
@@ -306,12 +399,15 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_int_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
     tcase_add_test(tc_core, test_s21_tokn_skip_part);
+    tcase_add_test(tc_core, test_s21_tokn_get_len);
+    tcase_add_test(tc_core, test_s21_tokn_have_flag);
+    tcase_add_test(tc_core, test_s21_tokn_get_width);
+
 
     suite_add_tcase(s, tc_core);
 
     return s;
 }
-
 
 int main()
 {
