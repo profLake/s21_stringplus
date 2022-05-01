@@ -27,9 +27,10 @@ gcov_test: check
 
 
 check: ./tests/unit_tests.c $(SOURCES)
+	make -f ./sce_Makefile_ clean
 	clear
 	$(CC) $(CFLAGS) \
-        -fprofile-arcs -ftest-coverage \
+		-fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/unit_tests.out \
 		-lcheck -lsubunit -lrt -lpthread -lm
