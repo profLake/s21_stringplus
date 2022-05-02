@@ -23,7 +23,10 @@ s21_string.a: $(OBJECTS)
 
 
 gcov_test:
-	gcov ./tests/*.gcda
+	##gcov ./tests/*.gcda
+	####gcov --- выводит профилировачную инфу в консоль
+	geninfo ./tests/*.gcda
+	genhtml ./tests/*.info --output-directory ./tests/
 
 
 check: ./tests/unit_tests.c $(SOURCES)
@@ -61,17 +64,28 @@ check_old:
 
 
 clean:
-	rm --force \
+	rm -r --force \
 		./tests/*.gcda \
 		./tests/*.gcov \
 		./tests/*.gcno \
 		./tests/*.out \
 		./tests/*.o \
 		./tests/*.a \
+    	./tests/*.html \
+		./tests/*.info \
 		./*.gcda \
 		./*.gcov \
 		./*.gcno \
 		./*.out \
 		./*.o \
 		./*.a \
+	    ./*.html \
+		./*.info \
+        ./*.png \
+        ./*.css \
+	    ./src/ \
+        ./.DS_Store \
+
+	
+
 

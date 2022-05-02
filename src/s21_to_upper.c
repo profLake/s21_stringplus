@@ -20,6 +20,7 @@ void *s21_to_upper(const char *str) {
     free(srr);
 }
 
+/*
 int main() {
     char str[20];
     scanf("%s", str);
@@ -28,3 +29,4 @@ int main() {
     printf("%s", str);
     return 0;
 }
+*/
