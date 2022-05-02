@@ -1,0 +1,10 @@
+check:
+	clear
+	gcc -Wall -Wextra -Werror \
+		./tests/unit_testsganymedl.c \
+              	./s21_to_upper.c \
+		-o ./tests/unit_tests.out \
+		-lcheck
+		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+		####    используетэти библиотеки
+	./tests/unit_tests.out
