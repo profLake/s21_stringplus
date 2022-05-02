@@ -27,6 +27,7 @@ char *s21_to_upper(const char *str) {
     free(strcopy);
 }
 
+/*
 int main(){
     char str[20];
     scanf("%s", str);
@@ -35,3 +36,4 @@ int main(){
     free(src);
     return 0;
 }
+*/
