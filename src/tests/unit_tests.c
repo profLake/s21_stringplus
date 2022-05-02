@@ -277,8 +277,8 @@ START_TEST(test_s21_udecim_get_str_len)
     out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 
-    n = 4294967290;
-    right = 10;
+    n = 294967290;
+    right = 9;
     out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 }
@@ -492,7 +492,7 @@ END_TEST
 
 START_TEST(test_s21_trgt_print_tokn_decim)
 {
-    char target[500];
+    char target[500] = { 0 };
 
     char *token;
     long tokn_decim;
@@ -504,6 +504,30 @@ START_TEST(test_s21_trgt_print_tokn_decim)
     tokn_decim = 115;
     target_right = "115";
     right = 3;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = "d";
+    tokn_decim = -115;
+    target_right = "-115";
+    right = 4;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = "05d";
+    tokn_decim = 91;
+    target_right = "00091";
+    right = 5;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = "-05d";
+    tokn_decim = 3;
+    target_right = "3    ";
+    right = 5;
     out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
