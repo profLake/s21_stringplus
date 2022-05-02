@@ -261,7 +261,7 @@ START_TEST(test_s21_sprintf)
 }
 END_TEST
 
-START_TEST(test_s21_uint_get_str_len)
+START_TEST(test_s21_udecim_get_str_len)
 {
     int n;
     int right;
@@ -269,17 +269,17 @@ START_TEST(test_s21_uint_get_str_len)
 
     n = 19;
     right = 2;
-    out = s21_uint_get_str_len(n);
+    out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 
     n = 199;
     right = 3;
-    out = s21_uint_get_str_len(n);
+    out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 
     n = 4294967290;
     right = 10;
-    out = s21_uint_get_str_len(n);
+    out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 }
 END_TEST
@@ -490,6 +490,26 @@ START_TEST(test_s21_int_get_pow)
 }
 END_TEST
 
+START_TEST(test_s21_trgt_print_tokn_decim)
+{
+    char target[500];
+
+    char *token;
+    long tokn_decim;
+    char *target_right;
+    int right;
+    int out;
+
+    token = "d";
+    tokn_decim = 115;
+    target_right = "115";
+    right = 3;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
 
 Suite* s21_string_suite()
 {
@@ -512,7 +532,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strcat);
 
     tcase_add_test(tc_core, test_s21_sprintf);
-    tcase_add_test(tc_core, test_s21_uint_get_str_len);
+    tcase_add_test(tc_core, test_s21_udecim_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
     tcase_add_test(tc_core, test_s21_tokn_skip_part);
     tcase_add_test(tc_core, test_s21_tokn_get_len);
@@ -520,6 +540,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_tokn_get_width);
     tcase_add_test(tc_core, test_s21_trgt_print_uint);
     tcase_add_test(tc_core, test_s21_int_get_pow);
+    tcase_add_test(tc_core, test_s21_trgt_print_tokn_decim);
 
     suite_add_tcase(s, tc_core);
 
@@ -528,15 +549,6 @@ Suite* s21_string_suite()
 
 int main()
 {
-    /*
-    char buff[500];
-    char *format = "hello, '%u'!";
-//  char *buff_right = "hello, '4294967290'!";
-    s21_sprintf(buff, format, -6);
-    puts("BUFF:");
-    puts(buff);
-    */
-
     int number_failed;
     Suite *s;
     SRunner *sr;
