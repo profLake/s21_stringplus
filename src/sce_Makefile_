@@ -27,6 +27,7 @@ gcov_test:
 	####gcov --- выводит профилировачную инфу в консоль
 	geninfo ./tests/*.gcda
 	genhtml ./tests/*.info --output-directory ./tests/
+	brave-browser ./tests/src/index.html
 
 
 check: ./tests/unit_tests.c $(SOURCES)
@@ -71,20 +72,22 @@ clean:
 		./tests/*.out \
 		./tests/*.o \
 		./tests/*.a \
-    	./tests/*.html \
+		./tests/*.html \
 		./tests/*.info \
+		./tests/src/ \
+		./tests/*.css \
 		./*.gcda \
 		./*.gcov \
 		./*.gcno \
 		./*.out \
 		./*.o \
 		./*.a \
-	    ./*.html \
+		./*.html \
 		./*.info \
-        ./*.png \
-        ./*.css \
-	    ./src/ \
-        ./.DS_Store \
+		./*.png \
+		./*.css \
+		./src/ \
+		./.DS_Store \
 
 	
 
