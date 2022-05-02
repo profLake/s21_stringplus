@@ -2,7 +2,7 @@
 #include <stdarg.h>
 
 int s21_sprintf(char *target, const char *format, ...) {
-    char *target_saved = target;
+    const char *target_saved = target;
     va_list args;
     va_start(args, format);
 
@@ -23,44 +23,29 @@ int s21_sprintf(char *target, const char *format, ...) {
 
             if (specif == SPECIFS[0]) {
                 char tokn_c = va_arg(args, int);
-                *target = tokn_c;
-                target++;
-            } else if (specif == SPECIFS[1] || specif == SPECIFS[2]) {
+                int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
+                target += printed;
+            } else if (   specif == SPECIFS[1]
+                       || specif == SPECIFS[2]) {
                 int tokn_int = va_arg(args, int);
-                int tokn_width = s21_tokn_get_width(token);
-                int plus_sign = 0;
-                if (s21_tokn_have_flag(token, FLAGS[1])) {
-                    plus_sign = 1;
-                }
-                int int_width = s21_int_get_str_len(tokn_int, plus_sign);
-                char fill_sign = ' ';
-                if (s21_tokn_have_flag(token, FLAGS[4])) {
-                    fill_sign = '0';
-                }
-                if (s21_tokn_have_flag(token, FLAGS[0])) {
-                    s21_int_to_str(target, tokn_int, plus_sign);
-                    target += int_width;
-                    tokn_width -= int_width;
-                    while (tokn_width >= 0) {
-                        *target = fill_sign;
-                        target++;
-                        tokn_width--;
-                    }
-                }
-                if (s21_tokn_have_flag(token, FLAGS[0]) == 0) {
-                    tokn_width -= int_width;
-                    while (tokn_width >= 0) {
-                        *target = fill_sign;
-                        target++;
-                        tokn_width--;
-                    }
-                    s21_int_to_str(target, tokn_int, plus_sign);
-                    target += s21_int_get_str_len(tokn_int, plus_sign);
-                }
+                int printed = s21_trgt_print_tokn_int(target, token, tokn_int);
+                target += printed;
             } else if (specif == SPECIFS[5]) {
             } else if (specif == SPECIFS[9]) {
+                /*
+                char *tokn_str = va_arg(args, char*);
+                int printed = s21_trgt_print_tokn_str(target, token, tokn_str);
+                target += printed;
+                */
             } else if (specif == SPECIFS[10]) {
+                uint tokn_uint = va_arg(args, uint);
+                int printed = s21_trgt_print_tokn_uint(
+                        target, token, tokn_uint);
+                target += printed;
             } else if (specif == SPECIFS[15]) {
+                char tokn_c = TOKN_SIGN;
+                int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
+                target += printed;
             }
 
             format += s21_tokn_get_len(token);
@@ -167,24 +152,13 @@ int s21_tokn_get_len(const char *token) {
     return 0;
 }
 
-int s21_int_get_str_len(int n, int plus_sign) {
+int s21_uint_get_str_len(unsigned int n) {
     int result = 0;
-    if (n >= 0 && plus_sign) {
+    while (n / 10) {
         result++;
+        n /= 10;
     }
-    if (n < 0) {
-        result++;
-        n = -n;
-    }
-         if (n <         10) result += 1;
-    else if (n <        100) result += 2;
-    else if (n <       1000) result += 3;
-    else if (n <      10000) result += 4;
-    else if (n <     100000) result += 5;
-    else if (n <    1000000) result += 6;
-    else if (n <   10000000) result += 7;
-    else if (n <  100000000) result += 8;
-    else if (n < 1000000000) result += 9;
+    result++;
     return result;
 }
 
@@ -199,22 +173,15 @@ int s21_frmt_is_tokn(const char *format) {
     return result;
 }
 
-char* s21_int_to_str(char *target, int n, int plus_sign) {
+char* s21_trgt_print_uint(char *target, unsigned int n) {
     static char *buff = NULL;
     int is_first = 0;
-    if (n < 0) {
-        *target++ = '-';
-        n = -n;
-    }
-    if (n >= 0 && plus_sign) {
-        *target++ = '+';
-    }
     if (buff == NULL) {
         buff = target;
         is_first = 1;
     }
     if (n / 10) {
-        s21_int_to_str(buff, n / 10, plus_sign);
+        s21_trgt_print_uint(buff, n / 10);
         n %= 10;
     }
     *buff++ = '0' + n;
@@ -225,4 +192,114 @@ char* s21_int_to_str(char *target, int n, int plus_sign) {
     }
     return target;
 }
+
+int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c) {
+    const char *target_saved = target;
+
+    /* Just to avoid compiler error */
+    token++;
+
+    *target = tokn_c;
+    target++;
+    return target - target_saved;
+}
+
+int s21_trgt_print_tokn_int(char *target, const char *token, int tokn_int) {
+    const char *target_saved = target;
+
+    int tokn_width = s21_tokn_get_width(token);
+    char int_sign = '\0';
+    if (tokn_int < 0) {
+        int_sign = '-';
+    }
+    if (s21_tokn_have_flag(token, FLAGS[1]) && tokn_int >= 0) {
+        int_sign = '+';
+    }
+    uint tokn_uint = tokn_int >= 0 ? tokn_int : -tokn_int;
+    int uint_width = s21_uint_get_str_len(tokn_uint);
+    char fill_sign = ' ';
+    if (    s21_tokn_have_flag(token, FLAGS[4]) == 1
+        &&  s21_tokn_have_flag(token, FLAGS[0]) == 0) {
+        fill_sign = '0';
+    }
+
+    if (int_sign) {
+        *target = int_sign;
+        target++;
+        tokn_width--;
+    }
+    if (s21_tokn_have_flag(token, FLAGS[0])) {
+        s21_trgt_print_uint(target, tokn_uint);
+        target += uint_width;
+        tokn_width -= uint_width;
+        while (tokn_width > 0) {
+            *target = fill_sign;
+            target++;
+            tokn_width--;
+        }
+    }
+    if (s21_tokn_have_flag(token, FLAGS[0]) == 0) {
+        tokn_width -= uint_width;
+        while (tokn_width > 0) {
+            *target = fill_sign;
+            target++;
+            tokn_width--;
+        }
+        s21_trgt_print_uint(target, tokn_uint);
+        target += uint_width;
+    }
+
+    return target - target_saved;
+    /* CLEAN THIS FUNC */
+}
+
+int s21_trgt_print_tokn_uint(char *target, const char *token, uint tokn_uint) {
+    const char *target_saved = target;
+
+    int tokn_width = s21_tokn_get_width(token);
+    char int_sign = '\0';
+    if (s21_tokn_have_flag(token, FLAGS[1])) {
+        int_sign = '+';
+    }
+    int uint_width = s21_uint_get_str_len(tokn_uint);
+    char fill_sign = ' ';
+    if (    s21_tokn_have_flag(token, FLAGS[4]) == 1
+        &&  s21_tokn_have_flag(token, FLAGS[0]) == 0) {
+        fill_sign = '0';
+    }
+
+    if (int_sign) {
+        *target = int_sign;
+        target++;
+        tokn_width--;
+    }
+    if (s21_tokn_have_flag(token, FLAGS[0])) {
+        s21_trgt_print_uint(target, tokn_uint);
+        target += uint_width;
+        tokn_width -= uint_width;
+        while (tokn_width > 0) {
+            *target = fill_sign;
+            target++;
+            tokn_width--;
+        }
+    }
+    if (s21_tokn_have_flag(token, FLAGS[0]) == 0) {
+        tokn_width -= uint_width;
+        while (tokn_width > 0) {
+            *target = fill_sign;
+            target++;
+            tokn_width--;
+        }
+        s21_trgt_print_uint(target, tokn_uint);
+        target += uint_width;
+    }
+
+    return target - target_saved;
+}
+
+/*
+int s21_trgt_print_tokn_str(target, token, tokn_str) {
+
+}
+*/
 

@@ -182,7 +182,6 @@ START_TEST(test_s21_sprintf)
     char buff[500];
     int out;
 
-
     format = "hello, %c !";
     buff_right = "hello, r !";
     right = 10;
@@ -210,32 +209,77 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, -119);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%05d'!";
+    buff_right = "hello, '00003'!";
+    right = 15;
+    out = s21_sprintf(buff, format, 3);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%-05d'!";
+    buff_right = "hello, '3    '!";
+    right = 15;
+    out = s21_sprintf(buff, format, 3);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%-+05d'!";
+    buff_right = "hello, '+3   '!";
+    right = 15;
+    out = s21_sprintf(buff, format, 3);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%u'!";
+    buff_right = "hello, '3'!";
+    right = 11;
+    out = s21_sprintf(buff, format, 3);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%u'!";
+    buff_right = "hello, '4294967290'!";
+    right = 20;
+    out = s21_sprintf(buff, format, -6);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%05u'!";
+    buff_right = "hello, '00005'!";
+    right = 15;
+    out = s21_sprintf(buff, format, 5);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%%'!";
+    buff_right = "hello, '%'!";
+    right = 11;
+    out = s21_sprintf(buff, format);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
-START_TEST(test_s21_int_get_str_len)
+START_TEST(test_s21_uint_get_str_len)
 {
     int n;
-    int plus_sign;
     int right;
     int out;
 
     n = 19;
-    plus_sign = 0;
     right = 2;
-    out = s21_int_get_str_len(n, plus_sign);
+    out = s21_uint_get_str_len(n);
     ck_assert_int_eq(right, out);
 
     n = 19;
-    plus_sign = 1;
-    right = 3;
-    out = s21_int_get_str_len(n, plus_sign);
+    right = 2;
+    out = s21_uint_get_str_len(n);
     ck_assert_int_eq(right, out);
 
-    n = -99;
-    plus_sign = 1;
-    right = 3;
-    out = s21_int_get_str_len(n, plus_sign);
+    n = 4294967290;
+    right = 10;
+    out = s21_uint_get_str_len(n);
     ck_assert_int_eq(right, out);
 }
 END_TEST
@@ -385,17 +429,22 @@ START_TEST(test_s21_tokn_get_width)
 }
 END_TEST
 
-START_TEST(test_s21_int_to_str)
+START_TEST(test_s21_trgt_print_uint)
 {
-    /*
     char target[500];
-    int n;
-    int plus_sign;
+    unsigned int n;
     char *right;
     char *out;
-    */
 
-    //n = 
+    n = 8;
+    right = "8";
+    out = s21_trgt_print_uint(target, n);
+    ck_assert_str_eq(right, out);
+
+    n = 81;
+    right = "81";
+    out = s21_trgt_print_uint(target, n);
+    ck_assert_str_eq(right, out);
 }
 END_TEST
 
@@ -421,13 +470,13 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strcat);
 
     tcase_add_test(tc_core, test_s21_sprintf);
-    tcase_add_test(tc_core, test_s21_int_get_str_len);
+    tcase_add_test(tc_core, test_s21_uint_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
     tcase_add_test(tc_core, test_s21_tokn_skip_part);
     tcase_add_test(tc_core, test_s21_tokn_get_len);
     tcase_add_test(tc_core, test_s21_tokn_have_flag);
     tcase_add_test(tc_core, test_s21_tokn_get_width);
-    tcase_add_test(tc_core, test_s21_int_to_str);
+    tcase_add_test(tc_core, test_s21_trgt_print_uint);
 
     suite_add_tcase(s, tc_core);
 
@@ -436,9 +485,14 @@ Suite* s21_string_suite()
 
 int main()
 {
+    /*
     char buff[500];
-    char *format = "hello, '%d'!";
-    s21_sprintf(buff, format, 115);
+    char *format = "hello, '%u'!";
+//  char *buff_right = "hello, '4294967290'!";
+    s21_sprintf(buff, format, -6);
+    puts("BUFF:");
+    puts(buff);
+    */
 
     int number_failed;
     Suite *s;

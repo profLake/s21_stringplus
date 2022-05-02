@@ -51,8 +51,11 @@ int s21_tokn_get_width(const char *token);
 int s21_tokn_get_precision(const char *token);
 int s21_tokn_get_len(const char *token);
 char s21_tokn_get_specif(const char *token);
-int s21_int_get_str_len(int n, int plus_sign);
-char* s21_int_to_str(char *target, int n, int plus_sign);
+char* s21_trgt_print_uint(char *target, unsigned int n);
+int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
+int s21_trgt_print_tokn_int(char *target, const char *token, int tokn_int);
+int s21_trgt_print_tokn_uint(char *target, const char *token, uint tokn_uint);
+int s21_uint_get_str_len(unsigned int n);
 
 
 /* Для s21_strerror() */
