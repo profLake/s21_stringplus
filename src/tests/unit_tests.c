@@ -272,8 +272,8 @@ START_TEST(test_s21_uint_get_str_len)
     out = s21_uint_get_str_len(n);
     ck_assert_int_eq(right, out);
 
-    n = 19;
-    right = 2;
+    n = 199;
+    right = 3;
     out = s21_uint_get_str_len(n);
     ck_assert_int_eq(right, out);
 
@@ -431,20 +431,62 @@ END_TEST
 
 START_TEST(test_s21_trgt_print_uint)
 {
-    char target[500];
+    char target[500] = { 0 };
+    for (int i = 0; i < 500; i++) {
+        target[i] = 0;
+    }
+
     unsigned int n;
-    char *right;
-    char *out;
+    char *target_right;
+    int right;
+    int out;
 
     n = 8;
-    right = "8";
+    target_right = "8";
+    right = 1;
     out = s21_trgt_print_uint(target, n);
-    ck_assert_str_eq(right, out);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
 
     n = 81;
-    right = "81";
+    target_right = "81";
+    right = 2;
     out = s21_trgt_print_uint(target, n);
-    ck_assert_str_eq(right, out);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
+START_TEST(test_s21_int_get_pow)
+{
+    int n;
+    int pow;
+    int right;
+    int out;
+
+    n = 10;
+    pow = 0;
+    right = 1;
+    out = s21_int_get_pow(n, pow);
+    ck_assert_int_eq(right, out);
+
+    n = 10;
+    pow = 1;
+    right = 10;
+    out = s21_int_get_pow(n, pow);
+    ck_assert_int_eq(right, out);
+
+    n = 10;
+    pow = 2;
+    right = 100;
+    out = s21_int_get_pow(n, pow);
+    ck_assert_int_eq(right, out);
+
+    n = 10;
+    pow = 5;
+    right = 100000;
+    out = s21_int_get_pow(n, pow);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -477,6 +519,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_tokn_have_flag);
     tcase_add_test(tc_core, test_s21_tokn_get_width);
     tcase_add_test(tc_core, test_s21_trgt_print_uint);
+    tcase_add_test(tc_core, test_s21_int_get_pow);
 
     suite_add_tcase(s, tc_core);
 

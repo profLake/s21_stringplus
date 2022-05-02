@@ -173,24 +173,54 @@ int s21_frmt_is_tokn(const char *format) {
     return result;
 }
 
-char* s21_trgt_print_uint(char *target, unsigned int n) {
-    static char *buff = NULL;
-    int is_first = 0;
-    if (buff == NULL) {
-        buff = target;
-        is_first = 1;
-    }
-    if (n / 10) {
-        s21_trgt_print_uint(buff, n / 10);
-        n %= 10;
-    }
-    *buff++ = '0' + n;
+int s21_trgt_print_uint(char *target, unsigned int n) {
+    const char *target_saved = target;
 
-    if (is_first) {
-        *buff = '\0';
-        buff = NULL;
+    int n_len = s21_uint_get_str_len(n);
+    while (n_len > 0) {
+        int divisor = s21_int_get_pow(10, n_len - 1);
+        int curr_d = n / divisor;
+        char curr_c = '0' + curr_d;
+        *target = curr_c;
+        target++;
+        n %= divisor;
+        n_len--;
     }
-    return target;
+
+    return target - target_saved;
+}
+
+int s21_trgt_print_ushort(char *target, unsigned short n) {
+    const char *target_saved = target;
+
+    int n_len = s21_uint_get_str_len(n);
+    while (n_len > 0) {
+        int divisor = s21_int_get_pow(10, n_len - 1);
+        int curr_d = n / divisor;
+        char curr_c = '0' + curr_d;
+        *target = curr_c;
+        target++;
+        n %= divisor;
+        n_len--;
+    }
+
+    return target - target_saved;
+}
+
+int s21_int_get_pow(int n, int pow) {
+    int result = 0;
+    if (pow == 0) {
+        result = 1;
+    }
+    if (pow) {
+        result = n;
+        pow--;
+    }
+    while (pow) {
+        result *= n;
+        pow--;
+    }
+    return result;
 }
 
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c) {
@@ -250,7 +280,6 @@ int s21_trgt_print_tokn_int(char *target, const char *token, int tokn_int) {
     }
 
     return target - target_saved;
-    /* CLEAN THIS FUNC */
 }
 
 int s21_trgt_print_tokn_uint(char *target, const char *token, uint tokn_uint) {
@@ -297,9 +326,13 @@ int s21_trgt_print_tokn_uint(char *target, const char *token, uint tokn_uint) {
     return target - target_saved;
 }
 
-/*
-int s21_trgt_print_tokn_str(target, token, tokn_str) {
+int s21_trgt_print_tokn_str(char *target, const char *token,
+        const char *tokn_str) {
+    const char *target_saved = target;
 
+    token++;
+    tokn_str++;
+
+    return target_saved - target;
 }
-*/
 
