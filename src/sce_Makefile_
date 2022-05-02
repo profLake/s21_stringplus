@@ -65,28 +65,19 @@ check_old:
 
 
 clean:
-	rm -r --force \
-		./tests/*.gcda \
-		./tests/*.gcov \
-		./tests/*.gcno \
-		./tests/*.out \
-		./tests/*.o \
-		./tests/*.a \
-		./tests/*.html \
-		./tests/*.info \
-		./tests/src/ \
-		./tests/*.css \
-		./*.gcda \
-		./*.gcov \
-		./*.gcno \
-		./*.out \
-		./*.o \
-		./*.a \
-		./*.html \
-		./*.info \
-		./*.png \
-		./*.css \
-		./src/ \
+	find ./ \( -iname "*.gcda" \
+		-or -iname "*.gcov" \
+		-or -iname "*.gcno" \
+		-or -iname "*.out" \
+		-or -iname "*.o" \
+		-or -iname "*.a" \
+		-or -iname "*.html" \
+		-or -iname "*.info" \
+		-or -iname "*.css" \
+		-or -iname "*.png" \
+        \) -delete
+
+	rm -rf ./tests/src/ \
 		./.DS_Store \
 
 	
