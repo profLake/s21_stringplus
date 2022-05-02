@@ -97,7 +97,7 @@ START_TEST(test_s21_strncat)
    char src[] = "Fi3", src1[] = "Fi3";
     ck_assert_str_eq(s21_strncat(str, "\0r\n", 7), strncat(str1, "\0r\n", 7));
     ck_assert_str_eq(s21_strncat(str, "0", 1), strncat(str1, "0", 1));
-    ck_assert_str_eq(s21_strncat(str, "TU, s-ly", 22), strncat(str1, "TU, s-ly", 22));
+    ck_assert_str_eq(s21_strncat(str, "TU, s-ly", 12), strncat(str1, "TU, s-ly", 12));
     ck_assert_str_eq(s21_strncat(str, src, 3), strncat(str1, src1, 3));
     ck_assert_str_eq(s21_strncat(str, "\000/", 2), strncat(str1, "\000/", 2));
     ck_assert_str_eq(s21_strncat(str, "GAGA, rama", 10), strncat(str1, "GAGA, rama", 10));
@@ -162,6 +162,16 @@ START_TEST(test_s21_strncmp)
 }
 END_TEST
 
+START_TEST(test_s21_trim)
+{
+    const char *nine = "1 2", *str = "1 aaaa  1";
+    char * new = s21_trim(str, nine);
+        puts(new);
+    ck_assert_str_eq(new, "aa2aa");
+    
+}
+END_TEST
+
 int main(void)
 {
     int number_failed;
@@ -182,6 +192,8 @@ int main(void)
     tcase_add_test(tc_core, test_s21_strncmp);
     tcase_add_test(tc_core, test_s21_strcpy);
     tcase_add_test(tc_core, test_s21_strncpy);
+    tcase_add_test(tc_core, test_s21_trim);
+    
     
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);

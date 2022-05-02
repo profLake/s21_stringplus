@@ -19,6 +19,7 @@ check:
 		./s21_memmove.c \
 		./s21_strncat.c \
 		./s21_strtok.c \
+		./s21_trim.c \
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
