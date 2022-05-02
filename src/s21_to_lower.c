@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+//#include "../s21_string.h"
 
 char *s21_to_upper(const char *str) {
     int i;
