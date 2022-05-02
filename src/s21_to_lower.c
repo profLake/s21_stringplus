@@ -11,20 +11,20 @@ char *s21_to_upper(const char *str) {
         i++;
     }
 
-    char *strcopy = malloc(i * sizeof(char));
+    char *scopy = malloc(i * sizeof(char));
     
     int q;
     for (q=0; str[q] != '\0'; q++) {
-        strcopy[q] = str[q];
+        scopy[q] = str[q];
     }
-    while (strcopy[j]) {
-        if (strcopy[j] >= 65 && str[j] <= 90) {
-            strcopy[j] = strcopy[j] + 32;
+    while (scopy[j]) {
+        if (scopy[j] >= 65 && str[j] <= 90) {
+            scopy[j] = scopy[j] + 32;
         }
         j++;
     }
-    return strcopy;
-    free(strcopy);
+    return scopy;
+    free(scopy);
 }
 
 /*
