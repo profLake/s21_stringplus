@@ -150,9 +150,9 @@ int s21_tokn_get_len(const char *token) {
 
 int s21_udecim_get_str_len(unsigned long n) {
     int result = 0;
-    while (n / 10) {
+    while (n / (unsigned long)10) {
         result++;
-        n /= 10;
+        n /= (unsigned long)10;
     }
     result++;
     return result;
@@ -257,7 +257,7 @@ int s21_trgt_print_tokn_decim(char *target, const char *token,
     if (s21_tokn_have_flag(token, FLAGS[1])) {
         sign = '+';
     }
-    if (tokn_decim < 0) {
+    if (tokn_decim < 0 && s21_tokn_get_specif(token) != SPECIFS[10]) {
         sign = '-';
     }
 
@@ -270,25 +270,32 @@ int s21_trgt_print_tokn_decim(char *target, const char *token,
 
     int width = s21_tokn_get_width(token);
     int tokn_udecim_len = s21_udecim_get_str_len(tokn_udecim);
-    int fill_len = width - tokn_udecim_len;
-    if (sign) {
-        fill_len--;
+    int fill_len = 0;
+    if (width) {
+        fill_len = width - tokn_udecim_len;
+        if (sign) {
+            fill_len--;
+        }
     }
 
     char fill_symb = ' ';
-    if (s21_tokn_have_flag(token, FLAGS[4])) {
+    if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
         fill_symb = '0';
     }
 
-    if (is_prequel && fill_symb == '0' && sign) {
-        *target = sign;
-        target++;
-    }
-    if (is_prequel) {
-        while (fill_len) {
+    if (is_prequel == 0) {
+        if (fill_symb == '0' && sign) {
+            *target = sign;
+            target++;
+        }
+        while (fill_len--) {
             *target = fill_symb;
             target++;
         }
+    }
+    if (fill_symb == ' ' && sign) {
+        *target = sign;
+        target++;
     }
     if (s21_tokn_get_len(token) == SPECIFS_LENS[0]) {
         int printed = s21_trgt_print_ushort(target, tokn_udecim);
@@ -301,10 +308,11 @@ int s21_trgt_print_tokn_decim(char *target, const char *token,
         int printed = s21_trgt_print_uint(target, tokn_udecim);
         target+= printed;
     }
-    if (is_prequel == 0) {
+    if (is_prequel) {
         while (fill_len) {
             *target = fill_symb;
             target++;
+            fill_len--;
         }
     }
 

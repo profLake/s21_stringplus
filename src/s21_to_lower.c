@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "s21_string.h"
 
-char *s21_to_upper(const char *str) {
+void *s21_to_lower(const char *str) {
     int i;
     i = 0;
     int j;
@@ -31,7 +32,7 @@ char *s21_to_upper(const char *str) {
 int main(){
     char str[20];
     scanf("%s", str);
-    char *src = s21_to_upper(str);
+    char *src = s21_to_lower(str);
     printf("%s", src);
     free(src);
     return 0;

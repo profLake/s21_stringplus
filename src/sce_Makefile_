@@ -27,6 +27,7 @@ gcov_test:
 	####gcov --- выводит профилировачную инфу в консоль
 	geninfo ./tests/*.gcda
 	genhtml ./tests/*.info --output-directory ./tests/
+	brave-browser ./tests/src/index.html
 
 
 check: ./tests/unit_tests.c $(SOURCES)
@@ -64,27 +65,20 @@ check_old:
 
 
 clean:
-	rm -r --force \
-		./tests/*.gcda \
-		./tests/*.gcov \
-		./tests/*.gcno \
-		./tests/*.out \
-		./tests/*.o \
-		./tests/*.a \
-    	./tests/*.html \
-		./tests/*.info \
-		./*.gcda \
-		./*.gcov \
-		./*.gcno \
-		./*.out \
-		./*.o \
-		./*.a \
-	    ./*.html \
-		./*.info \
-        ./*.png \
-        ./*.css \
-	    ./src/ \
-        ./.DS_Store \
+	find ./ \( -iname "*.gcda" \
+		-or -iname "*.gcov" \
+		-or -iname "*.gcno" \
+		-or -iname "*.out" \
+		-or -iname "*.o" \
+		-or -iname "*.a" \
+		-or -iname "*.html" \
+		-or -iname "*.info" \
+		-or -iname "*.css" \
+		-or -iname "*.png" \
+        \) -delete
+
+	rm -rf ./tests/src/ \
+		./.DS_Store \
 
 	
 
