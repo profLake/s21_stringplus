@@ -32,10 +32,8 @@ char *s21_strstr(const char *haystack, const char *needle);
 char *s21_strtok(char *str, const char *delim);
 void * s21_trim(const char *src, const char *trim_chars);
 void *s21_to_upper(const char *str);
-<<<<<<< HEAD
-=======
 void *s21_to_lower(const char *str);
->>>>>>> ee7dd79ed090af2eef50b493854a20b00d59a4de
+
 
 /* Для s21_sprintf() */
 
