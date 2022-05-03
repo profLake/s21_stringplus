@@ -54,10 +54,6 @@ int s21_sprintf(char *target, const char *format, ...) {
     return target - target_saved;
 }
 
-/*
-void s21_tokn_insert_specif(char *target, char *token, void *thing) {
-}
-*/
 char *s21_tokn_skip_part(const char *token, unsigned int i) {
     if (i--)
         while (s21_strchr(FLAGS, *token))
