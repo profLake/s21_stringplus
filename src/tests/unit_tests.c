@@ -358,86 +358,97 @@ END_TEST
 
 START_TEST(test_s21_sprintf)
 {
-    char *format;
-    char *buff_right;
-    int right;
     char buff[500];
+    char buff_right[500];
+
+    char *format;
+    int right;
     int out;
 
     format = "hello, %c !";
-    buff_right = "hello, r !";
-    right = 10;
+//  buff_right = "hello, r !";
+    right = sprintf(buff_right, format, 'r');
     out = s21_sprintf(buff, format, 'r');
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%c'!";
-    buff_right = "hello, 'r'!";
-    right = 11;
-    out = s21_sprintf(buff, format, 'r');
+//  buff_right = "hello, 'r'!";
+    right = sprintf(buff_right, format, 'r', 149);
+    out = s21_sprintf(buff, format, 'r', 149);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%d'!";
-    buff_right = "hello, '115'!";
-    right = 13;
+//  buff_right = "hello, '115'!";
+    right = sprintf(buff_right, format, 115);
     out = s21_sprintf(buff, format, 115);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%d'!";
-    buff_right = "hello, '-119'!";
-    right = 14;
+//  buff_right = "hello, '-119'!";
+    right = sprintf(buff_right, format, -119);
     out = s21_sprintf(buff, format, -119);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%05d'!";
-    buff_right = "hello, '00003'!";
-    right = 15;
+//  buff_right = "hello, '00003'!";
+    right = sprintf(buff_right, format, 3);
     out = s21_sprintf(buff, format, 3);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%-05d'!";
-    buff_right = "hello, '3    '!";
-    right = 15;
+//  buff_right = "hello, '3    '!";
+    right = sprintf(buff_right, format, 3);
     out = s21_sprintf(buff, format, 3);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%-+05d'!";
-    buff_right = "hello, '+3   '!";
-    right = 15;
+//  buff_right = "hello, '+3   '!";
+    right = sprintf(buff_right, format, 3);
     out = s21_sprintf(buff, format, 3);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%u'!";
-    buff_right = "hello, '3'!";
-    right = 11;
+//  buff_right = "hello, '3'!";
+    right = sprintf(buff_right, format, 3);
     out = s21_sprintf(buff, format, 3);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%u'!";
-    buff_right = "hello, '4294967290'!";
-    right = 20;
+//  buff_right = "hello, '4294967290'!";
+    right = sprintf(buff_right, format, -6);
     out = s21_sprintf(buff, format, -6);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%05u'!";
-    buff_right = "hello, '00005'!";
-    right = 15;
+//  buff_right = "hello, '00005'!";
+    right = sprintf(buff_right, format, 5);
     out = s21_sprintf(buff, format, 5);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
     format = "hello, '%%'!";
-    buff_right = "hello, '%'!";
-    right = 11;
+//  buff_right = "hello, '%'!";
+    right = sprintf(buff_right, format, 9);
+    /*  9 --- без этого sprintf может стать целью эксплойта.
+     *      ****тебе следует защититься от этого
+     */
     out = s21_sprintf(buff, format);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%s'!";
+//  buff_right = "hello, 'A Telegram'!";
+    right = sprintf(buff_right, format, "A telegram");
+    out = s21_sprintf(buff, format, "A Telgeram");
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 }
@@ -734,6 +745,28 @@ START_TEST(test_s21_to_upper)
 }
 END_TEST
 
+START_TEST(test_s21_trgt_print_tokn_str)
+{
+    char target[500];
+    char *target_right;
+
+    char *token;
+    char *tokn_str;
+
+    int right;
+    int out;
+
+
+    token = "s";
+    tokn_str = "A Telegram";
+    target_right = "A Telegram";
+    right = 10;
+    out = s21_trgt_print_tokn_str(target, token, tokn_str);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
 
 Suite* s21_string_suite()
 {
@@ -766,11 +799,9 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_strcmp);
     tcase_add_test(tc_core, test_s21_strncmp);
     
-    
     tcase_add_test(tc_core, test_s21_to_lower);
     tcase_add_test(tc_core, test_s21_to_upper);
     tcase_add_test(tc_core, test_s21_trim);
-
     
     tcase_add_test(tc_core, test_s21_sprintf);
     tcase_add_test(tc_core, test_s21_udecim_get_str_len);
@@ -782,6 +813,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_trgt_print_uint);
     tcase_add_test(tc_core, test_s21_int_get_pow);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_decim);
+    tcase_add_test(tc_core, test_s21_trgt_print_tokn_str);
 
     suite_add_tcase(s, tc_core);
 

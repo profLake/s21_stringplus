@@ -39,6 +39,7 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
     return m;
 }
 
+/*
 int main() {
 
     
@@ -52,3 +53,4 @@ int main() {
     printf("%s", z);
 
 }
+*/
