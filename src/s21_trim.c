@@ -1,20 +1,18 @@
 #include "s21_string.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 void * s21_trim(const char *src, const char *trim_chars) {
     
-    char *correct_str = (char*)malloc(100 * sizeof(char));
-    int srck = 0, tcharsk = 0, i = 0, sch = 0, schk, l;
+    int srck = 0, tcharsk = 0, sch = 0, schk, l;
     
-    while(*(src + i)) {
+    while(*(src + srck)) {
         srck++;
-        i++;
     }
-    i = 0;
-    while(*(trim_chars + i)) {
+    char *correct_str = (char *)malloc(srck * sizeof(char));
+    while(*(trim_chars + tcharsk)) {
         tcharsk++;
-        i++;
     }
    for (int k = 0; k < srck; k++) {
         for (l = 0; l < tcharsk; l++) {
@@ -29,8 +27,6 @@ void * s21_trim(const char *src, const char *trim_chars) {
     }
     for (int o = srck - 1; o > sch - 1; o-- ) {
         for (l = 0; l < tcharsk; l++) {
-            
-            
             if (*(src + o) == *(trim_chars +l)) {
                 schk++;
                 break;
@@ -44,19 +40,16 @@ void * s21_trim(const char *src, const char *trim_chars) {
     
         *(correct_str + n) = *(src + m);
     }
-    if (*src == '\0') {
-        correct_str = s21_NULL;
-    }
-        
-    src = correct_str;
-        return (void *)src;
-    free((void *)src);
+ //  if (*src == '\0') {
+ //      correct_str = s21_NULL;
+  // }
+        return correct_str;
     }
 
 /*int main() {
      // Тестовые данные
     char *z = "1 2";
-    char str[40] = "1    aa2aa  1";
+    char *str = "1    aa2aa  1";
 // Обратите внимание, что \ r возвращается в начало текущей строки, использование \ r может перезаписать напечатанные символы
     char *res = s21_trim(str, z);
     for (int i = 0; *(res+i) != '\0'; i++) {

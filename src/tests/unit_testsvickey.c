@@ -149,9 +149,19 @@ START_TEST(test_s21_strcmp)
 }
 END_TEST
 
+START_TEST(test_s21_to_upper)
+{
+    char *str = "hello", *stx = "HELLO";
+    char *src = s21_to_upper(str);
+    ck_assert_str_eq(src, stx);
+}
+END_TEST
+
+
+
 START_TEST(test_s21_strncmp)
 {
-    char h[10] = "hello", *hr = "hellr", *p = "PRISE", *s = "shitty", *sh = "sh...", *shout = "shout, shout", *t = ".", *otchet = ".0123", *end = " endOFsPAACE", *empty = "";
+    char *h = "hello", *hr = "hellr", *p = "PRISE", *s = "shitty", *sh = "sh...", *shout = "shout, shout", *t = ".", *otchet = ".0123", *end = " endOFsPAACE", *empty = "";
     ck_assert_int_eq(s21_strncmp(h, hr, 4), strncmp(h, hr, 4));
     ck_assert_int_eq(s21_strncmp(h, hr, 5), strncmp(h, hr, 5));
     ck_assert_int_eq(s21_strncmp(hr, hr, 5), strncmp(hr, hr, 5));
@@ -164,11 +174,10 @@ END_TEST
 
 START_TEST(test_s21_trim)
 {
-    const char *nine = "1 2", *str = "1 aaaa  1";
-    char * new = s21_trim(str, nine);
-        puts(new);
-    ck_assert_str_eq(new, "aa2aa");
-    
+    char nine[20] = "1 2", str[20] = "1 aaaa  1", corr[20] = "aaaa";
+    char *new = s21_trim(str, nine);
+    ck_assert_str_eq(new, corr);
+
 }
 END_TEST
 
@@ -193,8 +202,8 @@ int main(void)
     tcase_add_test(tc_core, test_s21_strcpy);
     tcase_add_test(tc_core, test_s21_strncpy);
     tcase_add_test(tc_core, test_s21_trim);
-    
-    
+    tcase_add_test(tc_core, test_s21_to_upper);
+        
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
