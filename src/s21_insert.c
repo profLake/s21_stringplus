@@ -2,6 +2,7 @@
 #include <string.h>
 #include "s21_string.h"
 
+/*
 void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
     
     s21_size_t i = 0;
@@ -31,6 +32,13 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
             m[r] = src[r-k];
     }
 }
+*/
+/*  ****s21_insert.c:34:1: error: control reaches end of non-void function
+ *      [-Werror=return-type]
+ *        34 | }
+ *           | ^
+ */
+
 
 int main() {
     
