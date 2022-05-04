@@ -170,7 +170,8 @@ START_TEST(test_s21_strerror)
     ck_assert_str_eq(s21_strerror(1), strerror(1));
     ck_assert_str_eq(s21_strerror(ENOSYS), strerror(ENOSYS));
     ck_assert_str_eq(s21_strerror(EEXIST), strerror(EEXIST));
-    ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
+    //ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
+    /*  ****ENOTUNIQ --- only on linux */
 }
 END_TEST
 
@@ -460,8 +461,14 @@ START_TEST(test_s21_sprintf)
 
     format = "hello, '%s'!";
 //  buff_right = "hello, 'A Telegram'!";
-    right = sprintf(buff_right, format, "A telegram");
-    out = s21_sprintf(buff, format, "A Telgeram");
+    right = sprintf(buff_right, format, "A Telegram");
+    out = s21_sprintf(buff, format, "A Telegram");
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%lu'!";
+    right = sprintf(buff_right, format, 99999999199);
+    out = s21_sprintf(buff, format, 99999999199);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 }
@@ -469,7 +476,7 @@ END_TEST
 
 START_TEST(test_s21_udecim_get_str_len)
 {
-    int n;
+    unsigned long n;
     int right;
     int out;
 
@@ -485,6 +492,11 @@ START_TEST(test_s21_udecim_get_str_len)
 
     n = 294967290;
     right = 9;
+    out = s21_udecim_get_str_len(n);
+    ck_assert_int_eq(right, out);
+
+    n = 99999999999;
+    right = 11;
     out = s21_udecim_get_str_len(n);
     ck_assert_int_eq(right, out);
 }
@@ -561,7 +573,7 @@ START_TEST(test_s21_tokn_skip_part)
 }
 END_TEST
 
-START_TEST(test_s21_tokn_get_len)
+START_TEST(test_s21_tokn_get_str_len)
 {
     char * token;
     int right;
@@ -569,17 +581,17 @@ START_TEST(test_s21_tokn_get_len)
 
     token = "d";
     right = 1;
-    out = s21_tokn_get_len(token);
+    out = s21_tokn_get_str_len(token);
     ck_assert_int_eq(right, out);
 
     token = "c";
     right = 1;
-    out = s21_tokn_get_len(token);
+    out = s21_tokn_get_str_len(token);
     ck_assert_int_eq(right, out);
 
     token = ".5f";
     right = 3;
-    out = s21_tokn_get_len(token);
+    out = s21_tokn_get_str_len(token);
     ck_assert_int_eq(right, out);
 }
 END_TEST
@@ -632,6 +644,11 @@ START_TEST(test_s21_tokn_get_width)
     right = 5;
     out = s21_tokn_get_width(token);
     ck_assert_int_eq(right, out);
+
+    token = "ld";
+    right = 0;
+    out = s21_tokn_get_width(token);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -663,7 +680,7 @@ START_TEST(test_s21_trgt_print_uint)
 }
 END_TEST
 
-START_TEST(test_s21_int_get_pow)
+START_TEST(test_s21_ulong_get_pow)
 {
     int n;
     int pow;
@@ -673,25 +690,25 @@ START_TEST(test_s21_int_get_pow)
     n = 10;
     pow = 0;
     right = 1;
-    out = s21_int_get_pow(n, pow);
+    out = s21_ulong_get_pow(n, pow);
     ck_assert_int_eq(right, out);
 
     n = 10;
     pow = 1;
     right = 10;
-    out = s21_int_get_pow(n, pow);
+    out = s21_ulong_get_pow(n, pow);
     ck_assert_int_eq(right, out);
 
     n = 10;
     pow = 2;
     right = 100;
-    out = s21_int_get_pow(n, pow);
+    out = s21_ulong_get_pow(n, pow);
     ck_assert_int_eq(right, out);
 
     n = 10;
     pow = 5;
     right = 100000;
-    out = s21_int_get_pow(n, pow);
+    out = s21_ulong_get_pow(n, pow);
     ck_assert_int_eq(right, out);
 }
 END_TEST
@@ -713,6 +730,7 @@ START_TEST(test_s21_trgt_print_tokn_decim)
     out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "d";
     tokn_decim = -115;
@@ -721,6 +739,7 @@ START_TEST(test_s21_trgt_print_tokn_decim)
     out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "05d";
     tokn_decim = 91;
@@ -729,6 +748,7 @@ START_TEST(test_s21_trgt_print_tokn_decim)
     out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "-05d";
     tokn_decim = 3;
@@ -737,6 +757,25 @@ START_TEST(test_s21_trgt_print_tokn_decim)
     out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+
+    token = "-05i";
+    tokn_decim = 3;
+    target_right = "3    ";
+    right = 5;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+
+    token = "ld";
+    tokn_decim = 8;
+    target_right = "8";
+    right = 1;
+    out = s21_trgt_print_tokn_decim(target, token, tokn_decim);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 
@@ -769,12 +808,61 @@ START_TEST(test_s21_trgt_print_tokn_str)
     int right;
     int out;
 
-
     token = "s";
     tokn_str = "A Telegram";
     target_right = "A Telegram";
     right = 10;
     out = s21_trgt_print_tokn_str(target, token, tokn_str);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = "30s";
+    tokn_str = "A Telegram";
+    target_right = "                    A Telegram";
+    right = 30;
+    out = s21_trgt_print_tokn_str(target, token, tokn_str);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = ".30s";
+    tokn_str = "A Telegram";
+    target_right = "A Telegram";
+    right = 10;
+    out = s21_trgt_print_tokn_str(target, token, tokn_str);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    token = "-30s";
+    tokn_str = "A Telegram";
+    target_right = "A Telegram                    ";
+    right = 30;
+    out = s21_trgt_print_tokn_str(target, token, tokn_str);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
+START_TEST(test_s21_trgt_print_ulong)
+{
+    char target[500] = { 0 };
+    char *target_right;
+
+    unsigned long n;
+
+    int right;
+    int out;
+
+    target_right = "98";
+    n = 98;
+    right = 2;
+    out = s21_trgt_print_ulong(target, n);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+
+    target_right = "99999999999";
+    n = 99999999999;
+    right = 11;
+    out = s21_trgt_print_ulong(target, n);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
 }
@@ -821,13 +909,14 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_udecim_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
     tcase_add_test(tc_core, test_s21_tokn_skip_part);
-    tcase_add_test(tc_core, test_s21_tokn_get_len);
+    tcase_add_test(tc_core, test_s21_tokn_get_str_len);
     tcase_add_test(tc_core, test_s21_tokn_have_flag);
     tcase_add_test(tc_core, test_s21_tokn_get_width);
     tcase_add_test(tc_core, test_s21_trgt_print_uint);
-    tcase_add_test(tc_core, test_s21_int_get_pow);
+    tcase_add_test(tc_core, test_s21_ulong_get_pow);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_decim);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_str);
+    tcase_add_test(tc_core, test_s21_trgt_print_ulong);
 
     suite_add_tcase(s, tc_core);
 

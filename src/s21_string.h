@@ -41,7 +41,7 @@ int s21_sprintf(char *target, const char *format, ...);
 
 #define TOKN_SIGN '%'
 #define SPECIFS "cdieEfgGosuxXpn%"
-#define SPECIFS_LENS "hlL"
+#define TOKN_LENS "hlL"
 #define DIGITS "0123456789"
 #define FLAGS "-+ #0"
 #define PRECIS_SIGN '.'
@@ -52,17 +52,19 @@ char s21_tokn_get_flag(const char *token, int i);
 int s21_tokn_have_flag(const char *token, char flag);
 int s21_tokn_get_width(const char *token);
 int s21_tokn_get_precision(const char *token);
-int s21_tokn_get_len(const char *token);
+int s21_tokn_get_str_len(const char *token);
+char s21_tokn_get_len(const char *token);
 char s21_tokn_get_specif(const char *token);
 int s21_trgt_print_uint(char *target, unsigned int n);
 int s21_trgt_print_ushort(char *target, unsigned short n);
+int s21_trgt_print_ulong(char *target, unsigned long n);
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
 int s21_trgt_print_tokn_decim(char *target, const char *token,
             long tokn_decim);
 int s21_trgt_print_tokn_str(char *target, const char *token,
         const char *tokn_str);
 int s21_udecim_get_str_len(unsigned long n);
-int s21_int_get_pow(int n, int pow);
+ulong s21_ulong_get_pow(ulong n, int pow);
 
 
 /* Для s21_strerror() */
