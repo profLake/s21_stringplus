@@ -1,10 +1,12 @@
 #include "s21_string.h"
 
 char* s21_strchr(const char *str, int c) {
+    char * ret = s21_NULL;
     for (int i = 0; str[i]; i++) {
         if (str[i] == (char)c) {
-            return (char*)(str + i);
+            ret = (char*)(str + i);
+            break;
         }
     }
-    return s21_NULL;
+    return ret;
 }
