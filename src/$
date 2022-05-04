@@ -33,10 +33,6 @@ int s21_sprintf(char *target, const char *format, ...) {
                         tokn_decim);
                 target += printed;
             } else if (specif == SPECIFS[5]) {
-                double tokn_lfloat = va_arg(args, double);
-                int printed = s21_trgt_print_tokn_double(target, token, 
-                        tokn_lfloat);
-                target += printed;
             } else if (specif == SPECIFS[9]) {
                 char *tokn_str  = va_arg(args, char*);
                 int printed = s21_trgt_print_tokn_str(target, token, tokn_str);
@@ -104,7 +100,7 @@ int s21_tokn_get_width(const char *token) {
 int s21_tokn_get_precision(const char *token) {
     token = s21_tokn_skip_part(token, 2);
     if (*token != PRECIS_SIGN) {
-        return -1;
+        return 0;
     }
     token++;
     return atoi(token);
@@ -216,24 +212,6 @@ int s21_trgt_print_ulong(char *target, unsigned long n) {
         target++;
         n %= divisor;
         n_len--;
-    }
-
-    return target - target_saved;
-}
-
-int s21_trgt_print_udouble(char *target, double lf, int precis_len) {
-    const char *target_saved = target;
-
-    unsigned long decim_part = (long)lf;
-    target += s21_trgt_print_ulong(target, decim_part);
-
-    if (precis_len > 0) {
-        *target = '.';
-        target++;
-        double after_part;
-        after_part = (lf - decim_part) * s21_ulong_get_pow(10, precis_len);
-        after_part = round(after_part);
-        target += s21_trgt_print_ulong(target, (long)after_part);
     }
 
     return target - target_saved;
@@ -378,65 +356,12 @@ int s21_trgt_print_tokn_str(char *target, const char *token,
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_double(char *target, const char *token,
-        double tokn_lfloat) {
+int s21_trgt_print_float(char *target, const char *token,
+        float tokn_float) {
     const char *target_saved = target;
 
-    int is_prequel = s21_tokn_have_flag(token, FLAGS[4]);
-
-    char sign = '\0';
-    if (tokn_lfloat < 0) {
-        sign = '-';
-        tokn_lfloat = -tokn_lfloat;
-    }
-    if (tokn_lfloat >= 0 && s21_tokn_have_flag(token, FLAGS[1])) {
-        sign = '+';
-    }
     int width = s21_tokn_get_width(token);
     int precis_len = s21_tokn_get_precision(token);
-    if (precis_len == -1) {
-        precis_len = 6;
-    }
-    int decim_part_len = s21_udecim_get_str_len((unsigned long)tokn_lfloat);
-    int fill_len = width - precis_len - decim_part_len;
-    if (precis_len) {
-        /* For a common */
-        fill_len--;
-    }
-    if (sign) {
-        fill_len--;
-    }
-    if (fill_len < 0) {
-        fill_len = 0;
-    }
-    char fill_symb = ' ';
-    if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
-        fill_symb = '0';
-    }
-
-    if (is_prequel == 0) {
-        if (fill_symb == '0' && sign) {
-            *target = sign;
-            target++;
-        }
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-        }
-    }
-    if (fill_symb == ' ' && sign) {
-        *target = sign;
-        target++;
-    }
-    target += s21_trgt_print_udouble(target, tokn_lfloat, precis_len);
-    if (is_prequel) {
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
-    }
 
     return target - target_saved;
 }
-

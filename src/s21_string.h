@@ -58,11 +58,14 @@ char s21_tokn_get_specif(const char *token);
 int s21_trgt_print_uint(char *target, unsigned int n);
 int s21_trgt_print_ushort(char *target, unsigned short n);
 int s21_trgt_print_ulong(char *target, unsigned long n);
+int s21_trgt_print_udouble(char *target, double lf, int precis_len);
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
 int s21_trgt_print_tokn_decim(char *target, const char *token,
             long tokn_decim);
 int s21_trgt_print_tokn_str(char *target, const char *token,
         const char *tokn_str);
+int s21_trgt_print_tokn_double(char *target, const char *token,
+        double tokn_lfloat);
 int s21_udecim_get_str_len(unsigned long n);
 unsigned long s21_ulong_get_pow(unsigned long n, int pow);
 
