@@ -29,9 +29,6 @@ int s21_sprintf(char *target, const char *format, ...) {
                        || specif == SPECIFS[2]
                        || specif == SPECIFS[10]) {
                 long tokn_decim = va_arg(args, long);
-char buff[500];
-sprintf(buff, "MAIN:%ld, int:%d", tokn_decim, (int)tokn_decim);
-puts(buff);
                 int printed = s21_trgt_print_tokn_decim(target, token,
                         tokn_decim);
                 target += printed;
@@ -251,6 +248,10 @@ int s21_trgt_print_tokn_decim(char *target, const char *token,
             long tokn_decim) {
     const char *target_saved = target;
 
+    if (s21_tokn_get_specif(token) == SPECIFS[1]
+            || s21_tokn_get_specif(token) == SPECIFS[2]) {
+        tokn_decim = (int)tokn_decim;
+    }
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
     char sign = '\0';
@@ -263,7 +264,6 @@ int s21_trgt_print_tokn_decim(char *target, const char *token,
 
     unsigned long tokn_udecim;
     if (s21_tokn_get_specif(token) == SPECIFS[10]) {
-puts("is unsigned next -->");
         tokn_udecim = tokn_decim;
     } else {
         tokn_udecim = tokn_decim >= 0 ? tokn_decim : -tokn_decim;
