@@ -11,7 +11,7 @@ SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
-all: clean check gcov_test
+all: clean sce_check gcov_test
 
 
 %.o: %.c
@@ -30,7 +30,7 @@ gcov_test:
 	brave-browser ./tests/src/index.html
 
 
-check: ./tests/unit_tests.c $(SOURCES)
+sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
 	clear
 	$(CC) $(CFLAGS) \

@@ -13,13 +13,13 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
     while (src[i] != '\0') {
         i++;
     }
-
+    
    while (str[q] != '\0') {
        q++;
     }
 
     char *m = malloc((i+q)*sizeof(char));
-
+    
     for (r = 0; src[r-k] != '\0'; r++) {
         
         if (r < start_index) {
@@ -32,9 +32,12 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
             k++;
             
         }
-        if (r == (start_index + q - 1) && src[r - k - 1] != '\0')
+        if (r >= (start_index + q) && src[r - k - 1] != '\0')
             
             m[r] = src[r-k];
+    }
+    if (start_index > i) {
+        m = s21_NULL;
     }
     return m;
 }

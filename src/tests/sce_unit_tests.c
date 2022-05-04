@@ -356,6 +356,19 @@ START_TEST(test_s21_trim)
 }
 END_TEST
 
+START_TEST(test_s21_insert)
+{
+    char * q = "aaabbbccc", * k = "baz", * qk = "aaabazbbbccc", * p = " ",
+    * qp = "aaab bbccc";
+    char * new = s21_insert(q, k, 3);
+    char * new1 = s21_insert(q, p, 4);
+    char * new3 = s21_insert(q, p, 11);
+    ck_assert_str_eq(new, qk);
+    ck_assert_str_eq(new1, qp);
+    ck_assert_str_eq(new3, s21_NULL);
+}
+END_TEST
+
 START_TEST(test_s21_sprintf)
 {
     char buff[500];
@@ -802,6 +815,7 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_to_lower);
     tcase_add_test(tc_core, test_s21_to_upper);
     tcase_add_test(tc_core, test_s21_trim);
+    tcase_add_test(tc_core, test_s21_insert);
     
     tcase_add_test(tc_core, test_s21_sprintf);
     tcase_add_test(tc_core, test_s21_udecim_get_str_len);
