@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +44,7 @@ int s21_sprintf(char *target, const char *format, ...);
 #define DIGITS "0123456789"
 #define FLAGS "-+ #0"
 #define PRECIS_SIGN '.'
+#define ADDIT_INT_SIGN '*'
 
 int s21_frmt_is_tokn(const char *format);
 char *s21_tokn_skip_part(const char *token, unsigned int i);
@@ -60,12 +60,12 @@ int s21_trgt_print_ushort(char *target, unsigned short n);
 int s21_trgt_print_ulong(char *target, unsigned long n);
 int s21_trgt_print_udouble(char *target, double lf, int precis_len);
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
-int s21_trgt_print_tokn_decim(char *target, const char *token,
+int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *args,
             long tokn_decim);
 int s21_trgt_print_tokn_str(char *target, const char *token,
         const char *tokn_str);
 int s21_trgt_print_tokn_double(char *target, const char *token,
-        double tokn_lfloat);
+            va_list *pargs);
 int s21_udecim_get_str_len(unsigned long n);
 unsigned long s21_ulong_get_pow(unsigned long n, int pow);
 
