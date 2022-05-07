@@ -26,21 +26,26 @@ int s21_sprintf(char *target, const char *format, ...) {
                 char tokn_c = va_arg(args, int);
                 int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
                 target += printed;
-            } else if (   specif == SPECIFS[1]
-                       || specif == SPECIFS[2]
-                       || specif == SPECIFS[10]) {
+            } if (specif == SPECIFS[1]
+                    || specif == SPECIFS[2]
+                    || specif == SPECIFS[10]) {
                 long tokn_decim = va_arg(args, long);
                 int printed = s21_trgt_print_tokn_decim(target, token, &args,
                         tokn_decim);
                 target += printed;
-            } else if (specif == SPECIFS[5]) {
+            } if (specif == SPECIFS[3]
+                    || specif == SPECIFS[4]
+                    || specif == SPECIFS[5]) {
                 int printed = s21_trgt_print_tokn_ratio(target, token, &args);
                 target += printed;
-            } else if (specif == SPECIFS[9]) {
+            } if (specif == SPECIFS[9]) {
                 char *tokn_str  = va_arg(args, char*);
                 int printed = s21_trgt_print_tokn_str(target, token, tokn_str);
                 target += printed;
-            } else if (specif == SPECIFS[15]) {
+            } if (specif == SPECIFS[13]) {
+                int printed = s21_trgt_print_tokn_ptr(target, token, &args);
+                target += printed;
+            } if (specif == SPECIFS[15]) {
                 char tokn_c = TOKN_SIGN;
                 int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
                 target += printed;
@@ -240,6 +245,38 @@ int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
     return target - target_saved;
 }
 
+int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
+        char e_sign) {
+    const char *target_saved = target;
+
+    int e = 0;
+    while (ld < 1) {
+        e--;
+        ld *= 10;
+    }
+    while (ld > 10) {
+        e++;
+        ld /= 10;
+    }
+    target += s21_trgt_print_uldouble(target, ld, precis_len);
+
+    *target = e_sign;
+    target++;
+    if (e < 0) {
+        *target = '-';
+        target++;
+    } else {
+        *target = '+';
+        target++;
+    }
+    *target = '0' + e / 10;
+    target++;
+    *target = '0' + e % 10;
+    target++;
+
+    return target - target_saved;
+}
+
 int s21_trgt_print_base_ulong(char *target, unsigned long n,
         const char *base) {
     const char *target_saved = target;
@@ -421,8 +458,16 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         tokn_ratio = -tokn_ratio;
     }
 
-    int decim_part_len = s21_udecim_get_str_len((unsigned long)tokn_ratio);
-    int fill_len = width - precis_len - decim_part_len;
+    int non_precis_part_len;
+    if (s21_tokn_get_specif(token) == SPECIFS[5]) {
+        non_precis_part_len = s21_udecim_get_str_len((unsigned long)tokn_ratio);
+    } else {
+        non_precis_part_len = 5;
+        /*  Числа, наподобие 1.54+e01, имеют 1 символ до запятой и 4 символа
+         *      после дробной части
+         */
+    }
+    int fill_len = width - precis_len - non_precis_part_len;
     if (precis_len) {
         /* For a common */
         fill_len--;
@@ -444,23 +489,27 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
             *target = sign;
             target++;
         }
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
     }
     if (fill_symb == ' ' && sign) {
         *target = sign;
         target++;
     }
-    target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
+    if (s21_tokn_get_specif(token) == SPECIFS[5]) {
+        target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
+    }
+    if (s21_tokn_get_specif(token) == SPECIFS[3]) {
+        target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
+                'e');
+    }
+    if (s21_tokn_get_specif(token) == SPECIFS[4]) {
+        target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
+                'E');
+    }
     if (is_prequel) {
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
     }
 
     return target - target_saved;
@@ -470,13 +519,34 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token,
         va_list *pargs) {
     const char *target_saved = target;
 
-    token--;
+    int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
+
+    int width = s21_tokn_get_width(token);
+    if (width == -2) {
+        width = va_arg(*pargs, int);
+    }
+    if (width < 0) {
+        width = 0;
+    }
+
+    int fill_len = width - PTR_LEN_WITH_0X;
+    if (fill_len < 0) {
+        fill_len = 0;
+    }
 
     void *p = va_arg(*pargs, void *);
 
+    if (is_prequel == 0) {
+        s21_memset(target, ' ', fill_len);
+        target += fill_len;
+    }
     *target++ = '0';
     *target++ = 'x';
     target += s21_trgt_print_base_ulong(target, (unsigned long)p, BASE16);
+    if (is_prequel) {
+        s21_memset(target, ' ', fill_len);
+        target += fill_len;
+    }
 
     return target - target_saved;
 }

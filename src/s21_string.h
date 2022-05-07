@@ -48,6 +48,7 @@ int s21_sprintf(char *target, const char *format, ...);
 #define ADDIT_INT_SIGN '*'
 #define BASE16 "0123456789abcdef"
 #define BASE2 "01"
+#define PTR_LEN_WITH_0X 14
 
 int s21_frmt_is_tokn(const char *format);
 char *s21_tokn_skip_part(const char *token, unsigned int i);
@@ -62,6 +63,8 @@ int s21_trgt_print_uint(char *target, unsigned int n);
 int s21_trgt_print_ushort(char *target, unsigned short n);
 int s21_trgt_print_ulong(char *target, unsigned long n);
 int s21_trgt_print_uldouble(char *target, long double ld, int precis_len);
+int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
+        char e_sign);
 int s21_trgt_print_base_ulong(char *target, unsigned long n,
         const char *base);
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
