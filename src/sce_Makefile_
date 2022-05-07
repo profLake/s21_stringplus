@@ -37,7 +37,7 @@ sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 		-fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/unit_tests.out \
-		-lcheck -lsubunit -lrt -lpthread -lm
+		-lcheck #-lsubunit -lrt -lpthread -lm
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
 		####	использует эти библиотеки
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
