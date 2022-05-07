@@ -1,7 +1,6 @@
 #include "s21_string.h"
 #include <stdarg.h>
 
-
 int s21_sprintf(char *target, const char *format, ...) {
     const char *target_saved = target;
     va_list args;
@@ -12,7 +11,7 @@ int s21_sprintf(char *target, const char *format, ...) {
         if (s21_frmt_is_tokn(format) == 1) {
             is_token = 1;
             format++;
-       }
+        }
         if (is_token == 0) {
             *target = *format;
             target++;
@@ -30,12 +29,10 @@ int s21_sprintf(char *target, const char *format, ...) {
                        || specif == SPECIFS[2]
                        || specif == SPECIFS[10]) {
                 long tokn_decim = va_arg(args, long);
-                int printed = s21_trgt_print_tokn_decim(target, token, &args,
+                int printed = s21_trgt_print_tokn_decim(target, token,
                         tokn_decim);
                 target += printed;
             } else if (specif == SPECIFS[5]) {
-                int printed = s21_trgt_print_tokn_double(target, token, &args);
-                target += printed;
             } else if (specif == SPECIFS[9]) {
                 char *tokn_str  = va_arg(args, char*);
                 int printed = s21_trgt_print_tokn_str(target, token, tokn_str);
@@ -57,29 +54,22 @@ int s21_sprintf(char *target, const char *format, ...) {
 }
 
 char *s21_tokn_skip_part(const char *token, unsigned int i) {
-    if (i--)    /* flags */
+    if (i--)
         while (s21_strchr(FLAGS, *token))
             token++;
-    if (i--) {  /* width */
-        if (*token == ADDIT_INT_SIGN)
+    if (i--)
+        while (s21_strchr(DIGITS, *token))
             token++;
-        else
-            while (s21_strchr(DIGITS, *token))
-                token++;
-    }
-    if (i--)    /* precision */
+    if (i--)
         if (*token == PRECIS_SIGN) {
             token++;
-            if (*token == ADDIT_INT_SIGN)
+            while (s21_strchr(DIGITS, *token))
                 token++;
-            else
-                while (s21_strchr(DIGITS, *token))
-                    token++;
         }
-    if (i--)    /* length-specifier */
+    if (i--)
         if (s21_strchr(TOKN_LENS, *token))
             token++;
-    if (i--)    /* specifier */
+    if (i--)
         if (s21_strchr(SPECIFS, *token))
             token++;
     return (char*)token;
@@ -104,29 +94,16 @@ int s21_tokn_have_flag(const char *token, char flag) {
 
 int s21_tokn_get_width(const char *token) {
     token = s21_tokn_skip_part(token, 1);
-    int result = -1;
-    if (*token == ADDIT_INT_SIGN) {
-        result = -2;
-    }
-    if (s21_atol(token)) {
-        result = s21_atol(token);
-    }
-    return result;
+    return atoi(token);
 }
 
 int s21_tokn_get_precision(const char *token) {
     token = s21_tokn_skip_part(token, 2);
-    int result = -1;
-    if (*token == PRECIS_SIGN) {
-        token++;
-        if (*token == ADDIT_INT_SIGN) {
-            result = -2;
-        }
-        if (s21_atol(token)) {
-            result = s21_atol(token);
-        }
+    if (*token != PRECIS_SIGN) {
+        return 0;
     }
-    return result;
+    token++;
+    return atoi(token);
 }
 
 char s21_tokn_get_len(const char *token) {
@@ -146,7 +123,26 @@ char s21_tokn_get_specif(const char *token) {
 }
 
 int s21_tokn_get_str_len(const char *token) {
-    return s21_tokn_skip_part(token, 5) - token;
+    const char *token_saved = token;
+    while (s21_strchr(FLAGS, *token)) {
+        token++;
+    }
+    while (s21_strchr(DIGITS, *token)) {
+        token++;
+    }
+    if (*token == PRECIS_SIGN) {
+        token++;
+    }
+    while (s21_strchr(DIGITS, *token)) {
+        token++;
+    }
+    if (s21_strchr(TOKN_LENS, *token)) {
+        token++;
+    }
+    if (s21_strchr(SPECIFS, *token)) {
+        token++;
+    }
+    return token - token_saved;
 }
 
 int s21_udecim_get_str_len(unsigned long n) {
@@ -221,24 +217,6 @@ int s21_trgt_print_ulong(char *target, unsigned long n) {
     return target - target_saved;
 }
 
-int s21_trgt_print_udouble(char *target, double lf, int precis_len) {
-    const char *target_saved = target;
-
-    unsigned long decim_part = (long)lf;
-    target += s21_trgt_print_ulong(target, decim_part);
-
-    if (precis_len > 0) {
-        *target = '.';
-        target++;
-        double after_part;
-        after_part = (lf - decim_part) * s21_ulong_get_pow(10, precis_len);
-        after_part = round(after_part);
-        target += s21_trgt_print_ulong(target, (long)after_part);
-    }
-
-    return target - target_saved;
-}
-
 unsigned long s21_ulong_get_pow(unsigned long n, int pow) {
     unsigned long result = 0;
     if (pow == 0) {
@@ -266,7 +244,7 @@ int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c) {
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *pargs,
+int s21_trgt_print_tokn_decim(char *target, const char *token,
             long tokn_decim) {
     const char *target_saved = target;
 
@@ -292,9 +270,6 @@ int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *pargs,
     }
 
     int width = s21_tokn_get_width(token);
-    if (width == -2) {
-        width = va_arg(*pargs, int);
-    }
     int tokn_udecim_len = s21_udecim_get_str_len(tokn_udecim);
     int fill_len = 0;
     if (width) {
@@ -381,98 +356,12 @@ int s21_trgt_print_tokn_str(char *target, const char *token,
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_double(char *target, const char *token,
-            va_list *pargs) {
+int s21_trgt_print_float(char *target, const char *token,
+        float tokn_float) {
     const char *target_saved = target;
 
-    int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
-
     int width = s21_tokn_get_width(token);
-    if (width == -2) {
-        width = va_arg(*pargs, int);
-    }
-    if (width < 0) {
-        width = 0;
-    }
-
     int precis_len = s21_tokn_get_precision(token);
-    if (precis_len == -1) {
-        precis_len = 6;
-    }
-    if (precis_len == -2) {
-        precis_len = va_arg(*pargs, int);
-    }
-    if (precis_len < 0) {
-        precis_len = 0;
-    }
- 
-    double tokn_lfloat = va_arg(*pargs, double);
-
-    char sign = '\0';
-    if (tokn_lfloat < 0) {
-        sign = '-';
-        tokn_lfloat = -tokn_lfloat;
-    }
-    if (tokn_lfloat >= 0 && s21_tokn_have_flag(token, FLAGS[1])) {
-        sign = '+';
-    }
-
-    int decim_part_len = s21_udecim_get_str_len((unsigned long)tokn_lfloat);
-    int fill_len = width - precis_len - decim_part_len;
-    if (precis_len) {
-        /* For a common */
-        fill_len--;
-    }
-    if (sign) {
-        fill_len--;
-    }
-    if (fill_len < 0) {
-        fill_len = 0;
-    }
-
-    char fill_symb = ' ';
-    if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
-        fill_symb = '0';
-    }
-
-    if (is_prequel == 0) {
-        if (fill_symb == '0' && sign) {
-            *target = sign;
-            target++;
-        }
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
-    }
-    if (fill_symb == ' ' && sign) {
-        *target = sign;
-        target++;
-    }
-    target += s21_trgt_print_udouble(target, tokn_lfloat, precis_len);
-    if (is_prequel) {
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
-    }
 
     return target - target_saved;
-}
-
-long s21_atol(const char *str) {
-    long result = 0;
-    int is_minus = 0;
-    if (*str == '-') {
-        is_minus = 1;
-        str++;
-    }
-    while (s21_strchr(DIGITS, *str)) {
-        result *= 10;
-        result += *str - '0';
-        str++;
-    }
-    return is_minus ? -result : result;
 }

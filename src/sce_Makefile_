@@ -44,6 +44,12 @@ sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 		####
 	./tests/unit_tests.out
 
+cpplint:
+	cp ../materials/linters/CPPLINT.cfg ./
+	python3 ../materials/linters/cpplint.py --extensions=c ./s21_*.c ./tests/
+
+#cppcheck:
+    
 
 check_old:
 	clear
@@ -76,7 +82,7 @@ clean:
 		-or -iname "*.css" \
 		-or -iname "*.png" \
 		-or -iname "*.png" \
-        \) -delete
+	\) -delete
 
 	rm -rf ./tests/src/ \
 		./.DS_Store \
