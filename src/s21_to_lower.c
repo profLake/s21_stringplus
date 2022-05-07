@@ -25,7 +25,6 @@ void *s21_to_lower(const char *str) {
         j++;
     }
     return scopy;
-    free(scopy);
 }
 
 /*
