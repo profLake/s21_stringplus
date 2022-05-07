@@ -108,8 +108,8 @@ int s21_tokn_get_width(const char *token) {
     if (*token == ADDIT_INT_SIGN) {
         result = -2;
     }
-    if (atoi(token)) {
-        result = atoi(token);
+    if (s21_atol(token)) {
+        result = s21_atol(token);
     }
     return result;
 }
@@ -122,8 +122,8 @@ int s21_tokn_get_precision(const char *token) {
         if (*token == ADDIT_INT_SIGN) {
             result = -2;
         }
-        if (atoi(token)) {
-            result = atoi(token);
+        if (s21_atol(token)) {
+            result = s21_atol(token);
         }
     }
     return result;
@@ -462,3 +462,17 @@ int s21_trgt_print_tokn_double(char *target, const char *token,
     return target - target_saved;
 }
 
+long s21_atol(const char *str) {
+    long result = 0;
+    int is_minus = 0;
+    if (*str == '-') {
+        is_minus = 1;
+        str++;
+    }
+    while (s21_strchr(DIGITS, *str)) {
+        result *= 10;
+        result += *str - '0';
+        str++;
+    }
+    return is_minus ? -result : result;
+}

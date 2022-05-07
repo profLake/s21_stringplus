@@ -68,6 +68,7 @@ int s21_trgt_print_tokn_double(char *target, const char *token,
             va_list *pargs);
 int s21_udecim_get_str_len(unsigned long n);
 unsigned long s21_ulong_get_pow(unsigned long n, int pow);
+long s21_atol(const char *str);
 
 
 /* Для s21_strerror() */

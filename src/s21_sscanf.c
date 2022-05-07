@@ -6,6 +6,7 @@
 
 int s21_sscanf(const char *stra, const char *format, ...);
 
+/*
 int main() {
   char str[20] = "hello World", str1[20], str2[20];
   s21_sscanf(str, "%s %s", str1, str2);
@@ -14,6 +15,7 @@ int main() {
   printf("%s %s", str1, str2);
   return 0;
 }
+*/
 
 int s21_sscanf(const char *stra, const char *format, ...) {
   int q;
