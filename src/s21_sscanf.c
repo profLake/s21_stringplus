@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,38 +7,93 @@
 
 int s21_sscanf(const char *stra, const char *format, ...);
 
-/*
-int main() {
-  char str[20] = "hello World", str1[20], str2[20];
-  s21_sscanf(str, "%s %s", str1, str2);
-  printf("%s %s\n", str1, str2);
-  sscanf(str, "%s %s", str1, str2);
-  printf("%s %s", str1, str2);
-  return 0;
-}
-*/
+// int main() {
+//   char str[20] = "123.456";  // str1[20], str2[20];
+//   float a;
+//   s21_sscanf(str, "%f", &a);
+//   // sscanf(str, "%f", &a);
+//   printf("%f", a);
+//   return 0;
+// }
 
 int s21_sscanf(const char *stra, const char *format, ...) {
-  int q;
   va_list A;
   va_start(A, format);
-  int e = 0, i = 0;
+  float fl, ql;
+  int e = 0, i = 0, f, q, error = 0;
   while (format[e] != '\0') {
-    char *o = va_arg(A, char *);
+    if (error != 0) break;
     if (format[e] == '%') {
       e++;
-    }
-    if (format[e] == 's') {
-      e++;
-      q = 0;
-      while (stra[i] != ' ' && stra[i] != '\0') {
+      if (format[e] == 'c') {
+        char *o = va_arg(A, char *);
+        q = 0;
         o[q] = stra[i];
-        q++;
-        i++;
+        e++;
       }
-      if (stra[i] == ' ') i++;
-      if (format[e] == ' ') e++;
+      if (format[e] == 's') {
+        char *o = va_arg(A, char *);
+        q = 0;
+        while (stra[i] != ' ' && stra[i] != '\0') {
+          o[q] = stra[i];
+          q++;
+          i++;
+        }
+        e++;
+      }
+      if (format[e] == 'd') {
+        if (stra[i] != ' ' && stra[i] != '\0') {
+          int *p = va_arg(A, int *);
+          if (stra[i] >= '0' && stra[i] <= '9') {
+            f = stra[i] - '0';
+            while (stra[i + 1] >= '0' && stra[i + 1] <= '9') {
+              f = f * 10;
+              q = stra[i + 1] - '0';
+              f = f + q;
+              i++;
+            }
+            *p = f;
+          } else {
+            error++;
+          }
+          i++;
+        }
+        e++;
+      }
+      if (format[e] == 'f') {
+        q = 1;
+        if (stra[i] != ' ' && stra[i] != '\0') {
+          float *p = va_arg(A, float *);
+          if (stra[i] >= '0' && stra[i] <= '9') {
+            fl = stra[i] - '0';
+            while (stra[i + 1] >= '0' && stra[i + 1] <= '9') {
+              fl = fl * 10;
+              ql = stra[i + 1] - '0';
+              fl = fl + ql;
+              i++;
+            }
+            if (stra[i + 1] == '.') {
+              i++;
+              i++;
+              while (stra[i] >= '0' && stra[i] <= '9') {
+                ql = stra[i] - '0';
+                ql = ql / (pow(10, q));
+                fl = fl + ql;
+                q++;
+                i++;
+              }
+            }
+            *p = fl;
+          } else {
+            error++;
+          }
+          i++;
+        }
+        e++;
+      }
     }
+    if (stra[i] == ' ') i++;
+    if (format[e] == ' ') e++;
   }
   va_end(A);
   return 0;
