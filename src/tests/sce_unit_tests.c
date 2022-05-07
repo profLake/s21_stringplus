@@ -521,6 +521,30 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 12, 4, 10.45, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%.50Lf' and also '%d'!";
+    right = sprintf(buff_right, format, (long double)1/3, 112);
+    out = s21_sprintf(buff, format, (long double)1/3, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%.50Lf' and also '%d'!";
+    right = sprintf(buff_right, format, (long double)1/3 + 5, 112);
+    out = s21_sprintf(buff, format, (long double)1/3 + 5, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%p' and also '%d'!";
+    right = sprintf(buff_right, format, &right, 112);
+    out = s21_sprintf(buff, format, &right, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%20p' and also '%d'!";
+    right = sprintf(buff_right, format, &right, 112);
+    out = s21_sprintf(buff, format, &right, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -947,7 +971,7 @@ START_TEST(test_s21_trgt_print_ulong)
 }
 END_TEST
 
-START_TEST(test_s21_trgt_print_udouble)
+START_TEST(test_s21_trgt_print_uldouble)
 {
     char target[500] = { 0 };
     char *target_right;
@@ -961,7 +985,7 @@ START_TEST(test_s21_trgt_print_udouble)
     target_right = "51.520";
     precis_len = 3;
     right = 6;
-    out = s21_trgt_print_udouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, lf, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
@@ -970,7 +994,7 @@ START_TEST(test_s21_trgt_print_udouble)
     target_right = "51.52000";
     precis_len = 5;
     right = 8;
-    out = s21_trgt_print_udouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, lf, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
@@ -979,7 +1003,7 @@ START_TEST(test_s21_trgt_print_udouble)
     target_right = "51.5";
     precis_len = 1;
     right = 4;
-    out = s21_trgt_print_udouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, lf, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
@@ -988,7 +1012,7 @@ START_TEST(test_s21_trgt_print_udouble)
     target_right = "51";
     precis_len = 0;
     right = 2;
-    out = s21_trgt_print_udouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, lf, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
@@ -997,20 +1021,31 @@ START_TEST(test_s21_trgt_print_udouble)
     target_right = "0.30000";
     precis_len = 5;
     right = 7;
-    out = s21_trgt_print_udouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(out, right);
+    memset(target, 0, 500);
+
+    long double ld;
+
+    ld = (long double)1/3;
+    target_right = "0.33333333333333333334236835143737920361672877334058";
+    precis_len = 50;
+    right = 52;
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
 }
 
-int vatest_s21_trgt_print_tokn_double(char *target, char *token, ...) {
+int vatest_s21_trgt_print_tokn_ratio(char *target, char *token, ...) {
     va_list args;
     va_start(args, token);
-    int result = s21_trgt_print_tokn_double(target, token, &args);
+    int result = s21_trgt_print_tokn_ratio(target, token, &args);
     va_end(args);
     return result;
 }
-START_TEST(test_s21_trgt_print_tokn_double)
+START_TEST(test_s21_trgt_print_tokn_ratio)
 {
     char target[500] = {0};
     char *target_right;
@@ -1023,17 +1058,77 @@ START_TEST(test_s21_trgt_print_tokn_double)
     token = "0*.*f";
     target_right = "0000000000015.45";
     right = 16;
-    out = vatest_s21_trgt_print_tokn_double(target, token, 16, 2, 15.45);
+    out = vatest_s21_trgt_print_tokn_ratio(target, token, 16, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
 
     token = "*.*f";
     target_right = "           15.45";
     right = 16;
-    out = vatest_s21_trgt_print_tokn_double(target, token, 16, 2, 15.45);
+    out = vatest_s21_trgt_print_tokn_ratio(target, token, 16, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
 }
+END_TEST
+
+START_TEST(test_s21_trgt_print_base_ulong)
+{
+    char target[500] = {0};
+    unsigned long n;
+    char *base;
+    char *target_right;
+    int right;
+    int out;
+
+    n = 11;
+    base = BASE16;
+    target_right = "b";
+    right = 1;
+    out = s21_trgt_print_base_ulong(target, n, base);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(right, out);
+
+    n = 11;
+    base = BASE2;
+    target_right = "1011";
+    right = 4;
+    out = s21_trgt_print_base_ulong(target, n, base);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(right, out);
+
+    n = 171616;
+    base = BASE16;
+    target_right = "29e60";
+    right = 5;
+    out = s21_trgt_print_base_ulong(target, n, base);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+
+int vatest_s21_trgt_print_tokn_ptr(char *target, const char *token, ...) {
+    int result;
+    va_list args;
+    va_start(args, token);
+    result = s21_trgt_print_tokn_ptr(target, token, &args);
+    va_end(args);
+    return result;
+}
+START_TEST(test_s21_trgt_print_tokn_ptr)
+{
+    char target[500];
+    char *token;
+    char target_right[500];
+    int right;
+    int out;
+    
+    token = "p";
+    right = sprintf(target_right, "%p", &right);
+    out = vatest_s21_trgt_print_tokn_ptr(target, token, &right);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
 
 
 Suite* s21_string_suite()
@@ -1084,8 +1179,10 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_decim);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_str);
     tcase_add_test(tc_core, test_s21_trgt_print_ulong);
-    tcase_add_test(tc_core, test_s21_trgt_print_udouble);
-    tcase_add_test(tc_core, test_s21_trgt_print_tokn_double);
+    tcase_add_test(tc_core, test_s21_trgt_print_uldouble);
+    tcase_add_test(tc_core, test_s21_trgt_print_tokn_ratio);
+    tcase_add_test(tc_core, test_s21_trgt_print_base_ulong);
+    tcase_add_test(tc_core, test_s21_trgt_print_tokn_ptr);
 
     suite_add_tcase(s, tc_core);
 
