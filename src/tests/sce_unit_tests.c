@@ -582,7 +582,19 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
+    format = "hello, '%#*x' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 14, 112);
+    out = s21_sprintf(buff, format, 9, 14, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
     format = "hello, '%*X' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 14, 112);
+    out = s21_sprintf(buff, format, 9, 14, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%#*X' and also '%d'!";
     right = sprintf(buff_right, format, 9, 14, 112);
     out = s21_sprintf(buff, format, 9, 14, 112);
     ck_assert_str_eq(buff_right, buff);
@@ -594,7 +606,7 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
-    format = "hello, '%*o' and also '%d'!";
+    format = "hello, '%#*o' and also '%d'!";
     right = sprintf(buff_right, format, 9, 14, 112);
     out = s21_sprintf(buff, format, 9, 14, 112);
     ck_assert_str_eq(buff_right, buff);
