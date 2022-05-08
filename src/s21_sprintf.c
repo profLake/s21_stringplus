@@ -28,10 +28,10 @@ int s21_sprintf(char *target, const char *format, ...) {
                 target += printed;
             } if (specif == SPECIFS[1]
                     || specif == SPECIFS[2]
-                    || specif == SPECIFS[10]) {
-                long tokn_decim = va_arg(args, long);
-                int printed = s21_trgt_print_tokn_decim(target, token, &args,
-                        tokn_decim);
+                    || specif == SPECIFS[10]
+                    || specif == SPECIFS[11]
+                    || specif == SPECIFS[12]) {
+                int printed = s21_trgt_print_tokn_num(target, token, &args);
                 target += printed;
             } if (specif == SPECIFS[3]
                     || specif == SPECIFS[4]
@@ -165,6 +165,7 @@ int s21_frmt_is_tokn(const char *format) {
     return result;
 }
 
+/*
 int s21_trgt_print_uint(char *target, unsigned int n) {
     const char *target_saved = target;
 
@@ -198,6 +199,7 @@ int s21_trgt_print_ushort(char *target, unsigned short n) {
 
     return target - target_saved;
 }
+*/
 
 int s21_trgt_print_ulong(char *target, unsigned long n) {
     const char *target_saved = target;
@@ -302,13 +304,22 @@ int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c) {
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *pargs,
-            long tokn_decim) {
+int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
+
+    int width = s21_tokn_get_width(token);
+    if (width == -2) {
+        width = va_arg(*pargs, int);
+    }
+
+    long tokn_num = va_arg(*pargs, long);
 
     if (s21_tokn_get_specif(token) == SPECIFS[1]
             || s21_tokn_get_specif(token) == SPECIFS[2]) {
-        tokn_decim = (int)tokn_decim;
+        tokn_num = (int)tokn_num;
+    }
+    if (s21_tokn_get_len(token) == TOKN_LENS[0]) {
+        tokn_num = (short)tokn_num;
     }
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
@@ -316,21 +327,17 @@ int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *pargs,
     if (s21_tokn_have_flag(token, FLAGS[1])) {
         sign = '+';
     }
-    if (tokn_decim < 0 && s21_tokn_get_specif(token) != SPECIFS[10]) {
+    if (tokn_num < 0 && s21_tokn_get_specif(token) != SPECIFS[10]) {
         sign = '-';
     }
 
     unsigned long tokn_udecim;
     if (s21_tokn_get_specif(token) == SPECIFS[10]) {
-        tokn_udecim = tokn_decim;
+        tokn_udecim = tokn_num;
     } else {
-        tokn_udecim = tokn_decim >= 0 ? tokn_decim : -tokn_decim;
+        tokn_udecim = tokn_num >= 0 ? tokn_num : -tokn_num;
     }
 
-    int width = s21_tokn_get_width(token);
-    if (width == -2) {
-        width = va_arg(*pargs, int);
-    }
     int tokn_udecim_len = s21_udecim_get_str_len(tokn_udecim);
     int fill_len = 0;
     if (width) {
@@ -362,15 +369,11 @@ int s21_trgt_print_tokn_decim(char *target, const char *token, va_list *pargs,
         *target = sign;
         target++;
     }
-    if (s21_tokn_get_len(token) == TOKN_LENS[0]) {
-        int printed = s21_trgt_print_ushort(target, tokn_udecim);
-        target+= printed;
-    }
-    if (s21_tokn_get_len(token) == TOKN_LENS[1]) {
-        int printed = s21_trgt_print_ulong(target, tokn_udecim);
+    if (s21_tokn_get_specif(token) == SPECIFS[11]) {
+        int printed = s21_trgt_print_base_ulong(target, tokn_udecim, BASE16);
         target+= printed;
     } else {
-        int printed = s21_trgt_print_uint(target, tokn_udecim);
+        int printed = s21_trgt_print_base_ulong(target, tokn_udecim, DIGITS);
         target+= printed;
     }
     if (is_prequel) {
@@ -551,14 +554,18 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token,
     return target - target_saved;
 }
 
-int s21_udecim_get_str_len(unsigned long n) {
+int s21_base_unum_get_str_len(unsigned long n, char *base) {
     int result = 0;
-    while (n >= (unsigned long)10) {
+    while (n >= (unsigned long)s21_strlen(base)) {
         result++;
-        n /= (unsigned long)10;
+        n /= (unsigned long)s21_strlen(base);
     }
     result++;
     return result;
+}
+
+int s21_udecim_get_str_len(unsigned long n) {
+    return s21_base_unum_get_str_len(n, DIGITS);
 }
 
 unsigned long s21_ulong_get_pow(unsigned long n, int pow) {

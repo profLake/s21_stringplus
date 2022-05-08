@@ -93,7 +93,7 @@ END_TEST
 START_TEST(test_s21_memcpy)
 {
     char dest[50];
-    s21_memcpy(dest, "hello", 4);
+    s21_memcpy(dest, "hello", 5);
     ck_assert(strncmp(dest, "hellr", 4) == 0);
     ck_assert(strncmp(dest, "hellr", 5) != 0);
 }
@@ -324,12 +324,18 @@ END_TEST
 
 START_TEST(test_s21_strcmp)
 {
-    const char *h = "h", *gh = "GHTH", *empty = "", *empty1 = "", *ichni = "1234SZR", *end = "\0", *end1 = "\0";
+    const char *h = "h",
+          *gh = "GHTH",
+          *empty = "",
+          *empty1 = "",
+          *ichni = "1234SZR",
+          *end = "\0", *end1 = "\0";
     ck_assert_int_eq(s21_strcmp(h, "!fvgb9876"), strcmp(h, "!fvgb9876"));
     ck_assert_int_eq(s21_strcmp(gh, "!.76"), strcmp(gh, "!.76"));
     ck_assert_int_eq(s21_strcmp(empty, "ryhEF"), strcmp(empty, "ryhEF"));
     ck_assert_int_eq(s21_strcmp(ichni, empty), strcmp(ichni, empty));
-    ck_assert_int_eq(s21_strcmp("Sold it!", "Sold it!"), strcmp("Sold it!", "Sold it!"));
+    ck_assert_int_eq(s21_strcmp("Sold it!", "Sold it!"),
+            strcmp("Sold it!", "Sold it!"));
     ck_assert_int_eq(s21_strcmp(empty, empty1), strcmp(empty, empty1));
     ck_assert_int_eq(s21_strcmp(end, end1), strcmp(end, end1));
 }
@@ -557,33 +563,56 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 45.98, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%E' and also '%d'!";
+    right = sprintf(buff_right, format, 45.98, 112);
+    out = s21_sprintf(buff, format, 45.98, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%*.*E' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 3, 45.98, 112);
+    out = s21_sprintf(buff, format, 9, 3, 45.98, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%*x' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 14, 112);
+    out = s21_sprintf(buff, format, 9, 14, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
-START_TEST(test_s21_udecim_get_str_len)
+START_TEST(test_s21_base_unum_get_str_len)
 {
     unsigned long n;
+    char *base;
     int right;
     int out;
 
     n = 19;
+    base = DIGITS;
     right = 2;
-    out = s21_udecim_get_str_len(n);
+    out = s21_base_unum_get_str_len(n, base);
     ck_assert_int_eq(right, out);
 
     n = 199;
+    base = DIGITS;
     right = 3;
-    out = s21_udecim_get_str_len(n);
+    out = s21_base_unum_get_str_len(n, base);
     ck_assert_int_eq(right, out);
 
     n = 294967290;
+    base = DIGITS;
     right = 9;
-    out = s21_udecim_get_str_len(n);
+    out = s21_base_unum_get_str_len(n, base);
     ck_assert_int_eq(right, out);
 
     n = 99999999999;
+    base = DIGITS;
     right = 11;
-    out = s21_udecim_get_str_len(n);
+    out = s21_base_unum_get_str_len(n, base);
     ck_assert_int_eq(right, out);
 }
 END_TEST
@@ -760,6 +789,7 @@ START_TEST(test_s21_tokn_get_width)
 }
 END_TEST
 
+/*
 START_TEST(test_s21_trgt_print_uint)
 {
     char target[500] = { 0 };
@@ -787,6 +817,7 @@ START_TEST(test_s21_trgt_print_uint)
     ck_assert_int_eq(right, out);
 }
 END_TEST
+*/
 
 START_TEST(test_s21_ulong_get_pow)
 {
@@ -821,73 +852,67 @@ START_TEST(test_s21_ulong_get_pow)
 }
 END_TEST
 
-START_TEST(test_s21_trgt_print_tokn_decim)
+int vatest_s21_trgt_print_tokn_num(char *target, const char *token, ...) {
+    va_list args;
+    va_start(args, token);
+    int result;
+    result =s21_trgt_print_tokn_num(target, token, &args);
+    va_end(args);
+    return result;
+}
+START_TEST(test_s21_trgt_print_tokn_num)
 {
     char target[500] = { 0 };
 
     char *token;
-    va_list *pargs;
-    long tokn_decim;
     char *target_right;
     int right;
     int out;
 
     token = "d";
-    pargs = NULL;
-    tokn_decim = 115;
     target_right = "115";
     right = 3;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, 115);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
 
     token = "d";
-    pargs = NULL;
-    tokn_decim = -115;
     target_right = "-115";
     right = 4;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, -115);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
 
     token = "05d";
-    pargs = NULL;
-    tokn_decim = 91;
     target_right = "00091";
     right = 5;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, 91);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
 
     token = "-05d";
-    pargs = NULL;
-    tokn_decim = 3;
     target_right = "3    ";
     right = 5;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, 3);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
 
     token = "-05i";
-    pargs = NULL;
-    tokn_decim = 3;
     target_right = "3    ";
     right = 5;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, 3);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
 
     token = "ld";
-    pargs = NULL;
-    tokn_decim = 8;
     target_right = "8";
     right = 1;
-    out = s21_trgt_print_tokn_decim(target, token, pargs, tokn_decim);
+    out = vatest_s21_trgt_print_tokn_num(target, token, 8);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
@@ -1052,6 +1077,7 @@ START_TEST(test_s21_trgt_print_uldouble)
     */
     /* Известная ошибка в точности */
 }
+END_TEST
 
 int vatest_s21_trgt_print_tokn_ratio(char *target, char *token, ...) {
     va_list args;
@@ -1112,6 +1138,14 @@ START_TEST(test_s21_trgt_print_base_ulong)
     n = 11;
     base = BASE16;
     target_right = "b";
+    right = 1;
+    out = s21_trgt_print_base_ulong(target, n, base);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(right, out);
+
+    n = 14;
+    base = BASE16;
+    target_right = "e";
     right = 1;
     out = s21_trgt_print_base_ulong(target, n, base);
     ck_assert_str_eq(target, target_right);
@@ -1197,15 +1231,15 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_insert);
     
     tcase_add_test(tc_core, test_s21_sprintf);
-    tcase_add_test(tc_core, test_s21_udecim_get_str_len);
+    tcase_add_test(tc_core, test_s21_base_unum_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
     tcase_add_test(tc_core, test_s21_tokn_skip_part);
     tcase_add_test(tc_core, test_s21_tokn_get_str_len);
     tcase_add_test(tc_core, test_s21_tokn_have_flag);
     tcase_add_test(tc_core, test_s21_tokn_get_width);
-    tcase_add_test(tc_core, test_s21_trgt_print_uint);
+//  tcase_add_test(tc_core, test_s21_trgt_print_uint);
     tcase_add_test(tc_core, test_s21_ulong_get_pow);
-    tcase_add_test(tc_core, test_s21_trgt_print_tokn_decim);
+    tcase_add_test(tc_core, test_s21_trgt_print_tokn_num);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_str);
     tcase_add_test(tc_core, test_s21_trgt_print_ulong);
     tcase_add_test(tc_core, test_s21_trgt_print_uldouble);
