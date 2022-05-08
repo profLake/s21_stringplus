@@ -11,6 +11,15 @@ SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
+ifeq ($(uname -s), "Linux)
+CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
+####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+####    использует эти библиотеки
+else
+CLIBS=-lm -lcheck
+endif
+
+
 all: clean sce_check gcov_test
 
 
@@ -33,13 +42,12 @@ gcov_test:
 sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
 	clear
+
 	$(CC) $(CFLAGS) \
 		-fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/unit_tests.out \
-		-lm -lcheck #-lsubunit -lrt -lpthread -lm
-		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-		####	использует эти библиотеки
+		$(CLIBS)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
 	./tests/unit_tests.out

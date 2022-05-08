@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <limits.h>
+#include <float.h>
 
 
 typedef unsigned long s21_size_t;

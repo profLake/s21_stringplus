@@ -531,6 +531,27 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
+    format = "hello, '%f' and also '%d'!";
+    right = sprintf(buff_right, format, 15, 4);
+    out = s21_sprintf(buff, format, 15, 4);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    /*
+    format = "hello, '%*.*Lf' and also '%d'!";
+    right = sprintf(buff_right, format, 12, 4, 10.45, 112);
+    out = s21_sprintf(buff, format, 12, 4, 10.45, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+    */
+    /*  ****Наш s21_sprintf вед>т себя при такой ошибке иначе. */
+
+    format = "hello, '%*.*Lf' and also '%d'!";
+    right = sprintf(buff_right, format, 12, 4, (long double)10.45, 112);
+    out = s21_sprintf(buff, format, 12, 4, (long double)10.45, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
     /*
     format = "hello, '%.50Lf' and also '%d'!";
     right = sprintf(buff_right, format, (long double)1/3, 112);
@@ -1080,52 +1101,52 @@ START_TEST(test_s21_trgt_print_uldouble)
     char target[500] = { 0 };
     char *target_right;
 
-    double lf;
+    long double ld;
     int precis_len;
     int right;
     int out;
 
-    lf = 51.52;
+    ld = 51.52;
     target_right = "51.520";
     precis_len = 3;
     right = 6;
-    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
 
-    lf = 51.52;
+    ld = 51.52;
     target_right = "51.52000";
     precis_len = 5;
     right = 8;
-    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
 
-    lf = 51.52;
+    ld = 51.52;
     target_right = "51.5";
     precis_len = 1;
     right = 4;
-    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
 
-    lf = 51;
+    ld = 51;
     target_right = "51";
     precis_len = 0;
     right = 2;
-    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
 
-    lf = 0.3;
+    ld = 0.3;
     target_right = "0.30000";
     precis_len = 5;
     right = 7;
-    out = s21_trgt_print_uldouble(target, lf, precis_len);
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(out, right);
     memset(target, 0, 500);
@@ -1143,6 +1164,15 @@ START_TEST(test_s21_trgt_print_uldouble)
     memset(target, 0, 500);
     */
     /* Известная ошибка в точности */
+
+    ld = 15;
+    target_right = "0.000000";
+    precis_len = 6;
+    right = 8;
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(out, right);
+    memset(target, 0, 500);
 }
 END_TEST
 

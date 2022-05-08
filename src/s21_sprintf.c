@@ -44,8 +44,8 @@ int s21_sprintf(char *target, const char *format, ...) {
                 printed = s21_trgt_print_tokn_ptr(target, token, &args);
             } if (specif == SPECIFS[14]) {
                 printed = 0;
-                int *to_write = va_arg(args, int*);
-                *to_write = target - target_saved;
+                int *to_write_here = va_arg(args, int*);
+                *to_write_here = target - target_saved;
             } if (specif == SPECIFS[15]) {
                 printed = s21_trgt_print_tokn_char(target, token, TOKN_SIGN);
             }
@@ -228,7 +228,10 @@ int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
     if (precis_len > 0) {
         *target = '.';
         target++;
-        if (precis_len < s21_udecim_get_str_len(LONG_MAX) - 1) {
+        if (ld == 0) {
+            s21_memset(target, '0', precis_len);
+            target += precis_len;
+        } else if (precis_len < s21_udecim_get_str_len(LONG_MAX) - 1) {
             long double after_part;
             after_part = ld * s21_ulong_get_pow(10, precis_len);
             after_part = round(after_part);
@@ -518,6 +521,7 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         *target = sign;
         target++;
     }
+LOG("token:%s, tokn_ratio:%Lf, precis_len:%d", token, tokn_ratio, precis_len)
     if (s21_tokn_get_specif(token) == SPECIFS[5]) {
         target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
     }
