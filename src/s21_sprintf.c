@@ -22,35 +22,34 @@ int s21_sprintf(char *target, const char *format, ...) {
             const char *token = format;
             char specif = s21_tokn_get_specif(token);
 
+            int printed;
             if (specif == SPECIFS[0]) {
                 char tokn_c = va_arg(args, int);
-                int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
-                target += printed;
+                printed = s21_trgt_print_tokn_char(target, token, tokn_c);
             } if (specif == SPECIFS[1]
-                    || specif == SPECIFS[2]
-                    || specif == SPECIFS[8]
-                    || specif == SPECIFS[10]
-                    || specif == SPECIFS[11]
-                    || specif == SPECIFS[12]) {
-                int printed = s21_trgt_print_tokn_num(target, token, &args);
-                target += printed;
+                  || specif == SPECIFS[2]
+                  || specif == SPECIFS[8]
+                  || specif == SPECIFS[10]
+                  || specif == SPECIFS[11]
+                  || specif == SPECIFS[12]) {
+                printed = s21_trgt_print_tokn_num(target, token, &args);
             } if (specif == SPECIFS[3]
-                    || specif == SPECIFS[4]
-                    || specif == SPECIFS[5]) {
-                int printed = s21_trgt_print_tokn_ratio(target, token, &args);
-                target += printed;
+                  || specif == SPECIFS[4]
+                  || specif == SPECIFS[5]) {
+                printed = s21_trgt_print_tokn_ratio(target, token, &args);
             } if (specif == SPECIFS[9]) {
                 char *tokn_str  = va_arg(args, char*);
-                int printed = s21_trgt_print_tokn_str(target, token, tokn_str);
-                target += printed;
+                printed = s21_trgt_print_tokn_str(target, token, tokn_str);
             } if (specif == SPECIFS[13]) {
-                int printed = s21_trgt_print_tokn_ptr(target, token, &args);
-                target += printed;
+                printed = s21_trgt_print_tokn_ptr(target, token, &args);
+            } if (specif == SPECIFS[14]) {
+                printed = 0;
+                int *to_write = va_arg(args, int*);
+                *to_write = target - target_saved;
             } if (specif == SPECIFS[15]) {
-                char tokn_c = TOKN_SIGN;
-                int printed = s21_trgt_print_tokn_char(target, token, tokn_c);
-                target += printed;
+                printed = s21_trgt_print_tokn_char(target, token, TOKN_SIGN);
             }
+            target += printed;
 
             format += s21_tokn_get_str_len(token);
             is_token = 0;

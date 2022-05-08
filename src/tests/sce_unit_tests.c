@@ -599,6 +599,17 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 9, 14, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    int hint;
+    int hint_right;
+
+    format = "hello, '%o' %n*hinted* and also '%d'!";
+    hint_right = 12;
+    right = sprintf(buff_right, format, 9, &hint, 112);
+    out = s21_sprintf(buff, format, 9, &hint, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(hint_right, hint);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
