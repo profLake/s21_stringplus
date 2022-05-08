@@ -331,17 +331,23 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         sign = '-';
     }
 
-    unsigned long tokn_udecim;
+    unsigned long tokn_unum;
     if (s21_tokn_get_specif(token) == SPECIFS[10]) {
-        tokn_udecim = tokn_num;
+        tokn_unum = tokn_num;
     } else {
-        tokn_udecim = tokn_num >= 0 ? tokn_num : -tokn_num;
+        tokn_unum = tokn_num >= 0 ? tokn_num : -tokn_num;
     }
 
-    int tokn_udecim_len = s21_udecim_get_str_len(tokn_udecim);
+    int tokn_unum_len;
+    if (s21_tokn_get_specif(token) == SPECIFS[11]
+        || s21_tokn_get_specif(token) == SPECIFS[12]) {
+        tokn_unum_len = s21_base_unum_get_str_len(tokn_unum, BASE16UP);
+    } else {
+        tokn_unum_len = s21_udecim_get_str_len(tokn_unum);
+    }
     int fill_len = 0;
     if (width) {
-        fill_len = width - tokn_udecim_len;
+        fill_len = width - tokn_unum_len;
         if (sign) {
             fill_len--;
         }
@@ -370,10 +376,13 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         target++;
     }
     if (s21_tokn_get_specif(token) == SPECIFS[11]) {
-        int printed = s21_trgt_print_base_ulong(target, tokn_udecim, BASE16);
+        int printed = s21_trgt_print_base_ulong(target, tokn_unum, BASE16LOW);
+        target+= printed;
+    } else if (s21_tokn_get_specif(token) == SPECIFS[12]) {
+        int printed = s21_trgt_print_base_ulong(target, tokn_unum, BASE16UP);
         target+= printed;
     } else {
-        int printed = s21_trgt_print_base_ulong(target, tokn_udecim, DIGITS);
+        int printed = s21_trgt_print_base_ulong(target, tokn_unum, DIGITS);
         target+= printed;
     }
     if (is_prequel) {
@@ -545,7 +554,7 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token,
     }
     *target++ = '0';
     *target++ = 'x';
-    target += s21_trgt_print_base_ulong(target, (unsigned long)p, BASE16);
+    target += s21_trgt_print_base_ulong(target, (unsigned long)p, BASE16LOW);
     if (is_prequel) {
         s21_memset(target, ' ', fill_len);
         target += fill_len;

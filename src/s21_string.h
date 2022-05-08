@@ -9,7 +9,7 @@ typedef unsigned long s21_size_t;
 #define s21_NULL (void*)0
 
 
-/* The order is keeped from the task. There are 20. НЕ МЕНЯТЬ */
+/* Порядок сохранён с задания. Всего 20 основных функций. НЕ МЕНЯТЬ */
 void *s21_memchr(const void *str, int c, s21_size_t n);
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);
 void *s21_memcpy(void *dest, const void *src, s21_size_t n);
@@ -46,7 +46,8 @@ int s21_sprintf(char *target, const char *format, ...);
 #define PRECIS_SIGN '.'
 #define ADDIT_INT_SIGN '*'
 #define DIGITS "0123456789"
-#define BASE16 "0123456789abcdef"
+#define BASE16LOW "0123456789abcdef"
+#define BASE16UP "0123456789ABCDEF"
 #define BASE2 "01"
 #define PTR_LEN_WITH_0X 14
 
@@ -79,6 +80,9 @@ int s21_base_unum_get_str_len(unsigned long n, char *base);
 int s21_udecim_get_str_len(unsigned long n);
 unsigned long s21_ulong_get_pow(unsigned long n, int pow);
         long s21_atol(const char *str);     /*  ****replaces with based func */
+
+/* ****Для дебага */
+#define LOG(...) char buff[500]; sprintf(buff, __VA_ARGS__); puts(buff);
 
 
 /* Для s21_strerror() */

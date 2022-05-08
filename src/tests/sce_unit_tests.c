@@ -581,6 +581,12 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 9, 14, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%*X' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 14, 112);
+    out = s21_sprintf(buff, format, 9, 14, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -612,6 +618,24 @@ START_TEST(test_s21_base_unum_get_str_len)
     n = 99999999999;
     base = DIGITS;
     right = 11;
+    out = s21_base_unum_get_str_len(n, base);
+    ck_assert_int_eq(right, out);
+
+    n = 110; /* 6e */
+    base = BASE16LOW;
+    right = 2;
+    out = s21_base_unum_get_str_len(n, base);
+    ck_assert_int_eq(right, out);
+
+    n = 9; /* 9 */
+    base = BASE16LOW;
+    right = 1;
+    out = s21_base_unum_get_str_len(n, base);
+    ck_assert_int_eq(right, out);
+
+    n = 91; /* 5b */
+    base = BASE16LOW;
+    right = 2;
     out = s21_base_unum_get_str_len(n, base);
     ck_assert_int_eq(right, out);
 }
@@ -1136,7 +1160,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     int out;
 
     n = 11;
-    base = BASE16;
+    base = BASE16LOW;
     target_right = "b";
     right = 1;
     out = s21_trgt_print_base_ulong(target, n, base);
@@ -1144,7 +1168,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     ck_assert_int_eq(right, out);
 
     n = 14;
-    base = BASE16;
+    base = BASE16LOW;
     target_right = "e";
     right = 1;
     out = s21_trgt_print_base_ulong(target, n, base);
@@ -1160,7 +1184,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     ck_assert_int_eq(right, out);
 
     n = 171616;
-    base = BASE16;
+    base = BASE16LOW;
     target_right = "29e60";
     right = 5;
     out = s21_trgt_print_base_ulong(target, n, base);
