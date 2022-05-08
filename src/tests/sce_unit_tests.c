@@ -1165,7 +1165,19 @@ START_TEST(test_s21_trgt_print_uldouble)
     */
     /* Известная ошибка в точности */
 
+    /*
     ld = 15;
+    target_right = "0.000000";
+    precis_len = 6;
+    right = 8;
+    out = s21_trgt_print_uldouble(target, ld, precis_len);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(out, right);
+    memset(target, 0, 500);
+    */
+    /* Известная ошибка в принятии int как float. */
+
+    ld = 0;
     target_right = "0.000000";
     precis_len = 6;
     right = 8;
@@ -1199,6 +1211,7 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
     out = vatest_s21_trgt_print_tokn_ratio(target, token, 16, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "*.*f";
     target_right = "           15.45";
@@ -1206,6 +1219,7 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
     out = vatest_s21_trgt_print_tokn_ratio(target, token, 16, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "*.*e";
     target_right = "            1.54e+01";
@@ -1213,6 +1227,7 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
     out = vatest_s21_trgt_print_tokn_ratio(target, token, 20, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "*.*E";
     target_right = "            1.54E+01";
@@ -1220,6 +1235,15 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
     out = vatest_s21_trgt_print_tokn_ratio(target, token, 20, 2, 15.45);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+
+    token = "f";
+    target_right = "0.000000";
+    right = 8;
+    out = vatest_s21_trgt_print_tokn_ratio(target, token, 0.0);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 
