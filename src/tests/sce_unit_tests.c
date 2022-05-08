@@ -587,6 +587,18 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 9, 14, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%o' and also '%d'!";
+    right = sprintf(buff_right, format, -9, 112);
+    out = s21_sprintf(buff, format, -9, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%*o' and also '%d'!";
+    right = sprintf(buff_right, format, 9, 14, 112);
+    out = s21_sprintf(buff, format, 9, 14, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -940,6 +952,14 @@ START_TEST(test_s21_trgt_print_tokn_num)
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
+
+    token = "o";
+    target_right = "12";
+    right = 2;
+    out = vatest_s21_trgt_print_tokn_num(target, token, 10);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 
@@ -1166,6 +1186,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     out = s21_trgt_print_base_ulong(target, n, base);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     n = 14;
     base = BASE16LOW;
@@ -1174,6 +1195,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     out = s21_trgt_print_base_ulong(target, n, base);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     n = 11;
     base = BASE2;
@@ -1182,6 +1204,7 @@ START_TEST(test_s21_trgt_print_base_ulong)
     out = s21_trgt_print_base_ulong(target, n, base);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     n = 171616;
     base = BASE16LOW;
@@ -1190,6 +1213,16 @@ START_TEST(test_s21_trgt_print_base_ulong)
     out = s21_trgt_print_base_ulong(target, n, base);
     ck_assert_str_eq(target, target_right);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+
+    n = 10;
+    base = BASE8;
+    target_right = "12";
+    right = 2;
+    out = s21_trgt_print_base_ulong(target, n, base);
+    ck_assert_str_eq(target, target_right);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 

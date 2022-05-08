@@ -49,6 +49,7 @@ int s21_sprintf(char *target, const char *format, ...);
 #define BASE16LOW "0123456789abcdef"
 #define BASE16UP "0123456789ABCDEF"
 #define BASE2 "01"
+#define BASE8 "01234567"
 #define PTR_LEN_WITH_0X 14
 
 int s21_frmt_is_tokn(const char *format);

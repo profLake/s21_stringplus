@@ -28,6 +28,7 @@ int s21_sprintf(char *target, const char *format, ...) {
                 target += printed;
             } if (specif == SPECIFS[1]
                     || specif == SPECIFS[2]
+                    || specif == SPECIFS[8]
                     || specif == SPECIFS[10]
                     || specif == SPECIFS[11]
                     || specif == SPECIFS[12]) {
@@ -331,20 +332,24 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         sign = '-';
     }
 
-    unsigned long tokn_unum;
-    if (s21_tokn_get_specif(token) == SPECIFS[10]) {
-        tokn_unum = tokn_num;
-    } else {
-        tokn_unum = tokn_num >= 0 ? tokn_num : -tokn_num;
+    char *base = DIGITS;
+    if (s21_tokn_get_specif(token) == SPECIFS[8]) {
+        base = BASE8;
+    } if (s21_tokn_get_specif(token) == SPECIFS[11]) {
+        base = BASE16LOW;
+    } if (s21_tokn_get_specif(token) == SPECIFS[12]) {
+        base = BASE16UP;
     }
 
-    int tokn_unum_len;
-    if (s21_tokn_get_specif(token) == SPECIFS[11]
-        || s21_tokn_get_specif(token) == SPECIFS[12]) {
-        tokn_unum_len = s21_base_unum_get_str_len(tokn_unum, BASE16UP);
+    unsigned long tokn_unum;
+    if (s21_tokn_get_specif(token) == SPECIFS[1]
+        || s21_tokn_get_specif(token) == SPECIFS[2]) {
+        tokn_unum = tokn_num >= 0 ? tokn_num : -tokn_num;
     } else {
-        tokn_unum_len = s21_udecim_get_str_len(tokn_unum);
+        tokn_unum = tokn_num;
     }
+
+    int tokn_unum_len = s21_base_unum_get_str_len(tokn_unum, base);
     int fill_len = 0;
     if (width) {
         fill_len = width - tokn_unum_len;
@@ -375,16 +380,8 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         *target = sign;
         target++;
     }
-    if (s21_tokn_get_specif(token) == SPECIFS[11]) {
-        int printed = s21_trgt_print_base_ulong(target, tokn_unum, BASE16LOW);
-        target+= printed;
-    } else if (s21_tokn_get_specif(token) == SPECIFS[12]) {
-        int printed = s21_trgt_print_base_ulong(target, tokn_unum, BASE16UP);
-        target+= printed;
-    } else {
-        int printed = s21_trgt_print_base_ulong(target, tokn_unum, DIGITS);
-        target+= printed;
-    }
+    int printed = s21_trgt_print_base_ulong(target, tokn_unum, base);
+    target+= printed;
     if (is_prequel) {
         while (fill_len) {
             *target = fill_symb;
