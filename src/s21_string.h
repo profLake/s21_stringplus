@@ -1,15 +1,16 @@
-#include <stdarg.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <limits.h>
+#include <float.h>
 
 
 typedef unsigned long s21_size_t;
 #define s21_NULL (void*)0
 
 
-/* The order is keeped from the task. There are 20. НЕ МЕНЯТЬ */
+/* Порядок сохранён с задания. Всего 20 основных функций. НЕ МЕНЯТЬ */
 void *s21_memchr(const void *str, int c, s21_size_t n);
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);
 void *s21_memcpy(void *dest, const void *src, s21_size_t n);
@@ -42,9 +43,15 @@ int s21_sprintf(char *target, const char *format, ...);
 #define TOKN_SIGN '%'
 #define SPECIFS "cdieEfgGosuxXpn%"
 #define TOKN_LENS "hlL"
-#define DIGITS "0123456789"
 #define FLAGS "-+ #0"
 #define PRECIS_SIGN '.'
+#define ADDIT_INT_SIGN '*'
+#define DIGITS "0123456789"
+#define BASE16LOW "0123456789abcdef"
+#define BASE16UP "0123456789ABCDEF"
+#define BASE2 "01"
+#define BASE8 "01234567"
+#define PTR_LEN_WITH_0X 14
 
 int s21_frmt_is_tokn(const char *format);
 char *s21_tokn_skip_part(const char *token, unsigned int i);
@@ -55,16 +62,29 @@ int s21_tokn_get_precision(const char *token);
 int s21_tokn_get_str_len(const char *token);
 char s21_tokn_get_len(const char *token);
 char s21_tokn_get_specif(const char *token);
-int s21_trgt_print_uint(char *target, unsigned int n);
-int s21_trgt_print_ushort(char *target, unsigned short n);
+//int s21_trgt_print_uint(char *target, unsigned int n);
+//int s21_trgt_print_ushort(char *target, unsigned short n);
 int s21_trgt_print_ulong(char *target, unsigned long n);
+int s21_trgt_print_uldouble(char *target, long double ld, int precis_len);
+int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
+        char e_sign);
+int s21_trgt_print_base_ulong(char *target, unsigned long n,
+        const char *base);
 int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c);
-int s21_trgt_print_tokn_decim(char *target, const char *token,
-            long tokn_decim);
+int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs);
 int s21_trgt_print_tokn_str(char *target, const char *token,
         const char *tokn_str);
+int s21_trgt_print_tokn_ratio(char *target, const char *token,
+            va_list *pargs);
+int s21_trgt_print_tokn_ptr(char *target, const char *token,
+        va_list *pargs);
+int s21_base_unum_get_str_len(unsigned long n, char *base);
 int s21_udecim_get_str_len(unsigned long n);
 unsigned long s21_ulong_get_pow(unsigned long n, int pow);
+        long s21_atol(const char *str);     /*  ****replaces with based func */
+
+/* ****Для дебага */
+#define LOG(...) char buff[500]; sprintf(buff, __VA_ARGS__); puts(buff);
 
 
 /* Для s21_strerror() */
