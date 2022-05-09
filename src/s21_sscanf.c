@@ -5,14 +5,17 @@
 
 #include "s21_string.h"
 
+// c s u d f i
+
 int s21_sscanf(const char *stra, const char *format, ...);
 
 // int main() {
-//   char str[20] = "123.456";  // str1[20], str2[20];
-//   float a;
-//   s21_sscanf(str, "%f", &a);
-//   // sscanf(str, "%f", &a);
-//   printf("%f", a);
+//   char str[20] = "077";  // str1[20], str2[20];
+//   int a;
+//   s21_sscanf(str, "%i", &a);
+//   // sscanf(str, "%i", &a);
+//   // scanf("%i", &a);
+//   printf("%i", a);
 //   return 0;
 // }
 
@@ -20,7 +23,8 @@ int s21_sscanf(const char *stra, const char *format, ...) {
   va_list A;
   va_start(A, format);
   float fl, ql;
-  int e = 0, i = 0, f, q, error = 0;
+  int e = 0, i = 0, error = 0;
+  int f, q, qi, w;
   while (format[e] != '\0') {
     if (error != 0) break;
     if (format[e] == '%') {
@@ -41,9 +45,15 @@ int s21_sscanf(const char *stra, const char *format, ...) {
         }
         e++;
       }
-      if (format[e] == 'd') {
+      if (format[e] == 'd' || format[e] == 'u') {
         if (stra[i] != ' ' && stra[i] != '\0') {
           int *p = va_arg(A, int *);
+          q = 0;
+          if (stra[i] == '-' && stra[i + 1] >= '0' && stra[i + 1] <= '9') {
+            q++;
+            i++;
+          }
+          if (stra[i] == '+' && stra[i + 1] >= '0' && stra[i + 1] <= '9') i++;
           if (stra[i] >= '0' && stra[i] <= '9') {
             f = stra[i] - '0';
             while (stra[i + 1] >= '0' && stra[i + 1] <= '9') {
@@ -52,6 +62,7 @@ int s21_sscanf(const char *stra, const char *format, ...) {
               f = f + q;
               i++;
             }
+            if (q != 0) f = -f;
             *p = f;
           } else {
             error++;
@@ -62,8 +73,15 @@ int s21_sscanf(const char *stra, const char *format, ...) {
       }
       if (format[e] == 'f') {
         q = 1;
+        qi = 0;
+        f = 0;
         if (stra[i] != ' ' && stra[i] != '\0') {
           float *p = va_arg(A, float *);
+          if (stra[i] == '-' && stra[i + 1] >= '0' && stra[i + 1] <= '9') {
+            qi++;
+            i++;
+          }
+          if (stra[i] == '+' && stra[i + 1] >= '0' && stra[i + 1] <= '9') i++;
           if (stra[i] >= '0' && stra[i] <= '9') {
             fl = stra[i] - '0';
             while (stra[i + 1] >= '0' && stra[i + 1] <= '9') {
@@ -83,11 +101,78 @@ int s21_sscanf(const char *stra, const char *format, ...) {
                 i++;
               }
             }
+            if (qi != 0) fl = -fl;
             *p = fl;
           } else {
             error++;
           }
           i++;
+        }
+        e++;
+      }
+      if (format[e] == 'i') {
+        if (stra[i] != ' ' && stra[i] != '\0') {
+          int *p = va_arg(A, int *);
+          q = 0;
+          qi = 0;
+          if (stra[i] == '-') {
+            q++;
+            i++;
+          }
+          if (stra[i] == '+') i++;
+          if (stra[i] == '0' && stra[i + 1] == 'x') {
+            i++;
+            i++;
+            while (stra[i] != ' ' && stra[i] != '\0') {
+              i++;
+              qi++;
+            }
+            i = i - qi;
+            qi--;
+            while (stra[i] != ' ' && stra[i] != '\0') {
+              if (stra[i] >= '0' && stra[i] <= '9') {
+                w = stra[i] - '0';
+                w = w * (pow(16, qi));
+                i++;
+                qi--;
+                f = f + w;
+              }
+              if (stra[i] >= 'A' && stra[i] <= 'F') {
+                w = stra[i] - 65;
+                w = w + 10;
+                w = w * (pow(16, qi));
+                i++;
+                qi--;
+                f = f + w;
+              }
+            }
+            if (q != 0) f = -f;
+            *p = f;
+          } else {
+            if (stra[i] == '0' && stra[i] >= '0' && stra[i] <= '7') {
+              i++;
+              while (stra[i] != ' ' && stra[i] != '\0') {
+                i++;
+                qi++;
+              }
+              i = i - qi;
+              qi--;
+              while (stra[i] != ' ' && stra[i] != '\0') {
+                if (stra[i] >= '0' && stra[i] <= '9') {
+                  w = stra[i] - '0';
+                  w = w * (pow(8, qi));
+                  i++;
+                  qi--;
+                  f = f + w;
+                }
+              }
+              if (q != 0) f = -f;
+              *p = f;
+            } else {
+              error++;
+            }
+            i++;
+          }
         }
         e++;
       }
@@ -98,26 +183,3 @@ int s21_sscanf(const char *stra, const char *format, ...) {
   va_end(A);
   return 0;
 }
-
-/*void fink(const char *stra, const char *format, char *str1) {
-  s21_size_t a = s21_strlen(format), b = s21_strlen(stra);
-  int w = b, q = a;
-  char str[w], f[q];
-  s21_strcpy(str, stra);
-  s21_strcpy(f, format);
-  int e = 0;
-  while (f[e]) {
-    if (f[e] == '%') {
-      e++;
-    } else {
-      e++;
-    }
-    if (f[e] == 's') {
-      q = 0;
-      while (str[q] != ' ') {
-        str1[q] = str[q];
-        q++;
-      }
-    }
-  }
-}*/
