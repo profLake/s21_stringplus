@@ -2,6 +2,7 @@
 #include <stdarg.h>
 
 
+char buff[500];
 int s21_sprintf(char *target, const char *format, ...) {
     const char *target_saved = target;
     va_list args;
@@ -221,6 +222,15 @@ int s21_trgt_print_ulong(char *target, unsigned long n) {
 int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
     const char *target_saved = target;
 
+    if (isnan(ld)) {
+        s21_memcpy(target, "nan", 3);
+        return 3;
+    }
+    if (ld == INFINITY) {
+        s21_memcpy(target, "inf", 3);
+        return 3;
+    }
+
     unsigned long decim_part = (long)ld;
     target += s21_trgt_print_ulong(target, decim_part);
     ld -= decim_part;
@@ -228,23 +238,14 @@ int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
     if (precis_len > 0) {
         *target = '.';
         target++;
-        if (ld == 0) {
-            s21_memset(target, '0', precis_len);
-            target += precis_len;
-        } else if (precis_len < s21_udecim_get_str_len(LONG_MAX) - 1) {
-            long double after_part;
-            after_part = ld * s21_ulong_get_pow(10, precis_len);
-            after_part = round(after_part);
-            target += s21_trgt_print_ulong(target, (long)after_part);
-        } else {
-            while (precis_len) {
-                ld *= 10;
-                *target = '0' + (int)ld;
-                target++;
-                ld -= (int)ld;
-                precis_len--;
-            }
-        }
+        long double after_part;
+        after_part = ld * s21_ulong_get_pow(10, precis_len);
+        after_part = round(after_part);
+        int after_part_len = s21_udecim_get_str_len((unsigned long)after_part);
+        int zeros_count = precis_len - after_part_len;
+        s21_memset(target, '0', zeros_count);
+        target += zeros_count;
+        target += s21_trgt_print_ulong(target, (unsigned long)after_part);
     }
 
     return target - target_saved;
@@ -521,7 +522,6 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         *target = sign;
         target++;
     }
-LOG("token:%s, tokn_ratio:%Lf, precis_len:%d", token, tokn_ratio, precis_len)
     if (s21_tokn_get_specif(token) == SPECIFS[5]) {
         target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
     }

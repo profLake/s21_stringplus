@@ -12,12 +12,12 @@ SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
-ifeq ($(uname -s), "Linux)
-CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
-####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-####    использует эти библиотеки
+ifeq ("$(shell uname -s)", "Linux")
+	CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
+	####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+	####    использует эти библиотеки
 else
-CLIBS=-lm -lcheck
+	CLIBS=-lm -lcheck
 endif
 
 

@@ -84,7 +84,7 @@ unsigned long s21_ulong_get_pow(unsigned long n, int pow);
         long s21_atol(const char *str);     /*  ****replaces with based func */
 
 /* ****Для дебага */
-#define LOG(...) char buff[500]; sprintf(buff, __VA_ARGS__); puts(buff);
+#define LOG(...) sprintf(buff, __VA_ARGS__); puts(buff);
 
 
 /* Для s21_strerror() */
