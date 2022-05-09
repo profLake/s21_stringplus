@@ -157,6 +157,28 @@ START_TEST(test_s21_to_upper)
 }
 END_TEST
 
+START_TEST(test_s21_strstr)
+{
+    char *str1;
+    char *str2;
+
+    str1 = "Simple string";
+    str2 = "ple";
+    ck_assert_str_eq(strstr(str1, str2), s21_strstr(str1, str2));
+    str2 = "in";
+    ck_assert_str_eq(strstr(str1, str2), s21_strstr(str1, str2));
+
+    str1 = "Simple string";
+    str2 = "595";
+    ck_assert_ptr_eq(strstr(str1, str2), s21_strstr(str1, str2));
+
+    str1 = "Simpl";
+    str2 = "Simple";
+    ck_assert_ptr_eq(strstr(str1, str2), s21_strstr(str1, str2));
+
+}
+END_TEST
+
 
 
 START_TEST(test_s21_strncmp)
@@ -203,7 +225,8 @@ int main(void)
     tcase_add_test(tc_core, test_s21_strncpy);
     tcase_add_test(tc_core, test_s21_trim);
     tcase_add_test(tc_core, test_s21_to_upper);
-        
+    tcase_add_test(tc_core,  test_s21_strstr);
+       
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
