@@ -21,6 +21,7 @@ check:
 		./s21_strtok.c \
 		./s21_trim.c \
 		./s21_to_upper.c \
+		./s21_strstr.c \
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
