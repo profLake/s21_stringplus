@@ -6,7 +6,7 @@ char* s21_strchr(const char *str, int c) {
     char r = (char)c;
     while (*str && *str != r)
         str++;
-    if (*str && *str == r)
+    if (*str == r)
         ret = (char*)str;
 
     return ret;
