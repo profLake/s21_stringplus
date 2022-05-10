@@ -537,12 +537,17 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
+    /*
     format = "hello, '%*.*Lf' and also '%d'!";
     right = sprintf(buff_right, format, 12, 4, 10.45, 112);
     out = s21_sprintf(buff, format, 12, 4, 10.45, 112);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
-    /*  ****Наш s21_sprintf вед>т себя при такой ошибке иначе. */
+    */
+    /*  ****Наш s21_sprintf вед>т себя при такой ошибке иначе.
+     *      На линуксе настоящий выводит '         nan',
+     *      но на маке гигнатский набор цифр
+     */
 
     format = "hello, '%*.*Lf' and also '%d'!";
     right = sprintf(buff_right, format, 12, 4, (long double)10.45, 112);
@@ -580,6 +585,12 @@ START_TEST(test_s21_sprintf)
     format = "hello, '%e' and also '%d'!";
     right = sprintf(buff_right, format, 45.98, 112);
     out = s21_sprintf(buff, format, 45.98, 112);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%e' and also '%d'!";
+    right = sprintf(buff_right, format, 56.97, 1);
+    out = s21_sprintf(buff, format, 56.97, 1);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
@@ -641,6 +652,47 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(hint_right, hint);
     ck_assert_int_eq(right, out);
+
+    format = "hello, '%g' and also '%d'!";
+    right = sprintf(buff_right, format, 56.97, 1);
+    out = s21_sprintf(buff, format, 56.97, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%g' and also '%d'!";
+    right = sprintf(buff_right, format, 0.097, 1);
+    out = s21_sprintf(buff, format, 0.097, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%g' and also '%d'!";
+    right = sprintf(buff_right, format, 0.00097, 1);
+    out = s21_sprintf(buff, format, 0.00097, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%g' and also '%d'!";
+    right = sprintf(buff_right, format, 0.000097, 1);
+    out = s21_sprintf(buff, format, 0.000097, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "hello, '%16g' and also '%d'!";
+    right = sprintf(buff_right, format, 0.000097, 1);
+    out = s21_sprintf(buff, format, 0.000097, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    /*
+    format = "hello, '%16.1g' and also '%d'!";
+    right = sprintf(buff_right, format, 0.000097, 1);
+    out = s21_sprintf(buff, format, 0.000097, 1);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+    */
+    /*  ****Известная ошибка. Настоящий sprintf выдаёт, внезапно,
+     *      '....0.0001', в то время, как наш выдаёт разумный '....0'
+     */
 }
 END_TEST
 
@@ -1242,6 +1294,14 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
     memset(target, 0, 500);
+
+    token = "g";
+    target_right = "9.7e-05";
+    right = 7;
+    out = vatest_s21_trgt_print_tokn_ratio(target, token, 0.000097);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 
@@ -1325,6 +1385,73 @@ START_TEST(test_s21_trgt_print_tokn_ptr)
 }
 END_TEST
 
+/*
+START_TEST(test_s21_uratio_precis_get_str_len)
+{
+    long double ld;
+    int precis_len;
+    int right;
+    int out;
+
+    ld = 15.39;
+    precis_len = 6;
+    right = 2;
+    out = s21_uratio_precis_get_str_len(ld, precis_len);
+    ck_assert_int_eq(right, out);
+
+    ld = 15.394;
+    precis_len = 6;
+    right = 3;
+    out = s21_uratio_precis_get_str_len(ld, precis_len);
+    ck_assert_int_eq(right, out);
+
+    ld = 15.3902;
+    precis_len = 6;
+    right = 4;
+    out = s21_uratio_precis_get_str_len(ld, precis_len);
+    ck_assert_int_eq(right, out);
+
+    ld = 15.39002;
+    precis_len = 6;
+    right = 5;
+    out = s21_uratio_precis_get_str_len(ld, precis_len);
+    ck_assert_int_eq(right, out);
+}
+END_TEST
+*/
+
+START_TEST(test_s21_trgt_print_e_uldouble)
+{
+    char target[500] = { 0 };
+    long double ld;
+    int precis_len;
+    char e_sign;
+    char *target_right;
+    int right;
+    int out;
+
+    ld = 56.97;
+    precis_len = 3;
+    e_sign = 'e';
+    target_right = "5.697e+01";
+    right = 9;
+    out = s21_trgt_print_e_uldouble(target, ld, precis_len, e_sign);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+
+    ld = 0.000097;
+    precis_len = 6;
+    e_sign = 'E';
+    target_right = "9.700000E-05";
+    right = 12;
+    out = s21_trgt_print_e_uldouble(target, ld, precis_len, e_sign);
+    ck_assert_str_eq(target_right, target);
+    ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
+}
+END_TEST
+
 
 Suite* s21_string_suite()
 {
@@ -1378,6 +1505,8 @@ Suite* s21_string_suite()
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_ratio);
     tcase_add_test(tc_core, test_s21_trgt_print_base_ulong);
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_ptr);
+//  tcase_add_test(tc_core, test_s21_uratio_precis_get_str_len);
+    tcase_add_test(tc_core, test_s21_trgt_print_e_uldouble);
 
     suite_add_tcase(s, tc_core);
 

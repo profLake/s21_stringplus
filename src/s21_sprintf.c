@@ -2,7 +2,7 @@
 #include <stdarg.h>
 
 
-char buff[500];
+char _buff[5000];
 int s21_sprintf(char *target, const char *format, ...) {
     const char *target_saved = target;
     va_list args;
@@ -23,7 +23,7 @@ int s21_sprintf(char *target, const char *format, ...) {
             const char *token = format;
             char specif = s21_tokn_get_specif(token);
 
-            int printed;
+            int printed = 0;
             if (specif == SPECIFS[0]) {
                 char tokn_c = va_arg(args, int);
                 printed = s21_trgt_print_tokn_char(target, token, tokn_c);
@@ -36,7 +36,9 @@ int s21_sprintf(char *target, const char *format, ...) {
                 printed = s21_trgt_print_tokn_num(target, token, &args);
             } if (specif == SPECIFS[3]
                   || specif == SPECIFS[4]
-                  || specif == SPECIFS[5]) {
+                  || specif == SPECIFS[5]
+                  || specif == SPECIFS[6]
+                  || specif == SPECIFS[7]) {
                 printed = s21_trgt_print_tokn_ratio(target, token, &args);
             } if (specif == SPECIFS[9]) {
                 char *tokn_str  = va_arg(args, char*);
@@ -166,42 +168,6 @@ int s21_frmt_is_tokn(const char *format) {
     return result;
 }
 
-/*
-int s21_trgt_print_uint(char *target, unsigned int n) {
-    const char *target_saved = target;
-
-    int n_len = s21_udecim_get_str_len(n);
-    while (n_len > 0) {
-        int divisor = s21_ulong_get_pow(10, n_len - 1);
-        int curr_d = n / divisor;
-        char curr_c = '0' + curr_d;
-        *target = curr_c;
-        target++;
-        n %= divisor;
-        n_len--;
-    }
-
-    return target - target_saved;
-}
-
-int s21_trgt_print_ushort(char *target, unsigned short n) {
-    const char *target_saved = target;
-
-    int n_len = s21_udecim_get_str_len(n);
-    while (n_len > 0) {
-        int divisor = s21_ulong_get_pow(10, n_len - 1);
-        int curr_d = n / divisor;
-        char curr_c = '0' + curr_d;
-        *target = curr_c;
-        target++;
-        n %= divisor;
-        n_len--;
-    }
-
-    return target - target_saved;
-}
-*/
-
 int s21_trgt_print_ulong(char *target, unsigned long n) {
     const char *target_saved = target;
 
@@ -264,6 +230,7 @@ int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
         e++;
         ld /= 10;
     }
+
     target += s21_trgt_print_uldouble(target, ld, precis_len);
 
     *target = e_sign;
@@ -271,6 +238,7 @@ int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
     if (e < 0) {
         *target = '-';
         target++;
+        e = -e;
     } else {
         *target = '+';
         target++;
@@ -443,9 +411,10 @@ int s21_trgt_print_tokn_str(char *target, const char *token,
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_ratio(char *target, const char *token,
-            va_list *pargs) {
+int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
+
+    char tokn_specif = s21_tokn_get_specif(token);
 
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
@@ -484,15 +453,38 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         tokn_ratio = -tokn_ratio;
     }
 
-    int non_precis_part_len;
-    if (s21_tokn_get_specif(token) == SPECIFS[5]) {
-        non_precis_part_len = s21_udecim_get_str_len((unsigned long)tokn_ratio);
-    } else {
+    int is_e_shorter = 0;
+    int non_precis_part_len = s21_udecim_get_str_len((unsigned long)tokn_ratio);
+    if (tokn_specif == SPECIFS[3]
+            || tokn_specif == SPECIFS[4]) {
         non_precis_part_len = 5;
         /*  Числа, наподобие 1.54+e01, имеют 1 символ до запятой и 4 символа
          *      после дробной части
          */
+    } else if (tokn_specif == SPECIFS[6]
+               || tokn_specif == SPECIFS[7]) {
+        int actual_precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
+                precis_len);
+        int actual_e_precis_len = s21_e_uratio_precis_get_str_len(tokn_ratio,
+                precis_len);
+
+        char buff[500];
+
+        int len1 = s21_trgt_print_uldouble(buff, tokn_ratio, actual_precis_len);
+        int len2 = s21_trgt_print_e_uldouble(buff, tokn_ratio,
+                actual_e_precis_len, 'e');
+        if (len2 < len1) {
+            is_e_shorter = 1;
+            precis_len = actual_e_precis_len;
+            non_precis_part_len = 5;
+            /*  Числа, наподобие 1.54+e01, имеют 1 символ до запятой и 4 символа
+             *      после дробной части
+             */
+        } else {
+            precis_len = actual_precis_len;
+        }
     }
+
     int fill_len = width - precis_len - non_precis_part_len;
     if (precis_len) {
         /* For a common */
@@ -510,6 +502,15 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         fill_symb = '0';
     }
 
+    char e_sign = '\0';
+    if (tokn_specif == SPECIFS[3]
+        || tokn_specif == SPECIFS[6]) {
+        e_sign = 'e';
+    } if (tokn_specif == SPECIFS[4]
+          || tokn_specif == SPECIFS[7]) {
+        e_sign = 'E';
+    }
+
     if (is_prequel == 0) {
         if (fill_symb == '0' && sign) {
             *target = sign;
@@ -522,16 +523,22 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token,
         *target = sign;
         target++;
     }
-    if (s21_tokn_get_specif(token) == SPECIFS[5]) {
+    if (tokn_specif == SPECIFS[5]) {
         target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
-    }
-    if (s21_tokn_get_specif(token) == SPECIFS[3]) {
+
+    } if (tokn_specif == SPECIFS[3]
+        || tokn_specif == SPECIFS[4]) {
         target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
-                'e');
-    }
-    if (s21_tokn_get_specif(token) == SPECIFS[4]) {
-        target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
-                'E');
+                    e_sign);
+
+    } if (tokn_specif == SPECIFS[6]
+          || tokn_specif == SPECIFS[7]) {
+        if (is_e_shorter) {
+            target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
+                        e_sign);
+        } else {
+            target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
+        }
     }
     if (is_prequel) {
         s21_memset(target, fill_symb, fill_len);
@@ -620,5 +627,31 @@ long s21_atol(const char *str) {
         str++;
     }
     return is_minus ? -result : result;
+}
+
+int s21_uratio_precis_get_str_len(long double ld, int precis_len) {
+    ld -= (long)ld;
+
+    char buff[500];
+    s21_trgt_print_uldouble(buff, ld, precis_len);
+
+    int i;
+    for (i = precis_len - 1; buff[2 + i] == '0'; i--);
+    /*  2 --- чтобы пропустить часть "0." */
+
+    return i + 1;
+}
+
+int s21_e_uratio_precis_get_str_len(long double ld, int precis_len) {
+    int e = 0;
+    while (ld < 1) {
+        e--;
+        ld *= 10;
+    }
+    while (ld > 10) {
+        e++;
+        ld /= 10;
+    }
+    return s21_uratio_precis_get_str_len(ld, precis_len);
 }
 

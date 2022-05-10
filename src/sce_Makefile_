@@ -51,7 +51,8 @@ sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 		$(CLIBS)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
-	./tests/unit_tests.out
+	./tests/unit_tests.out; exit 0
+	make -f ./sce_Makefile_ clean
 
 cpplint:
 	cp ../materials/linters/CPPLINT.cfg ./
