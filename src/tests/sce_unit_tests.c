@@ -235,6 +235,9 @@ START_TEST(test_s21_strchr)
 
     ck_assert_ptr_eq(s21_strchr(str, '3' + 128), strchr(str, '3' + 128));
     ck_assert_ptr_eq(s21_strchr(str, '3' + 256), strchr(str, '3' + 256));
+
+    ck_assert_ptr_eq(s21_strchr(SPECIFS, '-'), strchr(SPECIFS, '-'));
+    ck_assert_ptr_eq(s21_strchr(SPECIFS, '\0'), strchr(SPECIFS, '\0'));
 }
 END_TEST
 
