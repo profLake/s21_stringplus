@@ -33,7 +33,10 @@ START_TEST(test_s21_memchr)
     value = 'e';
     n = 50;
     ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
-    n = 5;
+
+    ptr = "123344";
+    value = 'e';
+    n = 4;
     ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
 }
 END_TEST
@@ -683,13 +686,11 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
-    /*
     format = "hello, '%16.1g' and also '%d'!";
     right = sprintf(buff_right, format, 0.000097, 1);
     out = s21_sprintf(buff, format, 0.000097, 1);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
-    */
     /*  ****Известная ошибка. Настоящий sprintf выдаёт, внезапно,
      *      '....0.0001', в то время, как наш выдаёт разумный '....0'
      */
