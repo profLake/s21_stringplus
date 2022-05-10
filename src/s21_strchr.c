@@ -7,6 +7,7 @@ char* s21_strchr(const char *str, int c) {
     while (*str && *str != r)
         str++;
     if (*str == r)
+        /*  *str здесь может хранить '\0'-символ, и он также учитывается  */
         ret = (char*)str;
 
     return ret;

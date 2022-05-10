@@ -66,13 +66,13 @@ int s21_sprintf(char *target, const char *format, ...) {
 
 char *s21_tokn_skip_part(const char *token, unsigned int i) {
     if (i--)    /* flags */
-        while (s21_strchr(FLAGS, *token))
+        while (*token && s21_strchr(FLAGS, *token))
             token++;
     if (i--) {  /* width */
         if (*token == ADDIT_INT_SIGN)
             token++;
         else
-            while (s21_strchr(DIGITS, *token))
+            while (*token && s21_strchr(DIGITS, *token))
                 token++;
     }
     if (i--)    /* precision */
@@ -81,16 +81,16 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
             if (*token == ADDIT_INT_SIGN)
                 token++;
             else
-                while (s21_strchr(DIGITS, *token))
+                while (*token && s21_strchr(DIGITS, *token))
                     token++;
         }
     if (i--)    /* length-specifier */
-        if (s21_strchr(TOKN_LENS, *token))
+        if (*token && s21_strchr(TOKN_LENS, *token))
             token++;
     if (i--)    /* specifier */
-        if (s21_strchr(SPECIFS, *token))
+        if (*token && s21_strchr(SPECIFS, *token))
             token++;
-    return (char*)token;
+    return (char *)token;
 }
 
 char s21_tokn_get_flag(const char *token, int i) {
@@ -147,7 +147,7 @@ char s21_tokn_get_len(const char *token) {
 
 char s21_tokn_get_specif(const char *token) {
     token = s21_tokn_skip_part(token, 4);
-    if (s21_strchr(SPECIFS, *token)) {
+    if (*token && s21_strchr(SPECIFS, *token)) {
         return *token;
     }
     return '\0';
@@ -621,7 +621,7 @@ long s21_atol(const char *str) {
         is_minus = 1;
         str++;
     }
-    while (s21_strchr(DIGITS, *str)) {
+    while (*str && s21_strchr(DIGITS, *str)) {
         result *= 10;
         result += *str - '0';
         str++;

@@ -7,6 +7,7 @@ char* s21_strrchr(const char *str, int c) {
 
     while (str_end != str) {
         if (*str_end == (char)c) {
+            /*  Сравниваем, начиная с последнего '\0'-символа   */
             ret = (char *)str_end;
             break;
         }

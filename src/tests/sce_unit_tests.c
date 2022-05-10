@@ -166,6 +166,7 @@ START_TEST(test_s21_strrchr)
     ck_assert_ptr_eq(s21_strrchr(str, 'e'), strrchr(str, 'e'));
     ck_assert_ptr_eq(s21_strrchr(str, '5'), strrchr(str, '5'));
     ck_assert_ptr_eq(s21_strrchr(empt, '4'), strrchr(empt, '4'));
+    ck_assert_ptr_eq(s21_strrchr(str, '\0'), strrchr(str, '\0'));
 }
 END_TEST
 
