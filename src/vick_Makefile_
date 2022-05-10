@@ -22,6 +22,7 @@ check:
 		./s21_trim.c \
 		./s21_to_upper.c \
 		./s21_strstr.c \
+		./s21_insert.c \
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
