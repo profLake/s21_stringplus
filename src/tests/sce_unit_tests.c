@@ -244,7 +244,8 @@ START_TEST(test_s21_strcpy)
     
     ck_assert_str_eq(s21_strcpy(sp, "sp"), strcpy(sp1, "sp"));
     ck_assert_str_eq(s21_strcpy(sp, "dc\0b"), strcpy(sp1, "dc\0b"));
-    ck_assert_str_eq(s21_strcpy(sp, "WE12\0\n#@!yu."), strcpy(sp1, "WE12\0\n#@!yu."));
+    ck_assert_str_eq(s21_strcpy(sp, "WE12\0\n#@!yu."),
+            strcpy(sp1, "WE12\0\n#@!yu."));
     ck_assert_str_eq(s21_strcpy(sp, "\0o012"), strcpy(sp1, "\0o012"));
     ck_assert_str_eq(s21_strcpy(sp, ""), strcpy(sp1, ""));
     ck_assert_str_eq(s21_strcpy(sp, "y\0\n"), strcpy(sp1, "y\0\n"));

@@ -9,7 +9,7 @@ char *s21_strstr(const char *haystack, const char *needle) {
         return s21_NULL;
     }
 
-    int i = 0;
+    s21_size_t i = 0;
     while (haystack[i] && needle[i] && haystack[i] == needle[i]) {
         i++;
     }

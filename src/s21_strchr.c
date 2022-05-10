@@ -2,13 +2,12 @@
 
 char* s21_strchr(const char *str, int c) {
     char *ret = s21_NULL;
-    while (*str) {
-        if (*str == (char)c) {
-            ret = (char*)str;
-            break;
-        }
+    char r = (char)c;
+
+    while (*str && *str != r)
         str++;
-    }
+    if (*str == r)
+        ret = (char*)str;
 
     return ret;
 }
