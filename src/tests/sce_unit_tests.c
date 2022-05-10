@@ -223,15 +223,18 @@ END_TEST
 
 START_TEST(test_s21_strchr)
 {
-    const char str[102] = "1234a5E,",  empt[] = "";
+    const char *str = "1234a5E,",  empt[] = "";
     ck_assert_ptr_eq(s21_strchr(str, '3'), strchr(str, '3'));
     ck_assert_ptr_eq(s21_strchr(str, 'a'), strchr(str, 'a'));
     ck_assert_ptr_eq(s21_strchr(str, 'e'), strchr(str, 'e'));
     ck_assert_ptr_eq(s21_strchr(empt, '4'), strchr(empt, '4'));
-    ck_assert_ptr_eq(s21_strchr("ques\0\ntion", '\n'), strchr("ques\0\ntion", '\n'));
+    ck_assert_ptr_eq(s21_strchr("ques\0\ntion", '\n'),
+            strchr("ques\0\ntion", '\n'));
     ck_assert_ptr_eq(s21_strchr("1\0\n2", '2'), strchr("1\0\n2", '2'));
     ck_assert_ptr_eq(s21_strchr("\0i\02p", 'i'), strchr("\0i\02p", 'i'));
-    
+
+    ck_assert_ptr_eq(s21_strchr(str, '3' + 128), strchr(str, '3' + 128));
+    ck_assert_ptr_eq(s21_strchr(str, '3' + 256), strchr(str, '3' + 256));
 }
 END_TEST
 
