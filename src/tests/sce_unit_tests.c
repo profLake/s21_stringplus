@@ -33,7 +33,10 @@ START_TEST(test_s21_memchr)
     value = 'e';
     n = 50;
     ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
-    n = 5;
+
+    ptr = "123344";
+    value = 'e';
+    n = 4;
     ck_assert_ptr_eq(memchr(ptr, value, n), s21_memchr(ptr, value, n));
 }
 END_TEST
@@ -163,6 +166,7 @@ START_TEST(test_s21_strrchr)
     ck_assert_ptr_eq(s21_strrchr(str, 'e'), strrchr(str, 'e'));
     ck_assert_ptr_eq(s21_strrchr(str, '5'), strrchr(str, '5'));
     ck_assert_ptr_eq(s21_strrchr(empt, '4'), strrchr(empt, '4'));
+    ck_assert_ptr_eq(s21_strrchr(str, '\0'), strrchr(str, '\0'));
 }
 END_TEST
 
@@ -220,15 +224,21 @@ END_TEST
 
 START_TEST(test_s21_strchr)
 {
-    const char str[102] = "1234a5E,",  empt[] = "";
+    const char *str = "1234a5E,",  empt[] = "";
     ck_assert_ptr_eq(s21_strchr(str, '3'), strchr(str, '3'));
     ck_assert_ptr_eq(s21_strchr(str, 'a'), strchr(str, 'a'));
     ck_assert_ptr_eq(s21_strchr(str, 'e'), strchr(str, 'e'));
     ck_assert_ptr_eq(s21_strchr(empt, '4'), strchr(empt, '4'));
-    ck_assert_ptr_eq(s21_strchr("ques\0\ntion", '\n'), strchr("ques\0\ntion", '\n'));
+    ck_assert_ptr_eq(s21_strchr("ques\0\ntion", '\n'),
+            strchr("ques\0\ntion", '\n'));
     ck_assert_ptr_eq(s21_strchr("1\0\n2", '2'), strchr("1\0\n2", '2'));
     ck_assert_ptr_eq(s21_strchr("\0i\02p", 'i'), strchr("\0i\02p", 'i'));
-    
+
+    ck_assert_ptr_eq(s21_strchr(str, '3' + 128), strchr(str, '3' + 128));
+    ck_assert_ptr_eq(s21_strchr(str, '3' + 256), strchr(str, '3' + 256));
+
+    ck_assert_ptr_eq(s21_strchr(SPECIFS, '-'), strchr(SPECIFS, '-'));
+    ck_assert_ptr_eq(s21_strchr(SPECIFS, '\0'), strchr(SPECIFS, '\0'));
 }
 END_TEST
 
@@ -238,7 +248,8 @@ START_TEST(test_s21_strcpy)
     
     ck_assert_str_eq(s21_strcpy(sp, "sp"), strcpy(sp1, "sp"));
     ck_assert_str_eq(s21_strcpy(sp, "dc\0b"), strcpy(sp1, "dc\0b"));
-    ck_assert_str_eq(s21_strcpy(sp, "WE12\0\n#@!yu."), strcpy(sp1, "WE12\0\n#@!yu."));
+    ck_assert_str_eq(s21_strcpy(sp, "WE12\0\n#@!yu."),
+            strcpy(sp1, "WE12\0\n#@!yu."));
     ck_assert_str_eq(s21_strcpy(sp, "\0o012"), strcpy(sp1, "\0o012"));
     ck_assert_str_eq(s21_strcpy(sp, ""), strcpy(sp1, ""));
     ck_assert_str_eq(s21_strcpy(sp, "y\0\n"), strcpy(sp1, "y\0\n"));
@@ -683,13 +694,11 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
-    /*
     format = "hello, '%16.1g' and also '%d'!";
     right = sprintf(buff_right, format, 0.000097, 1);
     out = s21_sprintf(buff, format, 0.000097, 1);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
-    */
     /*  ****Известная ошибка. Настоящий sprintf выдаёт, внезапно,
      *      '....0.0001', в то время, как наш выдаёт разумный '....0'
      */

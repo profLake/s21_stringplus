@@ -9,15 +9,17 @@
 
 int s21_sscanf(const char *stra, const char *format, ...);
 
-// int main() {
-//   char str[20] = "077";  // str1[20], str2[20];
-//   int a;
-//   s21_sscanf(str, "%i", &a);
-//   // sscanf(str, "%i", &a);
-//   // scanf("%i", &a);
-//   printf("%i", a);
-//   return 0;
-// }
+int main() {
+  char str[20] = "799.566";  // str1[20], str2[20];
+  float a;
+  // s21_sscanf(str, "%u", &a);
+  sscanf(str, "%g", &a);
+  // scanf("%i", &a);
+  printf("%g", a);
+  return 0;
+}
+
+// c s u d f i
 
 int s21_sscanf(const char *stra, const char *format, ...) {
   va_list A;
@@ -49,8 +51,9 @@ int s21_sscanf(const char *stra, const char *format, ...) {
         if (stra[i] != ' ' && stra[i] != '\0') {
           int *p = va_arg(A, int *);
           q = 0;
+          qi = 0;
           if (stra[i] == '-' && stra[i + 1] >= '0' && stra[i + 1] <= '9') {
-            q++;
+            qi++;
             i++;
           }
           if (stra[i] == '+' && stra[i + 1] >= '0' && stra[i + 1] <= '9') i++;
@@ -62,7 +65,7 @@ int s21_sscanf(const char *stra, const char *format, ...) {
               f = f + q;
               i++;
             }
-            if (q != 0) f = -f;
+            if (qi != 0) f = -f;
             *p = f;
           } else {
             error++;
@@ -124,6 +127,11 @@ int s21_sscanf(const char *stra, const char *format, ...) {
             i++;
             i++;
             while (stra[i] != ' ' && stra[i] != '\0') {
+              if (stra[i + 1] <= '0' || stra[i + 1] >= '9') {
+                break;
+              } else {
+                if (stra[i + 1] <= 'A' || stra[i + 1] >= 'F') break;
+              }
               i++;
               qi++;
             }
@@ -149,9 +157,10 @@ int s21_sscanf(const char *stra, const char *format, ...) {
             if (q != 0) f = -f;
             *p = f;
           } else {
-            if (stra[i] == '0' && stra[i] >= '0' && stra[i] <= '7') {
+            if (stra[i] == '0' && stra[i + 1] >= '0' && stra[i + 1] <= '7') {
               i++;
               while (stra[i] != ' ' && stra[i] != '\0') {
+                if (stra[i + 1] <= '0' || stra[i + 1] >= '7') break;
                 i++;
                 qi++;
               }
@@ -183,3 +192,5 @@ int s21_sscanf(const char *stra, const char *format, ...) {
   va_end(A);
   return 0;
 }
+
+// c s u d f i

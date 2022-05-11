@@ -24,7 +24,10 @@ check:
 		./s21_to_upper.c \
 		./s21_strstr.c \
 		./s21_insert.c \
+<<<<<<< HEAD
 		./s21_strerror.c \
+=======
+>>>>>>> 326fefca40476ed29c0a6628f46a7175db311fc2
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
