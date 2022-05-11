@@ -1,7 +1,7 @@
 check:
 	clear
 	gcc -Wall -Wextra -Werror \
-		./tests/s21_string_test.c \
+		./tests/newfntests.c \
 		./s21_strlen.c \
 		./s21_memcmp.c \
 		./s21_memcpy.c \
@@ -24,13 +24,10 @@ check:
 		./s21_to_upper.c \
 		./s21_strstr.c \
 		./s21_insert.c \
-<<<<<<< HEAD
 		./s21_strerror.c \
-=======
->>>>>>> 326fefca40476ed29c0a6628f46a7175db311fc2
+		./s21_to_lower.c \
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
 		####    используетэти библиотеки
 	./tests/unit_tests.out
-
