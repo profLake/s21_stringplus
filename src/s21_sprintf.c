@@ -24,9 +24,9 @@ int s21_sprintf(char *target, const char *format, ...) {
             char specif = s21_tokn_get_specif(token);
 
             int printed = 0;
-            if (specif == SPECIFS[0]) {
-                char tokn_c = va_arg(args, int);
-                printed = s21_trgt_print_tokn_char(target, token, tokn_c);
+            if (specif == SPECIFS[0]
+                || specif == SPECIFS[15]) {
+                printed = s21_trgt_print_tokn_char(target, token, &args);
             } if (specif == SPECIFS[1]
                   || specif == SPECIFS[2]
                   || specif == SPECIFS[8]
@@ -49,8 +49,6 @@ int s21_sprintf(char *target, const char *format, ...) {
                 printed = 0;
                 int *to_write_here = va_arg(args, int*);
                 *to_write_here = target - target_saved;
-            } if (specif == SPECIFS[15]) {
-                printed = s21_trgt_print_tokn_char(target, token, TOKN_SIGN);
             }
             target += printed;
 
@@ -265,14 +263,59 @@ int s21_trgt_print_base_ulong(char *target, unsigned long n,
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_char(char *target, const char *token, char tokn_c) {
+int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
 
-    /* Just to avoid compiler error */
-    token++;
+    int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
+    int width = s21_tokn_get_width(token);
+    if (width == -2) {
+        width = va_arg(*pargs, int);
+    }
+    if (width < 0) {
+        width = 0;
+    }
+
+    int fill_len = width - PTR_LEN_WITH_0X;
+    if (fill_len < 0) {
+        fill_len = 0;
+    }
+
+    int precis_len = s21_tokn_get_precision(token);
+    if (precis_len == -1) {
+        precis_len = 6;
+    }
+    if (precis_len == -2) {
+        precis_len = va_arg(*pargs, int);
+    }
+    if (precis_len < 0) {
+        precis_len = 0;
+    }
+
+    char tokn_specif = s21_tokn_get_specif(token);
+
+    char tokn_c = '\0';
+    if (tokn_specif == SPECIFS[0]) {
+        tokn_c = (char)va_arg(*pargs, int);
+    } if (tokn_specif == SPECIFS[15]) {
+        tokn_c = TOKN_SIGN;
+    }
+
+    char fill_symb = ' ';
+    if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
+        fill_symb = '0';
+    }
+
+    if (is_prequel == 0) {
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
+    }
     *target = tokn_c;
     target++;
+    if (is_prequel) {
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
+    }
     return target - target_saved;
 }
 
@@ -548,8 +591,7 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_ptr(char *target, const char *token,
-        va_list *pargs) {
+int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
 
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);

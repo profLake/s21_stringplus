@@ -414,6 +414,14 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
+    /*
+    format = "hello, '%4.0c'!";
+    right = sprintf(buff_right, format, 'r');
+    out = s21_sprintf(buff, format, 'r');
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+    */
+
     format = "hello, '%d'!";
 //  buff_right = "hello, '115'!";
     right = sprintf(buff_right, format, 115);
@@ -1462,12 +1470,12 @@ START_TEST(test_s21_trgt_print_e_uldouble)
 END_TEST
 
 
-Suite* s21_string_suite()
+Suite* sce_s21_string_suite()
 {
     Suite *s;
     TCase *tc_core;
 
-    s = suite_create("s21_string");
+    s = suite_create("sce_s21_string");
 
     /* Core test case */
     tc_core = tcase_create("Core");
@@ -1522,18 +1530,3 @@ Suite* s21_string_suite()
     return s;
 }
 
-int main()
-{
-    int number_failed;
-    Suite *s;
-    SRunner *sr;
-
-    s = s21_string_suite();
-    sr = srunner_create(s);
-
-    srunner_run_all(sr, CK_NORMAL);
-    number_failed = srunner_ntests_failed(sr);
-    srunner_free(sr);
-
-    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
-}

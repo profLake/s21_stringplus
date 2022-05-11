@@ -9,6 +9,7 @@
 
 int s21_sscanf(const char *stra, const char *format, ...);
 
+/*
 int main() {
   char str[20] = "799.566";  // str1[20], str2[20];
   float a;
@@ -18,6 +19,7 @@ int main() {
   printf("%g", a);
   return 0;
 }
+*/
 
 // c s u d f i
 
