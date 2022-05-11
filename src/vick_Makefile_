@@ -1,7 +1,7 @@
 check:
 	clear
 	gcc -Wall -Wextra -Werror \
-		./tests/unit_testsvickey.c \
+		./tests/s21_string_test.c \
 		./s21_strlen.c \
 		./s21_memcmp.c \
 		./s21_memcpy.c \
@@ -18,10 +18,13 @@ check:
 		./s21_strspn.c \
 		./s21_memmove.c \
 		./s21_strncat.c \
+		./s21_strrchr.c \
 		./s21_strtok.c \
 		./s21_trim.c \
 		./s21_to_upper.c \
 		./s21_strstr.c \
+		./s21_insert.c \
+		./s21_strerror.c \
 		-o ./tests/unit_tests.out \
 		-lcheck
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,

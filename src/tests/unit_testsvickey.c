@@ -203,6 +203,89 @@ START_TEST(test_s21_trim)
 }
 END_TEST
 
+START_TEST(test_s21_insert)
+{
+    char * q = "aaabbbccc", * k = "baz", * qk = "aaabazbbbccc", * p = " ",
+    * qp = "aaab bbccc";
+    char * new = s21_insert(q, k, 3);
+    char * new1 = s21_insert(q, p, 4);
+    char * new3 = s21_insert(q, p, 10);
+    ck_assert_str_eq(new, qk);
+    free(new);
+    ck_assert_str_eq(new1, qp);
+    free(new1);
+    ck_assert_ptr_eq(new3, s21_NULL);
+    free(new3);
+}
+END_TEST
+
+START_TEST(test_s21_memcmp)
+{
+    char *str1, *s2;
+    char *str2, *val2;
+    int n, n1;
+    int out;
+    int right;
+
+    str1 = "12345";
+    str2 = "12342";
+    s2 = "123349r";
+    val2 = "3239";
+
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "12345";
+    str2 = "12342";
+    n = 4;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "hello";
+    str2 = "hello";
+    n = 5;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 50;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "bravo!";
+    str2 = "merci,";
+    n = 2;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+
+    str1 = "1234567";
+    str2 = "";
+    n = 6;
+    right = memcmp(str1, str2, n);
+    out = s21_memcmp(str1, str2, n);
+    ck_assert_int_eq(right, out);
+    
+    n1 = 50;
+    ck_assert_int_eq(memcmp(s2, val2, n1), s21_memcmp(s2, val2, n1));
+}
+END_TEST
+
+START_TEST(test_s21_memcpy)
+{
+    char dest[50];
+    s21_memcpy(dest, "hello", 5);
+    ck_assert(strncmp(dest, "hellr", 4) == 0);
+    ck_assert(strncmp(dest, "hellr", 5) != 0);
+}
+END_TEST
+
 int main(void)
 {
     int number_failed;
@@ -226,6 +309,9 @@ int main(void)
     tcase_add_test(tc_core, test_s21_trim);
     tcase_add_test(tc_core, test_s21_to_upper);
     tcase_add_test(tc_core,  test_s21_strstr);
+    tcase_add_test(tc_core,  test_s21_insert);
+    tcase_add_test(tc_core,   test_s21_memcmp);
+    tcase_add_test(tc_core,   test_s21_memcpy);
        
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
