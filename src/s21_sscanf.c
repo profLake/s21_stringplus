@@ -7,15 +7,18 @@
 
 // c s u d f i e E X x o g G
 
+void d_u_chislo(const char *stra, int *i, int *p, int *erro);
+void s_stroka(const char *stra, int *i, char *o);
+void c_simvol(const char *stra, int *i, char *o);
 int s21_sscanf(const char *stra, const char *format, ...);
 
 // int main() {
-//   char str[20] = " 0x 77aF";  // str1[20], str2[20];
-//   void *a;
-//   // s21_sscanf(str, "%p", &a);
-//   sscanf(str, "%p", &a);
+//   char str[20] = "124 D", str1[20];  // str2[20];
+//   int a;
+//   s21_sscanf(str, "%d %c", &a, str1);
+//   // sscanf(str, "%d %c", &a, str1);
 //   //     scanf("%i", &a);
-//   printf("%p", a);
+//   printf("%d %s", a, str1);
 //   return 0;
 // }
 
@@ -33,46 +36,17 @@ int s21_sscanf(const char *stra, const char *format, ...) {
       e++;
       if (format[e] == 'c') {
         char *o = va_arg(A, char *);
-        q = 0;
-        o[q] = stra[i];
-        e++;
+        c_simvol(stra, &i, o);
       }
       if (format[e] == 's') {
         char *o = va_arg(A, char *);
-        q = 0;
-        while (stra[i] != ' ' && stra[i] != '\0') {
-          o[q] = stra[i];
-          q++;
-          i++;
-        }
-        e++;
+        s_stroka(stra, &i, o);
       }
       if (format[e] == 'd' || format[e] == 'u') {
         if (stra[i] != ' ' && stra[i] != '\0') {
           int *p = va_arg(A, int *);
-          q = 0;
-          qi = 0;
-          if (stra[i] == '-' && stra[i + 1] >= '0' && stra[i + 1] <= '9') {
-            qi++;
-            i++;
-          }
-          if (stra[i] == '+' && stra[i + 1] >= '0' && stra[i + 1] <= '9') i++;
-          if (stra[i] >= '0' && stra[i] <= '9') {
-            f = stra[i] - '0';
-            while (stra[i + 1] >= '0' && stra[i + 1] <= '9') {
-              f = f * 10;
-              q = stra[i + 1] - '0';
-              f = f + q;
-              i++;
-            }
-            if (qi != 0) f = -f;
-            *p = f;
-          } else {
-            error++;
-          }
-          i++;
+          d_u_chislo(stra, &i, p, &error);
         }
-        e++;
       }
       if (format[e] == 'f' || format[e] == 'e' || format[e] == 'E' ||
           format[e] == 'g' || format[e] == 'G') {
@@ -214,26 +188,55 @@ int s21_sscanf(const char *stra, const char *format, ...) {
         }
         e++;
       }
-      if (format[e] == 'p') {
-        int lq = 0;
-        for (; stra[i] == ' '; i++) {
-        }
-        char *l = va_arg(A, char *);
-        while (stra[i] != ' ' && stra[i] != '\0') {
-          if (lq == 0) {
-            *l = stra[i];
-            lq++;
-          }
-          i++;
-        }
-        e++;
-      }
     }
     if (stra[i] == ' ') i++;
-    if (format[e] == ' ') e++;
+    // if (format[e] == ' ') e++;
+    e++;
   }
   va_end(A);
   return 0;
 }
 
 // c s u d f i e E X x o g G
+
+void c_simvol(const char *stra, int *i, char *o) {
+  int q = 0;
+  o[q] = stra[*i];
+}
+
+void s_stroka(const char *stra, int *i, char *o) {
+  int q = 0, iq = *i;
+  while (stra[iq] != ' ' && stra[iq] != '\0') {
+    o[q] = stra[iq];
+    q++;
+    iq++;
+    *i = iq;
+  }
+}
+
+void d_u_chislo(const char *stra, int *i, int *p, int *erro) {
+  int q = 0, qi = 0, ii = *i, error = 0, f;
+  if (stra[ii] == '-' && stra[ii + 1] >= '0' && stra[ii + 1] <= '9') {
+    qi++;
+    ii++;
+    *i = ii;
+  }
+  if (stra[ii] == '+' && stra[ii + 1] >= '0' && stra[ii + 1] <= '9') i++;
+  if (stra[ii] >= '0' && stra[ii] <= '9') {
+    f = stra[ii] - '0';
+    while (stra[ii + 1] >= '0' && stra[ii + 1] <= '9') {
+      f = f * 10;
+      q = stra[ii + 1] - '0';
+      f = f + q;
+      ii++;
+      *i = ii;
+    }
+    if (qi != 0) f = -f;
+    *p = f;
+  } else {
+    error++;
+  }
+  ii++;
+  *i = ii;
+  *erro = error;
+}
