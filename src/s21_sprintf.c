@@ -124,6 +124,7 @@ int s21_tokn_get_precision(const char *token) {
     int result = -1;
     if (*token == PRECIS_SIGN) {
         token++;
+        result = -3;
         if (*token == ADDIT_INT_SIGN) {
             result = -2;
         }
@@ -203,6 +204,11 @@ int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
     target += s21_trgt_print_ulong(target, decim_part);
     ld -= decim_part;
 
+    if (precis_len == -1) {
+        /*  -1 --- indicates flag '#'   */
+        *target = '.';
+        target++;
+    }
     if (precis_len > 0) {
         *target = '.';
         target++;
@@ -346,19 +352,31 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
 int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
 
+    int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
+
     int width = s21_tokn_get_width(token);
     if (width == -2) {
         width = va_arg(*pargs, int);
     }
+    if (width < 0) {
+        is_prequel = 1;
+        width = -width;
+    }
 
     int precis = s21_tokn_get_precision(token);
+    int is_precis_provided = 1;
+    if (precis == -3) {
+        precis = 0;
+    }
     if (precis == -1) {
         precis = 0;
+        is_precis_provided = 0;
     }
     if (precis == -2) {
         precis = va_arg(*pargs, int);
     }
     /*  precis --- works here as minimum digits counter to output */
+
 
     long tokn_num = va_arg(*pargs, long);
 
@@ -369,7 +387,6 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     if (s21_tokn_get_len(token) == TOKN_LENS[0]) {
         tokn_num = (short)tokn_num;
     }
-    int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
     char sign = '\0';
     if (s21_tokn_have_flag(token, FLAGS[1])) {
@@ -391,7 +408,8 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         base = BASE16UP;
         prefix_0x = "0X";
     }
-    if (s21_tokn_have_flag(token, FLAGS[3]) == 0) {
+    if (s21_tokn_have_flag(token, FLAGS[3]) == 0
+        || tokn_num == 0) {
         prefix_0x = NULL;
     }
 
@@ -444,16 +462,21 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         *target = sign;
         target++;
     }
-    if (precis_prefix_len) {
-        s21_memset(target, '0', precis_prefix_len);
-        target += precis_prefix_len;
-    }
     if (prefix_0x) {
         s21_strcpy(target, prefix_0x);
         target += s21_strlen(prefix_0x);
     }
-    int printed = s21_trgt_print_base_ulong(target, tokn_unum, base);
-    target+= printed;
+    if (precis_prefix_len) {
+        s21_memset(target, '0', precis_prefix_len);
+        target += precis_prefix_len;
+    }
+    if ((is_precis_provided && precis == 0 && tokn_unum == 0) == 0) {
+        /*  precis == 0 && tokn_unum == 0 --- because we should not print
+         *      value 0 if provided precis is 0
+         */
+        int printed = s21_trgt_print_base_ulong(target, tokn_unum, base);
+        target+= printed;
+    }
     if (is_prequel) {
         s21_memset(target, fill_symb, fill_len);
         target += fill_len;
@@ -513,7 +536,8 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
         width = va_arg(*pargs, int);
     }
     if (width < 0) {
-        width = 0;
+        is_prequel = 1;
+        width = -width;
     }
 
     int precis_len = s21_tokn_get_precision(token);
@@ -523,8 +547,8 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     if (precis_len == -2) {
         precis_len = va_arg(*pargs, int);
     }
-    if (precis_len < 0) {
-        precis_len = 0;
+    if (precis_len <= -3) {
+        precis_len = 6;
     }
  
     long double tokn_ratio;
@@ -575,8 +599,15 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
         }
     }
 
+    int is_point_forced = s21_tokn_have_flag(token, FLAGS[3]);
+
+    int is_pre_whitespace = s21_tokn_have_flag(token, FLAGS[2]);
+
     int fill_len = width - precis_len - non_precis_part_len;
-    if (precis_len) {
+    if (is_pre_whitespace) {
+        fill_len--;
+    }
+    if (precis_len || is_point_forced) {
         /* For a common */
         fill_len--;
     }
@@ -601,6 +632,15 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
         e_sign = 'E';
     }
 
+    if (precis_len == 0 && is_point_forced) {
+        precis_len = -1;
+        /*  -1 --- indicates flag '#'   */
+    }
+
+    if (is_pre_whitespace) {
+        *target = ' ';
+        target++;
+    }
     if (is_prequel == 0) {
         if (fill_symb == '0' && sign) {
             *target = sign;
