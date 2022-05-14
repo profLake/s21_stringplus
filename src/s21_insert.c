@@ -33,8 +33,8 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
         m[r] = src[r - k];
       }
     }
+    m[r] = '\0';
   }
-  m[r] = '\0';
 
   return m;
 }

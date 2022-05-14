@@ -1,7 +1,6 @@
 #include "s21_string.h"
 
 char *s21_strstr(const char *haystack, const char *needle) {
-  /* Пропускаем неподходящую часть str */
   char *ret = (char *)haystack;
   if (needle[0] != 0) {
     while (*haystack && *haystack != *needle) {
