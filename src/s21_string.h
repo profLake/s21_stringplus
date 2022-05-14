@@ -51,7 +51,9 @@ int s21_sprintf(char *target, const char *format, ...);
 #define BASE16UP "0123456789ABCDEF"
 #define BASE2 "01"
 #define BASE8 "01234567"
+#define PTR_LEN 12
 #define PTR_LEN_WITH_0X 14
+#define PTR_NULL_STR "(nil)"
 
 int s21_frmt_is_tokn(const char *format);
 char *s21_tokn_skip_part(const char *token, unsigned int i);
@@ -70,8 +72,7 @@ int s21_trgt_print_base_ulong(char *target, unsigned long n,
         const char *base);
 int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs);
 int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs);
-int s21_trgt_print_tokn_str(char *target, const char *token,
-        const char *tokn_str);
+int s21_trgt_print_tokn_str(char *target, const char *token, va_list *pargs);
 int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs);
 int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs);
 int s21_base_unum_get_str_len(unsigned long n, char *base);

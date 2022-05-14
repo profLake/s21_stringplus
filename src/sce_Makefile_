@@ -5,6 +5,7 @@
 #
 #
 
+SHELL := /bin/bash
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 LDFLAGS=
@@ -62,11 +63,19 @@ sce_extra_check: ./tests/extra_unit_tests.c $(SOURCES)
 		-fprofile-arcs -ftest-coverage \
 		$^ \
 		-o ./tests/sce_extra_unit_tests.out \
-		$(CLIBS)
+		$(CLIBS) 2> /tmp/delme
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
-	./tests/sce_extra_unit_tests.out; exit 0
+	./tests/sce_extra_unit_tests.out |& head -n 35; exit 0
 	make -f ./sce_Makefile_ clean
+
+sce_sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
+	make -f ./sce_Makefile_ clean
+	clear
+
+	$(CC) $^ -lm -o ./tests/sce_sprintf_test.out
+	./tests/sce_sprintf_test.out
+	
 
 cpplint:
 	cp ../materials/linters/CPPLINT.cfg ./

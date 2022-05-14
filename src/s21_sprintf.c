@@ -41,8 +41,7 @@ int s21_sprintf(char *target, const char *format, ...) {
                   || specif == SPECIFS[7]) {
                 printed = s21_trgt_print_tokn_ratio(target, token, &args);
             } if (specif == SPECIFS[9]) {
-                char *tokn_str  = va_arg(args, char*);
-                printed = s21_trgt_print_tokn_str(target, token, tokn_str);
+                printed = s21_trgt_print_tokn_str(target, token, &args);
             } if (specif == SPECIFS[13]) {
                 printed = s21_trgt_print_tokn_ptr(target, token, &args);
             } if (specif == SPECIFS[14]) {
@@ -276,7 +275,7 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         width = 0;
     }
 
-    int fill_len = width - PTR_LEN_WITH_0X;
+    int fill_len = width - 1;
     if (fill_len < 0) {
         fill_len = 0;
     }
@@ -306,6 +305,7 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         fill_symb = '0';
     }
 
+#ifdef __APPLE__
     if (is_prequel == 0) {
         s21_memset(target, fill_symb, fill_len);
         target += fill_len;
@@ -316,6 +316,25 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         s21_memset(target, fill_symb, fill_len);
         target += fill_len;
     }
+#else  // For GNU/Linux
+    if (tokn_specif == SPECIFS[0]) {
+        if (is_prequel == 0) {
+            s21_memset(target, fill_symb, fill_len);
+            target += fill_len;
+        }
+        *target = tokn_c;
+        target++;
+        if (is_prequel) {
+            s21_memset(target, fill_symb, fill_len);
+            target += fill_len;
+        }
+    }
+    if (tokn_specif == SPECIFS[15]) {
+        *target = tokn_c;
+        target++;
+    }
+#endif
+
     return target - target_saved;
 }
 
@@ -326,6 +345,15 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     if (width == -2) {
         width = va_arg(*pargs, int);
     }
+
+    int precis = s21_tokn_get_precision(token);
+    if (precis == -1) {
+        precis = 0;
+    }
+    if (precis == -2) {
+        precis = va_arg(*pargs, int);
+    }
+    /*  precis --- works here as minimum digits counter to output */
 
     long tokn_num = va_arg(*pargs, long);
 
@@ -371,9 +399,15 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     }
 
     int tokn_unum_len = s21_base_unum_get_str_len(tokn_unum, base);
+
+    int precis_prefix_len = precis - tokn_unum_len;
+    if (precis_prefix_len < 0) {
+        precis_prefix_len = 0;
+    }
+
     int fill_len = 0;
     if (width) {
-        fill_len = width - tokn_unum_len;
+        fill_len = width - precis_prefix_len - tokn_unum_len;
     }
     if (sign) {
         fill_len--;
@@ -395,14 +429,16 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
             *target = sign;
             target++;
         }
-        while (fill_len--) {
-            *target = fill_symb;
-            target++;
-        }
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
     }
     if (fill_symb == ' ' && sign) {
         *target = sign;
         target++;
+    }
+    if (precis_prefix_len) {
+        s21_memset(target, '0', precis_prefix_len);
+        target += precis_prefix_len;
     }
     if (prefix_0x) {
         s21_strcpy(target, prefix_0x);
@@ -411,44 +447,47 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     int printed = s21_trgt_print_base_ulong(target, tokn_unum, base);
     target+= printed;
     if (is_prequel) {
-        while (fill_len) {
-            *target = fill_symb;
-            target++;
-            fill_len--;
-        }
+        s21_memset(target, fill_symb, fill_len);
+        target += fill_len;
     }
 
     return target - target_saved;
 }
 
-int s21_trgt_print_tokn_str(char *target, const char *token,
-        const char *tokn_str) {
+int s21_trgt_print_tokn_str(char *target, const char *token, va_list *pargs) {
     const char *target_saved = target;
 
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
-    int width = s21_tokn_get_width(token);
-    int tokn_str_len = s21_strlen(tokn_str);
-    int fill_len = width - tokn_str_len;
+    int tokn_width = s21_tokn_get_width(token);
+
+    int tokn_precis = s21_tokn_get_precision(token);
+    if (tokn_precis == -2) {
+        tokn_precis = va_arg(*pargs, int);
+    }
+    /*  tokn_precis --- works here as str len   */
+
+    char *tokn_str = va_arg(*pargs, char *);
+    if (tokn_precis == -1 || tokn_precis > (int)s21_strlen(tokn_str)) {
+        tokn_precis = s21_strlen(tokn_str);
+    }
+
+    int fill_len = tokn_width - tokn_precis;
     if (fill_len < 0) {
         fill_len = 0;
     }
 
     if (is_prequel == 0) {
-        while (fill_len) {
-            *target = ' ';
-            target++;
-            fill_len--;
-        }
+        s21_memset(target, ' ', fill_len);
+        target += fill_len;
     }
+
     s21_strcpy(target, tokn_str);
-    target += tokn_str_len;
+    target += tokn_precis;
+
     if (is_prequel) {
-        while (fill_len) {
-            *target = ' ';
-            target++;
-            fill_len--;
-        }
+        s21_memset(target, ' ', fill_len);
+        target += fill_len;
     }
 
     return target - target_saved;
@@ -604,20 +643,41 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
         width = 0;
     }
 
+    s21_size_t p = va_arg(*pargs, s21_size_t);
+    /*  s21_size_t --- it's the same as pointer */
+
+    int is_null = 0;
+    if (p == 0) {
+        is_null = 1;
+    }
+
+    int zero_prefix_len = PTR_LEN - s21_base_unum_get_str_len(p, BASE16LOW);
+    if (zero_prefix_len < 0) {
+        zero_prefix_len = 0;
+    }
+
     int fill_len = width - PTR_LEN_WITH_0X;
+    if (is_null) {
+        fill_len = width - s21_strlen(PTR_NULL_STR);
+    }
     if (fill_len < 0) {
         fill_len = 0;
     }
-
-    void *p = va_arg(*pargs, void *);
 
     if (is_prequel == 0) {
         s21_memset(target, ' ', fill_len);
         target += fill_len;
     }
-    *target++ = '0';
-    *target++ = 'x';
-    target += s21_trgt_print_base_ulong(target, (unsigned long)p, BASE16LOW);
+    if (is_null) {
+        s21_strcpy(target, PTR_NULL_STR);
+        target += s21_strlen(PTR_NULL_STR);
+    } else {
+        *target++ = '0';
+        *target++ = 'x';
+        s21_memset(target, '0', zero_prefix_len);
+        target += zero_prefix_len;
+        target += s21_trgt_print_base_ulong(target, p, BASE16LOW);
+    }
     if (is_prequel) {
         s21_memset(target, ' ', fill_len);
         target += fill_len;
