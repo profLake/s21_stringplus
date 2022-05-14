@@ -7,7 +7,7 @@
 
 // c s u d f i e E X x o g G
 
-void p_po(const char *st, int *i, void *v, int *er, int *e);
+// void p_po(const char *st, int *i, void *v, int *er, int *e);
 void i_chislo(const char *stra, int *i, int *p, int *erro);
 void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e);
 void d_u_chislo(const char *stra, int *i, int *p, int *erro);
@@ -15,14 +15,14 @@ void s_stroka(const char *stra, int *i, char *o);
 void c_simvol(const char *stra, int *i, char *o);
 int s21_sscanf(const char *stra, const char *format, ...);
 
-int main() {
-  char str[20] = "0xAF Hello_World!", str1[20];  // str2[20];
-  int a;
-  s21_sscanf(str, "%s %n", str1, &a);
-  // sscanf(str, "%s %n", str1, &a);
-  printf("%s %d", str1, a);
-  return 0;
-}
+// int main() {
+//   char str[20] = "0xAF Hello_World!", str1[20];  // str2[20];
+//   int a;
+//   s21_sscanf(str, "%s %n", str1, &a);
+//   // sscanf(str, "%s %n", str1, &a);
+//   printf("%s %d", str1, a);
+//   return 0;
+// }
 
 // c s u d f i e E X x o g G
 
@@ -65,11 +65,11 @@ int s21_sscanf(const char *stra, const char *format, ...) {
         *p = i;
         e++;
       }
-      if (format[e] == 'p') {
+      /*if (format[e] == 'p') {
         void *v = va_arg(A, void *);
         p_po(stra, &i, &v, error, &e);
         e++;
-      }
+      }*/
     }
     if (stra[i] == ' ') i++;
     if (format[e] == ' ') e++;
