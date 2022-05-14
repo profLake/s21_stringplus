@@ -2,23 +2,25 @@
 
 char *s21_strstr(const char *haystack, const char *needle) {
   /* Пропускаем неподходящую часть str */
-  if (needle[0] == 0) {
-    return (char *)haystack;
+  char *ret = (char *)haystack;
+  if (needle[0] != 0) {
+    while (*haystack && *haystack != *needle) {
+      haystack++;
+    }
+    if (*haystack != '\0') {
+      s21_size_t i = 0;
+      while (haystack[i] && needle[i] && haystack[i] == needle[i]) {
+        i++;
+      }
+      if (needle[i] != '\0') {
+        haystack += i;
+        ret = s21_strstr(haystack, needle);
+      } else {
+        ret = (char *)haystack;
+      }
+    } else {
+      ret = s21_NULL;
+    }
   }
-  while (*haystack && *haystack != *needle) {
-    haystack++;
-  }
-  if (*haystack == '\0') {
-    return s21_NULL;
-  }
-
-  s21_size_t i = 0;
-  while (haystack[i] && needle[i] && haystack[i] == needle[i]) {
-    i++;
-  }
-  if (needle[i] == '\0') {
-    return (char *)haystack;
-  }
-  haystack += i;
-  return s21_strstr(haystack, needle);
+  return ret;
 }

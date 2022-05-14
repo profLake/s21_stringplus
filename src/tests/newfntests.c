@@ -75,6 +75,8 @@ START_TEST(test_memcpy) {
   void *s21_mem = malloc(10);
   void *mem = malloc(10);
   ck_assert_mem_eq(s21_memcpy(s21_mem, mem, 10), mem, 10);
+  printf("%p\n", s21_mem);
+  printf("%p\n", mem);
   free(s21_mem);
   free(mem);
   char *src1 = "schesrdsfdsfdsfesr";
@@ -124,6 +126,8 @@ START_TEST(test_memmove) {
   void *s21_mem = malloc(5);
   void *mem = malloc(10);
   ck_assert_mem_eq(s21_memcpy(s21_mem, mem, 10), mem, 5);
+  printf("%p\n", s21_mem);
+  printf("%p\n", mem);
   free(s21_mem);
   free(mem);
   char *src1 = "schesrdsfdsfdsfesr";
@@ -174,6 +178,8 @@ START_TEST(test_memset) {
   s21_memset(s21_mem, '$', 10);
   memset(mem, '$', 10);
   ck_assert_mem_eq(s21_mem, mem, 10);
+  printf("%p\n", s21_mem);
+  printf("%p\n", mem);
   free(mem);
   free(s21_mem);
   char str1[] = "School is cool";
@@ -210,7 +216,6 @@ START_TEST(test_memset) {
   ck_assert_msg(memcmp(str5, res5, sizeof(str5)) == 0,
                 "5rth memset test failed");
 }
-END_TEST
 
 START_TEST(test_strcat) {
   char src1[150] = "This is source";
@@ -384,6 +389,7 @@ START_TEST(test_strcpy) {
   ck_assert_str_eq(s21_strcpy(dest1, src1), strcpy(dest1, src1));
   ck_assert_str_eq(s21_strcpy(s21_dest, src1), src1);
   ck_assert_str_eq(s21_strcpy(s21_dest, ""), s21_dest);
+  printf("%p\n", s21_dest);
   free(s21_dest);
   char s1[50] = "Sample Text";
   char d1[50] = "";
@@ -425,6 +431,8 @@ START_TEST(test_strncpy) {
   // ck_assert_str_eq(s21_strncpy(s21_dest, src1, 0), "");
   ck_assert_str_eq(s21_strncpy(s21_dest, "", 7), s21_dest);
   ck_assert_str_eq(s21_strncpy(s21_dest, "", 0), s21_dest);
+  printf("%p\n", s21_dest);
+  printf("%p\n", s21_dest1);
   free(s21_dest);
   free(s21_dest1);
   char s1[50] = "Sample Text";
@@ -727,14 +735,19 @@ START_TEST(to_upper_test) {
   char *r5 = s21_to_upper(s5);
 
   ck_assert_str_eq(r1, "");
+  printf("%p\n", r1);
   free(r1);
   ck_assert_str_eq(r2, "SCHOOL IS COOL");
+  printf("%p\n", r2);
   free(r2);
   ck_assert_str_eq(r3, "AMOGUS");
+  printf("%p\n", r3);
   free(r3);
   ck_assert_str_eq(r4, "SHREK IS AMOGUS");
+  printf("%p\n", r4);
   free(r4);
   ck_assert_str_eq(r5, "WHAT");
+  printf("%p\n", r5);
   free(r5);
 }
 END_TEST
@@ -753,14 +766,19 @@ START_TEST(to_lower_test) {
   char *r5 = s21_to_lower(s5);
 
   ck_assert_msg(!strcmp(r1, "school-21"), "1st to_lower test failed");
+  printf("%p\n", r1);
   free(r1);
   ck_assert_msg(!strcmp(r2, "school is cool"), "2nd to_lower test failed");
+  printf("%p\n", r2);
   free(r2);
   ck_assert_msg(!strcmp(r3, "amogus"), "3rd to_lower test failed");
+  printf("%p\n", r3);
   free(r3);
   ck_assert_msg(!strcmp(r4, "shrek is amogus"), "4rth to_lower test failed");
+  printf("%p\n", r4);
   free(r4);
   ck_assert_msg(!strcmp(r5, "what"), "5th to_lower test failed");
+  printf("%p\n", r5);
   free(r5);
 }
 END_TEST
@@ -780,15 +798,20 @@ START_TEST(insert_test) {
   char *res5 = s21_insert(s2, s1, 4);
 
   ck_assert_str_eq(res1, s11);
+  printf("%p\n", res1);
   free(res1);
   res1 = s21_NULL;
   ck_assert_str_eq(res2, "shrekamogus");
+  printf("%p\n", res2);
   free(res2);
   ck_assert_str_eq(res3, "shrekamogus");
+  printf("%p\n", res3);
   free(res3);
   ck_assert_str_eq(res4, "shrekis");
+  printf("%p\n", res4);
   free(res4);
   ck_assert_str_eq(res5, "inseSchool-21 testrt ");
+  printf("%p\n", res5);
   free(res5);
 }
 END_TEST
@@ -797,31 +820,30 @@ START_TEST(trim_test) {
   char *s1 = "School-21";
   char *s2 = "";
   char *s3 = "S";
-  // char *s4 = "Sch";
-  // char *s5 = "School";
-  // char *s6 = "School-21";
-  // char *s7 = NULL;
+  char *s4 = "Sch";
+  char *s5 = "School";
+  char *s6 = "School-21";
+  char *s7 = NULL;
   char *r1 = s21_trim(s1, s2);
   char *r2 = s21_trim(s1, s3);
-  // char *r3 = s21_trim(s1, s4);
-  // char *r4 = s21_trim(s1, s5);
-  // char *r5 = s21_trim(s1, s6);
-  // char *r6 = s21_trim(s1, s7);
+  char *r3 = s21_trim(s1, s4);
+  char *r4 = s21_trim(s1, s5);
+  char *r5 = s21_trim(s1, s6);
+  char *r6 = s21_trim(s1, s7);
   ck_assert_msg(!strcmp(r1, "School-21"), "1st trim test failed");
   ck_assert_str_eq(r2, "chool-21");
-  // ck_assert_msg(!strcmp(r3, "ool-21"), "3rd trim test failed");
-  // ck_assert_msg(!strcmp(r4, "-21"), "4rth trim test failed");
-  // ck_assert_msg(!strcmp(r5, ""), "5th trim test failed");
-  // ck_assert_msg(!strcmp(r6, "School-21"), "6th trim test failed");
-  free(r1);
+  ck_assert_msg(!strcmp(r3, "ool-21"), "3rd trim test failed");
+  ck_assert_msg(!strcmp(r4, "-21"), "4rth trim test failed");
+  ck_assert_msg(!strcmp(r5, ""), "5th trim test failed");
+  ck_assert_msg(!strcmp(r6, "School-21"), "6th trim test failed");
+  printf("%p\n", r1);
+  printf("%p\n", r2);
+  // free(r1);
   free(r2);
-  // free(r3);
-  // free(r4);
+  free(r3);
+  free(r4);
   // free(r5);
-  // free(r6);
 }
-END_TEST
-
 END_TEST
 
 Suite *strlen_suite(void) {
