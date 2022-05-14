@@ -595,7 +595,14 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
              *      после дробной части
              */
         } else {
-            precis_len = actual_precis_len;
+            int e = s21_e_uratio_get_e(tokn_ratio);
+            precis_len = precis_len - e - 1;
+            precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
+                    precis_len);
+            /*  If you have questions here, read
+             *  https://stackoverflow.com/questions/30658919
+             *      /the-precision-of-printf-with-specifier-g
+             */
         }
     }
 
@@ -805,3 +812,15 @@ int s21_e_uratio_precis_get_str_len(long double ld, int precis_len) {
     return s21_uratio_precis_get_str_len(ld, precis_len);
 }
 
+int s21_e_uratio_get_e(long double ld) {
+    int e = 0;
+    while (ld < 1) {
+        e--;
+        ld *= 10;
+    }
+    while (ld > 10) {
+        e++;
+        ld /= 10;
+    }
+    return e;
+}

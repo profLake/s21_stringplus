@@ -81,6 +81,7 @@ unsigned long s21_ulong_get_pow(unsigned long n, int pow);
         long s21_atol(const char *str);
 int s21_uratio_precis_get_str_len(long double ld, int precis_len);
 int s21_e_uratio_precis_get_str_len(long double ld, int precis_len);
+int s21_e_uratio_get_e(long double ld);
 
 /* ****Для дебага */
 #define LOG(...) sprintf(_buff, __VA_ARGS__); puts(_buff);
