@@ -21,7 +21,7 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
   if (i >= start_index) {
     m = malloc((i + q + 1) * sizeof(char));
 
-    for (r = 0; r < i + q + 1; r++) {
+    for (r = 0; r < i + q; r++) {
       if (r < start_index) {
         m[r] = src[r];
 
@@ -29,11 +29,27 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
         m[r] = str[k];
         k++;
       }
-      if (r >= (start_index + q) && src[r - k - 1] != '\0') {
+      if (r >= (start_index + q) && src[r - k] != '\0') {
         m[r] = src[r - k];
       }
     }
   }
+  m[r] = '\0';
 
   return m;
 }
+/*
+int main() {
+  char *s1 = "School-21 test";
+  char *s3 = s21_insert(s1, " ", 3);
+  char *fr = s3;
+  for (int i = 0; *s3; i++) {
+    printf("%c", *s3++);
+  }
+
+  free(fr);
+  fr = s21_NULL;
+  s3 = s21_NULL;
+  return 0;
+}
+*/

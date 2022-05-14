@@ -1,21 +1,24 @@
 #include "s21_string.h"
 
 char *s21_strstr(const char *haystack, const char *needle) {
-    /* Пропускаем неподходящую часть str */
-    while (*haystack && *haystack != *needle) {
-        haystack++;
-    }
-    if (*haystack == '\0') {
-        return s21_NULL;
-    }
+  /* Пропускаем неподходящую часть str */
+  if (needle[0] == 0) {
+    return (char *)haystack;
+  }
+  while (*haystack && *haystack != *needle) {
+    haystack++;
+  }
+  if (*haystack == '\0') {
+    return s21_NULL;
+  }
 
-    s21_size_t i = 0;
-    while (haystack[i] && needle[i] && haystack[i] == needle[i]) {
-        i++;
-    }
-    if (needle[i] == '\0') {
-        return (char*)haystack;
-    }
-    haystack += i;
-    return s21_strstr(haystack, needle);
+  s21_size_t i = 0;
+  while (haystack[i] && needle[i] && haystack[i] == needle[i]) {
+    i++;
+  }
+  if (needle[i] == '\0') {
+    return (char *)haystack;
+  }
+  haystack += i;
+  return s21_strstr(haystack, needle);
 }
