@@ -261,7 +261,8 @@ START_TEST(test_s21_strncpy)
 {
     char str[28] = "So many test/000/ f*hh..",
          str1[28] = "So many test/000/ f*hh..",
-         //src[100] = "   /00never gonna give you up, never gonna let them down...",
+         //src[100]
+         //= "   /00never gonna give you up, never gonna let them down...",
          // src[100] = "..." --- превышает 80 символов
          src1[10] = "",
          src11[2] = "",
@@ -281,8 +282,22 @@ START_TEST(test_s21_strncpy)
     /*  ****error: ‘strncpy’ destination unchanged after copying no bytes from
      *      a string of length 3
      */
-    ck_assert_str_eq(s21_strncpy(str1, "hhah\0\nheh", 10), strncpy(str, "hhah\0\nheh", 10));
-    ck_assert_str_eq(s21_strncpy(str1, "\0hmm..\n", 7), strncpy(str, "\0hmm..\n", 7));
+    ck_assert_str_eq(s21_strncpy(str1, "hhah\0\nheh", 10),
+            strncpy(str, "hhah\0\nheh", 10));
+    ck_assert_str_eq(s21_strncpy(str1, "\0hmm..\n", 7),
+            strncpy(str, "\0hmm..\n", 7));
+
+    char target[500] = { 0 };
+    char target_right[500] = { 0 };
+
+    char *src;
+    s21_size_t n;
+
+    src = "A Telegram";
+    n = 10;
+    strncpy(target_right, src, n);
+    s21_strncpy(target, src, n);
+    ck_assert_str_eq(target_right, target);
 }
 END_TEST
 
@@ -1103,7 +1118,7 @@ int vatest_s21_trgt_print_tokn_str(char *target, const char *token, ...) {
 }
 START_TEST(test_s21_trgt_print_tokn_str)
 {
-    char target[500];
+    char target[500] = { 0 };
     char *target_right;
 
     char *token;
@@ -1119,6 +1134,7 @@ START_TEST(test_s21_trgt_print_tokn_str)
     out = vatest_s21_trgt_print_tokn_str(target, token, tokn_str);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "30s";
     tokn_str = "A Telegram";
@@ -1127,6 +1143,7 @@ START_TEST(test_s21_trgt_print_tokn_str)
     out = vatest_s21_trgt_print_tokn_str(target, token, tokn_str);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = ".30s";
     tokn_str = "A Telegram";
@@ -1135,6 +1152,7 @@ START_TEST(test_s21_trgt_print_tokn_str)
     out = vatest_s21_trgt_print_tokn_str(target, token, tokn_str);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 
     token = "-30s";
     tokn_str = "A Telegram";
@@ -1143,6 +1161,7 @@ START_TEST(test_s21_trgt_print_tokn_str)
     out = vatest_s21_trgt_print_tokn_str(target, token, tokn_str);
     ck_assert_str_eq(target_right, target);
     ck_assert_int_eq(right, out);
+    memset(target, 0, 500);
 }
 END_TEST
 

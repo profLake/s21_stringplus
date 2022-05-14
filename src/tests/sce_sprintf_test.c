@@ -6,11 +6,11 @@ int main() {
     char buff_right[500];
 
     int a, b;
-    s21_sprintf(buff, "%----24p et hello %2p %12p\n", &a, &b, NULL);
-    sprintf(buff_right, "%----24p et hello %2p %12p\n", &a, &b, NULL);
+    s21_sprintf(buff, "%05.3d", 5);
+    sprintf(buff_right, "%05.3d", 5);
 
-    printf("      MAIN: <%s>", buff);
-    printf("MAIN RIGHT: <%s>", buff_right);
+    printf("      MAIN: <%s>\n", buff);
+    printf("MAIN RIGHT: <%s>\n", buff_right);
 
     return 0;
 }

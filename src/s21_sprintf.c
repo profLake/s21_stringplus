@@ -129,6 +129,11 @@ int s21_tokn_get_precision(const char *token) {
         }
         if (s21_atol(token)) {
             result = s21_atol(token);
+        } else if (*token == '0') {
+            /*  .. == '0' --- because s21_atol() returns 0 as fail, we should
+             *      check for 0 value additionally
+             */
+            result = 0;
         }
     }
     return result;
@@ -423,6 +428,9 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
         fill_symb = '0';
     }
+    if (precis_prefix_len) {
+        fill_symb = ' ';
+    }
 
     if (is_prequel == 0) {
         if (fill_symb == '0' && sign) {
@@ -482,7 +490,7 @@ int s21_trgt_print_tokn_str(char *target, const char *token, va_list *pargs) {
         target += fill_len;
     }
 
-    s21_strcpy(target, tokn_str);
+    s21_strncpy(target, tokn_str, tokn_precis);
     target += tokn_precis;
 
     if (is_prequel) {
