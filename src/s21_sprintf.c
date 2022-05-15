@@ -364,8 +364,12 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
     int width = s21_tokn_get_width(token);
+LOG("width that provided:%d", width);
     if (width == -2) {
         width = va_arg(*pargs, int);
+    }
+    if (width == -1) {
+        width = 0;
     }
     if (width < 0) {
         is_prequel = 1;
@@ -375,9 +379,11 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     int precis = s21_tokn_get_precision(token);
     int is_precis_provided = 1;
     if (precis == -3) {
+        /* -3 --- it means that PRECIS_SIGN was provided */
         precis = 0;
     }
     if (precis == -1) {
+        /* -1 --- it means that PRECIS_SIGN was not provided */
         precis = 0;
         is_precis_provided = 0;
     }
@@ -385,7 +391,6 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
         precis = va_arg(*pargs, int);
     }
     /*  precis --- works here as minimum digits counter to output */
-
 
     long tokn_num = va_arg(*pargs, long);
 
@@ -431,6 +436,9 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     }
 
     int tokn_unum_len = s21_base_unum_get_str_len(tokn_unum, base);
+    if (is_precis_provided && precis == 0 && tokn_unum == 0) {
+        tokn_unum_len = 0;
+    }
 
     int precis_prefix_len = precis - tokn_unum_len;
     if (precis_prefix_len < 0) {
@@ -450,6 +458,7 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     if (fill_len < 0) {
         fill_len = 0;
     }
+LOG("fill_len:%d, width:%d", fill_len, width);
 
     char fill_symb = ' ';
     if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
@@ -617,7 +626,10 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
 
     int is_point_forced = s21_tokn_have_flag(token, FLAGS[3]);
 
-    int is_pre_whitespace = s21_tokn_have_flag(token, FLAGS[2]);
+    int is_pre_whitespace = 0;
+    if (sign == '\0' && s21_tokn_have_flag(token, FLAGS[2])) {
+        is_pre_whitespace = 1;
+    }
 
     int fill_len = width - precis_len - non_precis_part_len;
     if (is_pre_whitespace) {
