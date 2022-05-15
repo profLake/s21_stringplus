@@ -7,8 +7,8 @@ int main() {
 
     int a, b;
 
-    s21_sprintf(buff, "%.16g", 3122.55);
-    sprintf(buff_right, "%.16g", 3122.55);
+    s21_sprintf(buff, "|%+*.*g|\n", 10, 10, 0.0000001);
+    sprintf(buff_right, "|%+*.*g|\n", 10, 10, 0.0000001);
 
     printf("      MAIN: <%s>\n", buff);
     printf("MAIN RIGHT: <%s>\n", buff_right);

@@ -217,6 +217,9 @@ int s21_trgt_print_uldouble(char *target, long double ld, int precis_len) {
         after_part = round(after_part);
         int after_part_len = s21_udecim_get_str_len((unsigned long)after_part);
         int zeros_count = precis_len - after_part_len;
+        if (zeros_count < 0) {
+            zeros_count = 0;
+        }
         s21_memset(target, '0', zeros_count);
         target += zeros_count;
         target += s21_trgt_print_ulong(target, (unsigned long)after_part);
@@ -230,6 +233,7 @@ int s21_trgt_print_e_uldouble(char *target, long double ld, int precis_len,
     const char *target_saved = target;
 
     int e = 0;
+    ld += LDBL_EPSILON;
     while (ld < 1) {
         e--;
         ld *= 10;
@@ -283,7 +287,12 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         width = va_arg(*pargs, int);
     }
     if (width < 0) {
+#ifdef __APPLE__
+        is_prequel = 1;
+        width = -width;
+#else  // For GNU/Linux (that uses glibc)
         width = 0;
+#endif
     }
 
     int fill_len = width - 1;
@@ -327,7 +336,7 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         s21_memset(target, fill_symb, fill_len);
         target += fill_len;
     }
-#else  // For GNU/Linux
+#else  // For GNU/Linux (that uses glibc)
     if (tokn_specif == SPECIFS[0]) {
         if (is_prequel == 0) {
             s21_memset(target, fill_symb, fill_len);
@@ -706,12 +715,20 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
         is_null = 1;
     }
 
-    int zero_prefix_len = PTR_LEN - s21_base_unum_get_str_len(p, BASE16LOW);
+    int p_len = s21_base_unum_get_str_len(p, BASE16LOW);
+
+    int zero_prefix_len = PTR_LEN - p_len;
     if (zero_prefix_len < 0) {
         zero_prefix_len = 0;
     }
+#ifdef __APPLE__
+    zero_prefix_len = 0;
+    /*  ... = 0 --- apple's libc doesn't print prefix extra zeros on pointers
+     *      like 0x00052ab3f1c9b */
+#endif
 
-    int fill_len = width - PTR_LEN_WITH_0X;
+    int fill_len = width - 2 -zero_prefix_len - p_len;
+    /*  ... - 2 --- because "0x" prefix has length of 2 */
     if (is_null) {
         fill_len = width - s21_strlen(PTR_NULL_STR);
     }
@@ -801,6 +818,7 @@ int s21_uratio_precis_get_str_len(long double ld, int precis_len) {
 
 int s21_e_uratio_precis_get_str_len(long double ld, int precis_len) {
     int e = 0;
+    ld += LDBL_EPSILON;
     while (ld < 1) {
         e--;
         ld *= 10;
