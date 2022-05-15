@@ -66,7 +66,7 @@ sce_extra_check: ./tests/extra_unit_tests.c $(SOURCES)
 		$(CLIBS) 2> /tmp/delme
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
-	./tests/sce_extra_unit_tests.out 2>&1 | head -n 35; exit 0
+	./tests/sce_extra_unit_tests.out 2>&1; exit 0
 	make -f ./sce_Makefile_ clean
 
 sce_sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
