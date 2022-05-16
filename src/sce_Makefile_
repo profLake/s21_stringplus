@@ -53,7 +53,6 @@ sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
 	./tests/unit_tests.out; exit 0
-	make -f ./sce_Makefile_ clean
 
 sce_extra_check: ./tests/extra_unit_tests.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
