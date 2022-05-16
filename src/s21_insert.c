@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-
+#include <stdlib.h>
 #include "s21_string.h"
 
 void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
@@ -38,18 +36,3 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
 
   return m;
 }
-/*
-int main() {
-  char *s1 = "School-21 test";
-  char *s3 = s21_insert(s1, " ", 3);
-  char *fr = s3;
-  for (int i = 0; *s3; i++) {
-    printf("%c", *s3++);
-  }
-
-  free(fr);
-  fr = s21_NULL;
-  s3 = s21_NULL;
-  return 0;
-}
-*/

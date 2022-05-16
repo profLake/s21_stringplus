@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "s21_string.h"
 
@@ -27,13 +26,3 @@ void *s21_to_lower(const char *str) {
     return scopy;
 }
 
-/*
-int main(){
-    char str[20];
-    scanf("%s", str);
-    char *src = s21_to_lower(str);
-    printf("%s", src);
-    free(src);
-    return 0;
-}
-*/
