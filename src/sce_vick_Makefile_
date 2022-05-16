@@ -27,6 +27,7 @@ check:
 		./s21_insert.c \
 		./s21_strerror.c \
 		./s21_to_lower.c \
+		./s21_sprintf.c \
 		-o ./tests/unit_tests.out \
 		-lcheck -lm -lsubunit -lrt -lpthread
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,

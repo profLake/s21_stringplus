@@ -41,7 +41,7 @@ gcov_test:
 	brave-browser ./tests/src/index.html
 
 
-sce_check: ./tests/sce_unit_tests.c ./tests/all_unit_tests.c $(SOURCES)
+sce_check: ./tests/sce_unit_tests.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
 	clear
 

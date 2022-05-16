@@ -94,7 +94,8 @@ int s21_e_uratio_get_e(long double ld);
 /* Для s21_strerror() */
 
 #ifdef __APPLE__
-#define s21_error { "Operation not permitted", \
+#define ERR_MSGS_COUNT 106
+#define ERR_MSGS { "Operation not permitted", \
 "No such file or directory", \
 "No such process", \
 "Interrupted system call", \
@@ -200,10 +201,12 @@ int s21_e_uratio_get_e(long double ld);
 "State not recoverable", \
 "Previous owner died", \
 "Interface output queue is full"}
-#endif
 
-#ifdef __linux__
-#define s21_error { "Operation not permitted", \
+#else  // For GNU/Linux
+
+#define ERR_MSGS_COUNT 134
+#define ERR_MSGS {"Success", \
+"Operation not permitted", \
 "No such file or directory", \
 "No such process", \
 "Interrupted system call", \
@@ -336,4 +339,5 @@ int s21_e_uratio_get_e(long double ld);
 "State not recoverable", \
 "Operation not possible due to RF-kill", \
 "Memory page has hardware error"}
+
 #endif
