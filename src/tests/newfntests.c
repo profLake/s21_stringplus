@@ -312,6 +312,7 @@ START_TEST(test_strcmp) {
   ck_assert_int_eq(s21_strcmp("", str2), strcmp("", str2));
   ck_assert_int_eq(s21_strcmp(str1, "ab"), strcmp(str1, "ab"));
   ck_assert_int_eq(s21_strcmp("ab", str2), strcmp("ab", str2));
+  ck_assert_int_eq(s21_strcmp(".1", str2), strcmp(".1", str2));
   ck_assert_int_eq(s21_strcmp("4321", "1234"), 3);
   char t1[] = "Sample Text";
   char t2[] = "Sample Text Plus Some Text";
@@ -702,17 +703,17 @@ START_TEST(test_strtok) {
   }
   ck_assert_str_eq(orig_res1, copy_res1);
 
-  char str1[] = "School-21";
-  char *tok1 = s21_strtok(str1, "-");
-  char *tok2 = strtok(str1, "-");
-  char *tok3 = s21_strtok(str1, "");
-  char *tok4 = strtok(str1, "");
-  char *tok5 = s21_strtok(str1, "oo");
-  char *tok6 = strtok(str1, "oo");
-  char *tok7 = s21_strtok(str1, "Sc");
-  char *tok8 = strtok(str1, "Sc");
-  char *tok9 = s21_strtok(str1, "21");
-  char *tok10 = strtok(str1, "21");
+  char sss[] = "School-21";
+  char *tok1 = s21_strtok(sss, "-");
+  char *tok2 = strtok(sss, "-");
+  char *tok3 = s21_strtok(sss, "");
+  char *tok4 = strtok(sss, "");
+  char *tok5 = s21_strtok(sss, "oo");
+  char *tok6 = strtok(sss, "oo");
+  char *tok7 = s21_strtok(sss, "Sc");
+  char *tok8 = strtok(sss, "Sc");
+  char *tok9 = s21_strtok(sss, "21");
+  char *tok10 = strtok(sss, "21");
 
   ck_assert_msg(!strcmp(tok1, tok2), "1st strtok test failed");
   ck_assert_msg(!strcmp(tok3, tok4), "2nd strtok test failed");
