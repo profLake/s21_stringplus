@@ -341,3 +341,4 @@ int s21_e_uratio_get_e(long double ld);
 "Memory page has hardware error"}
 
 #endif
+

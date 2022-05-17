@@ -510,11 +510,7 @@ START_TEST(test_strerror) {
   char *str4 = strerror(12);
   ck_assert_str_eq(str3, str4);
 
-  char *str5 = s21_strerror(1337);
-  char *str6 = strerror(1337);
-  ck_assert_str_eq(str5, str6);
-
-  char *str7 = s21_strerror(1);
+   char *str7 = s21_strerror(1);
   char *str8 = strerror(1);
   ck_assert_str_eq(str7, str8);
 
