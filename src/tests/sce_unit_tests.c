@@ -131,29 +131,61 @@ START_TEST(test_s21_strtok)
 {
     char str1[500];
     char str2[500];
-    char right[500];
+    char *delim;
+    char *right;
     char *out;
+
     strcpy(str1, "This, a simple string.");
-    strcpy(str2, ",.- ");
+    strcpy(str2, "This, a simple string.");
+    delim = ",.- ";
 
-    out = s21_strtok(str1, str2);
-    strcpy(right, "This");
-    ck_assert_str_eq(out, right);
+    right = strtok(str1, delim);
+    out = s21_strtok(str2, delim);
+    ck_assert_str_eq(right, out);
 
-    out = s21_strtok(NULL, str2);
-    strcpy(right, "a");
-    ck_assert_str_eq(out, right);
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
 
-    out = s21_strtok(NULL, str2);
-    strcpy(right, "simple");
-    ck_assert_str_eq(out, right);
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
 
-    out = s21_strtok(NULL, str2);
-    strcpy(right, "string");
-    ck_assert_str_eq(out, right);
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
 
-    out = s21_strtok(NULL, str2);
-    ck_assert_pstr_eq(out, NULL);
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_ptr_eq(right, out);
+
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_ptr_eq(right, out);
+
+    strcpy(str1, "This is other one");
+    strcpy(str2, "This is other one");
+    delim = ",,. ";
+
+    right = strtok(str1, delim);
+    out = s21_strtok(str2, delim);
+    ck_assert_str_eq(right, out);
+
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
+
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
+
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_str_eq(right, out);
+
+    right = strtok(NULL, delim);
+    out = s21_strtok(NULL, delim);
+    ck_assert_ptr_eq(right, out);
 }
 END_TEST
 
@@ -172,11 +204,9 @@ END_TEST
 
 START_TEST(test_s21_strerror)
 {
-    ck_assert_str_eq(s21_strerror(1), strerror(1));
-    ck_assert_str_eq(s21_strerror(ENOSYS), strerror(ENOSYS));
-    ck_assert_str_eq(s21_strerror(EEXIST), strerror(EEXIST));
-    //ck_assert_str_eq(s21_strerror(ENOTUNIQ), strerror(ENOTUNIQ));
-    /*  ****ENOTUNIQ --- only on linux */
+    for (int i = -50; i < 150; i++) {
+        ck_assert_str_eq(s21_strerror(i), strerror(i));
+    }
 }
 END_TEST
 
@@ -401,7 +431,7 @@ START_TEST(test_s21_insert)
     free(new);
     ck_assert_str_eq(new1, qp);
     free(new1);
-    ck_assert_str_eq(new3, s21_NULL);
+    ck_assert_ptr_eq(new3, s21_NULL);
     free(new3);
 }
 END_TEST
@@ -1557,3 +1587,18 @@ Suite* sce_s21_string_suite()
     return s;
 }
 
+int main()
+{
+    int number_failed;
+    Suite *s;
+    SRunner *sr;
+
+    s = sce_s21_string_suite();
+    sr = srunner_create(s);
+
+    srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
