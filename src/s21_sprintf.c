@@ -27,24 +27,29 @@ int s21_sprintf(char *target, const char *format, ...) {
             if (specif == SPECIFS[0]
                 || specif == SPECIFS[15]) {
                 printed = s21_trgt_print_tokn_char(target, token, &args);
-            } if (specif == SPECIFS[1]
+            }
+            if (specif == SPECIFS[1]
                   || specif == SPECIFS[2]
                   || specif == SPECIFS[8]
                   || specif == SPECIFS[10]
                   || specif == SPECIFS[11]
                   || specif == SPECIFS[12]) {
                 printed = s21_trgt_print_tokn_num(target, token, &args);
-            } if (specif == SPECIFS[3]
+            }
+            if (specif == SPECIFS[3]
                   || specif == SPECIFS[4]
                   || specif == SPECIFS[5]
                   || specif == SPECIFS[6]
                   || specif == SPECIFS[7]) {
                 printed = s21_trgt_print_tokn_ratio(target, token, &args);
-            } if (specif == SPECIFS[9]) {
+            }
+            if (specif == SPECIFS[9]) {
                 printed = s21_trgt_print_tokn_str(target, token, &args);
-            } if (specif == SPECIFS[13]) {
+            }
+            if (specif == SPECIFS[13]) {
                 printed = s21_trgt_print_tokn_ptr(target, token, &args);
-            } if (specif == SPECIFS[14]) {
+            }
+            if (specif == SPECIFS[14]) {
                 printed = 0;
                 int *to_write_here = va_arg(args, int*);
                 *to_write_here = target - target_saved;
@@ -72,7 +77,7 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
             while (*token && s21_strchr(DIGITS, *token))
                 token++;
     }
-    if (i--)    /* precision */
+    if (i--) {  /* precision */
         if (*token == PRECIS_SIGN) {
             token++;
             if (*token == ADDIT_INT_SIGN)
@@ -81,6 +86,7 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
                 while (*token && s21_strchr(DIGITS, *token))
                     token++;
         }
+    }
     if (i--)    /* length-specifier */
         if (*token && s21_strchr(TOKN_LENS, *token))
             token++;
@@ -316,7 +322,8 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
     char tokn_c = '\0';
     if (tokn_specif == SPECIFS[0]) {
         tokn_c = (char)va_arg(*pargs, int);
-    } if (tokn_specif == SPECIFS[15]) {
+    }
+    if (tokn_specif == SPECIFS[15]) {
         tokn_c = TOKN_SIGN;
     }
 
@@ -415,10 +422,12 @@ LOG("width that provided:%d", width);
     if (s21_tokn_get_specif(token) == SPECIFS[8]) {
         base = BASE8;
         prefix_0x = "0";
-    } if (s21_tokn_get_specif(token) == SPECIFS[11]) {
+    }
+    if (s21_tokn_get_specif(token) == SPECIFS[11]) {
         base = BASE16LOW;
         prefix_0x = "0x";
-    } if (s21_tokn_get_specif(token) == SPECIFS[12]) {
+    }
+    if (s21_tokn_get_specif(token) == SPECIFS[12]) {
         base = BASE16UP;
         prefix_0x = "0X";
     }
@@ -581,7 +590,7 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     if (precis_len <= -3) {
         precis_len = 6;
     }
- 
+
     long double tokn_ratio;
     if (s21_tokn_get_len(token) == TOKN_LENS[2]) {
         tokn_ratio = va_arg(*pargs, long double);
@@ -668,7 +677,8 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     if (tokn_specif == SPECIFS[3]
         || tokn_specif == SPECIFS[6]) {
         e_sign = 'e';
-    } if (tokn_specif == SPECIFS[4]
+    }
+    if (tokn_specif == SPECIFS[4]
           || tokn_specif == SPECIFS[7]) {
         e_sign = 'E';
     }
@@ -744,7 +754,7 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
         precis = va_arg(*pargs, int);
     }
     if (precis == -1) {
-        precis = 1;
+        precis = 0;
     }
     if (precis < 0) {
         precis = 0;
@@ -776,8 +786,9 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
     int fill_len = width - 2 - zero_prefix_len - p_len;
     /*  ... - 2 --- because "0x" prefix has length of 2 */
     if (is_null) {
-        //fill_len = width - s21_strlen(PTR_NULL_STR);
-        /*  ****maybe it's on linux */
+#ifndef __APPLE__  // If NOT __APPLE__
+        fill_len = width - s21_strlen(PTR_NULL_STR);
+#endif
 
         fill_len -= precis;
     }
