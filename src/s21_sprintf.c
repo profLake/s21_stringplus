@@ -766,6 +766,11 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
     int is_null = 0;
     if (p == 0) {
         is_null = 1;
+#ifdef __APPLE__
+        precis = 1;
+        /*  .. = 1 --- because apple's libc printf 0x0 in NULL case. 1 here is
+         *      for end 0 */
+#endif
     }
 
     int p_len = s21_base_unum_get_str_len(p, BASE16LOW);
