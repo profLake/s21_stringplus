@@ -5612,7 +5612,7 @@ START_TEST(SPRINTFTestdogletho142) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho143) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*s|\n",  40, p);
@@ -5622,7 +5622,7 @@ START_TEST(SPRINTFTestdogletho143) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho144) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*.*s|\n",  20, 2, p);
@@ -5632,7 +5632,7 @@ START_TEST(SPRINTFTestdogletho144) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho145) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*.*s|\n",  20, 6, p);
@@ -5642,7 +5642,7 @@ START_TEST(SPRINTFTestdogletho145) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho146) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%-*s|\n",  20,  p);
@@ -5652,7 +5652,7 @@ START_TEST(SPRINTFTestdogletho146) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho147) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*.*s|\n",  20, 2, p);
@@ -5663,7 +5663,7 @@ END_TEST
 
 
 START_TEST(SPRINTFTestdogletho148) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%-*.*s|\n",  20, 3, p);
@@ -5673,7 +5673,7 @@ START_TEST(SPRINTFTestdogletho148) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho149) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*s|\n",  -40, p);
@@ -5683,7 +5683,7 @@ START_TEST(SPRINTFTestdogletho149) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho150) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*.*s|\n",  -20, -5, p);
@@ -5693,7 +5693,7 @@ START_TEST(SPRINTFTestdogletho150) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho151) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%*.*s|\n",  -20, -6, p);
@@ -5703,7 +5703,7 @@ START_TEST(SPRINTFTestdogletho151) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho152) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%-*s|\n",  -20,  p);
@@ -5713,7 +5713,7 @@ START_TEST(SPRINTFTestdogletho152) {
 END_TEST
 
 START_TEST(SPRINTFTestdogletho153) {
-    char p[100];
+    char p[100] = { 0 };
     char str[100];
     char str1[100];
     sprintf(str, "|%-*.*s|\n",  -20, -5, p);
