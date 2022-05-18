@@ -36,18 +36,21 @@ int main() {
     sprintf(data1, "02) standart PRINTF : |%.d|\n", 0);
     */
 
-    char str[100];
-    char str1[100];
-    sprintf(str, "|%p|\n", NULL);
-    s21_sprintf(str1, "|%p|\n", NULL);
+    char data[100];
+    char data1[100];
+    int a, b;
+    int c = s21_sprintf(data, "%12p", NULL);
+    int d = sprintf(data1, "%12p", NULL);
 
-    printf("str:  <%s>\n", str);
-    printf("str1: <%s>\n", str1);
+
 
     /*
+    printf("str:  <%s>\n", str);
+    printf("str1: <%s>\n", str1);
+    */
+
     printf("data:  <%s>\n", data);
     printf("data1: <%s>\n", data1);
-    */
 
     return 0;
 }
