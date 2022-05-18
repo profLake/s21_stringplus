@@ -10,10 +10,6 @@ int main() {
     sprintf(data1, "%.0g", 0.1);
     */
 
-    char data[100];
-    char data1[100];
-    s21_sprintf(data, "%#g", 0.01);
-    sprintf(data1, "%#g", 0.01);
 
     /*
     printf("str:  <%s>\n", str);

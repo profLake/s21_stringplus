@@ -1,9 +1,12 @@
+#ifndef SRC_S21_STRING_H_
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <limits.h>
 #include <float.h>
+
 
 
 typedef unsigned long s21_size_t;
@@ -88,7 +91,7 @@ int s21_e_uratio_precis_get_str_len(long double ld, int precis_len);
 int s21_e_uratio_get_e(long double ld);
 
 /* ****Для дебага */
-#define LOG(...) //sprintf(_buff, __VA_ARGS__); puts(_buff);
+#define LOG(...)  sprintf(_buff, __VA_ARGS__); puts(_buff);
 
 
 /* Для s21_strerror() */
@@ -341,4 +344,6 @@ int s21_e_uratio_get_e(long double ld);
 "Memory page has hardware error"}
 
 #endif
+
+#endif  // SRC_S21_STRING_H_
 

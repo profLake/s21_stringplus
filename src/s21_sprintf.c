@@ -416,7 +416,7 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     }
 
     char *base = DIGITS;
-    char *prefix_0x = NULL;
+    char *prefix_0x = s21_NULL;
     if (s21_tokn_get_specif(token) == SPECIFS[8]) {
         base = BASE8;
         prefix_0x = "0";
@@ -431,7 +431,7 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     }
     if (s21_tokn_have_flag(token, FLAGS[3]) == 0
         || tokn_num == 0) {
-        prefix_0x = NULL;
+        prefix_0x = s21_NULL;
     }
 
     unsigned long tokn_unum;
@@ -479,8 +479,10 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
             *target = sign;
             target++;
         }
-        s21_memset(target, fill_symb, fill_len);
-        target += fill_len;
+        if (fill_symb == ' ' || prefix_0x == s21_NULL) {
+            s21_memset(target, fill_symb, fill_len);
+            target += fill_len;
+        }
     }
     if (fill_symb == ' ' && sign) {
         *target = sign;
@@ -489,6 +491,10 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     if (prefix_0x) {
         s21_strcpy(target, prefix_0x);
         target += s21_strlen(prefix_0x);
+        if (fill_symb == '0') {
+            s21_memset(target, fill_symb, fill_len);
+            target += fill_len;
+        }
     }
     if (precis_prefix_len) {
         s21_memset(target, '0', precis_prefix_len);
@@ -586,6 +592,10 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     }
     if (precis_len <= -3) {
         precis_len = 6;
+    }
+    if (precis_len == 0
+            && (tokn_specif == SPECIFS[6] || tokn_specif == SPECIFS[7])) {
+        precis_len = 1;
     }
 
     long double tokn_ratio;

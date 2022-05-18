@@ -606,7 +606,7 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
     */
-    /*  ****Наш s21_sprintf вед>т себя при такой ошибке иначе.
+    /*  ****Наш s21_sprintf ведtт себя при такой ошибке иначе.
      *      На линуксе настоящий выводит '         nan',
      *      но на маке гигнатский набор цифр
      */
@@ -745,16 +745,17 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
-    /*
     format = "hello, '%16.1g' and also '%d'!";
     right = sprintf(buff_right, format, 0.000097, 1);
     out = s21_sprintf(buff, format, 0.000097, 1);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
-    */
-    /*  ****Известная ошибка. Настоящий sprintf выдаёт, внезапно,
-     *      '....0.0001', в то время, как наш выдаёт разумный '....0'
-     */
+
+    format = "%#05x";
+    right = sprintf(buff_right, format, 21);
+    out = s21_sprintf(buff, format, 21);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
