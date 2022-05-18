@@ -204,7 +204,7 @@ END_TEST
 
 START_TEST(test_s21_strerror)
 {
-    for (int i = -50; i < 150; i++) {
+    for (int i = -150; i < 150; i++) {
         ck_assert_str_eq(s21_strerror(i), strerror(i));
     }
 }
