@@ -55,7 +55,7 @@ int s21_sprintf(char *target, const char *format, ...);
 #define PTR_LEN_WITH_0X 14
 #ifdef __APPLE__
     #define PTR_NULL_STR ""
-#else  // For GNU/Linux (that uses glibc)
+#else
     #define PTR_NULL_STR "(nil)"
 #endif
 

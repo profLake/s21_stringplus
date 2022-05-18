@@ -293,12 +293,8 @@ int s21_trgt_print_tokn_char(char *target, const char *token, va_list *pargs) {
         width = va_arg(*pargs, int);
     }
     if (width < 0) {
-#ifdef __APPLE__
         is_prequel = 1;
         width = -width;
-#else  // For GNU/Linux (that uses glibc)
-        width = 0;
-#endif
     }
 
     int fill_len = width - 1;
@@ -371,7 +367,6 @@ int s21_trgt_print_tokn_num(char *target, const char *token, va_list *pargs) {
     int is_prequel = s21_tokn_have_flag(token, FLAGS[0]);
 
     int width = s21_tokn_get_width(token);
-LOG("width that provided:%d", width);
     if (width == -2) {
         width = va_arg(*pargs, int);
     }
@@ -415,6 +410,9 @@ LOG("width that provided:%d", width);
     }
     if (tokn_num < 0 && s21_tokn_get_specif(token) != SPECIFS[10]) {
         sign = '-';
+    }
+    if (sign == '\0' && s21_tokn_have_flag(token, FLAGS[2])) {
+        sign = ' ';
     }
 
     char *base = DIGITS;
@@ -467,13 +465,12 @@ LOG("width that provided:%d", width);
     if (fill_len < 0) {
         fill_len = 0;
     }
-LOG("fill_len:%d, width:%d", fill_len, width);
 
     char fill_symb = ' ';
     if (s21_tokn_have_flag(token, FLAGS[4]) && is_prequel == 0) {
         fill_symb = '0';
     }
-    if (precis_prefix_len) {
+    if (precis_prefix_len || precis > 0) {
         fill_symb = ' ';
     }
 
@@ -617,32 +614,44 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
          */
     } else if (tokn_specif == SPECIFS[6]
                || tokn_specif == SPECIFS[7]) {
-        int actual_precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
-                precis_len);
-        int actual_e_precis_len = s21_e_uratio_precis_get_str_len(tokn_ratio,
-                precis_len);
-
-        char buff[500];
-
-        int len1 = s21_trgt_print_uldouble(buff, tokn_ratio, actual_precis_len);
-        int len2 = s21_trgt_print_e_uldouble(buff, tokn_ratio,
-                actual_e_precis_len, 'e');
-        if (len2 < len1) {
-            is_e_shorter = 1;
-            precis_len = actual_e_precis_len;
-            non_precis_part_len = 5;
-            /*  Числа, наподобие 1.54+e01, имеют 1 символ до запятой и 4 символа
-             *      после дробной части
-             */
-        } else {
+        if (s21_tokn_have_flag(token, FLAGS[3])) {
             int e = s21_e_uratio_get_e(tokn_ratio);
-            precis_len = precis_len - e - 1;
-            precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
+            e++;
+            /*  e++ --- because in "0.052", e will have value of -2, but we
+             *      need to substract only 1 from precis_len */
+            precis_len = precis_len - e;
+            if (precis_len < 0) {
+                precis_len = 0;
+            }
+        } else {
+            int actual_precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
                     precis_len);
-            /*  If you have questions here, read
-             *  https://stackoverflow.com/questions/30658919
-             *      /the-precision-of-printf-with-specifier-g
-             */
+            int actual_e_precis_len = s21_e_uratio_precis_get_str_len(tokn_ratio,
+                    precis_len);
+    
+            char buff[500];
+    
+            int len1 = s21_trgt_print_uldouble(buff, tokn_ratio,
+                    actual_precis_len);
+            int len2 = s21_trgt_print_e_uldouble(buff, tokn_ratio,
+                    actual_e_precis_len, 'e');
+            if (len2 < len1) {
+                is_e_shorter = 1;
+                precis_len = actual_e_precis_len;
+                non_precis_part_len = 5;
+                /*  Числа, наподобие 1.54+e01, имеют 1 символ до запятой и 4
+                 *      символа после дробной части
+                 */
+            } else {
+                int e = s21_e_uratio_get_e(tokn_ratio);
+                precis_len = precis_len - e - 1;
+                precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
+                        precis_len);
+                /*  If you have questions here, read
+                 *  https://stackoverflow.com/questions/30658919
+                 *      /the-precision-of-printf-with-specifier-g
+                 */
+            }
         }
     }
 
