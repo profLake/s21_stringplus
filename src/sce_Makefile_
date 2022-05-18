@@ -83,23 +83,23 @@ cpplint:
 #cppcheck:
     
 
-check_old:
-	clear
-	$(CC) -Wall -Wextra -Werror \
-		-fprofile-arcs -ftest-coverage \
-		./tests/unit_tests.c \
-		./s21_strlen.c \
-		./s21_memcmp.c \
-		./s21_memcpy.c \
-		./s21_strchr.c \
-		./s21_strcpy.c \
-		./s21_strncmp.c \
-		./s21_strpbrk.c \
-		./s21_strtok.c \
-		./s21_strerror.c \
-		-o ./tests/unit_tests.out \
-		-lcheck -lsubunit -lrt -lpthread -lm \
-	./tests/unit_tests.out
+#check_old:
+#	clear
+#	$(CC) -Wall -Wextra -Werror \
+#		-fprofile-arcs -ftest-coverage \
+#		./tests/unit_tests.c \
+#		./s21_strlen.c \
+#		./s21_memcmp.c \
+#		./s21_memcpy.c \
+#		./s21_strchr.c \
+#		./s21_strcpy.c \
+#		./s21_strncmp.c \
+#		./s21_strpbrk.c \
+#		./s21_strtok.c \
+#		./s21_strerror.c \
+#		-o ./tests/unit_tests.out \
+#		-lcheck -lsubunit -lrt -lpthread -lm \
+#	./tests/unit_tests.out
 
 
 clean:
