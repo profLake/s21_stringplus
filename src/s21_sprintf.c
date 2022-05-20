@@ -1,5 +1,7 @@
 #include "s21_string.h"
-#include <stdarg.h>
+
+#include <math.h>
+#include <float.h>
 
 
 char _buff[5000];
@@ -636,11 +638,11 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
         } else {
             int actual_precis_len = s21_uratio_precis_get_str_len(tokn_ratio,
                     precis_len);
-            int actual_e_precis_len = s21_e_uratio_precis_get_str_len(tokn_ratio,
-                    precis_len);
-    
+            int actual_e_precis_len = s21_e_uratio_precis_get_str_len(
+                    tokn_ratio, precis_len);
+
             char buff[500];
-    
+
             int len1 = s21_trgt_print_uldouble(buff, tokn_ratio,
                     actual_precis_len);
             int len2 = s21_trgt_print_e_uldouble(buff, tokn_ratio,
@@ -725,13 +727,12 @@ int s21_trgt_print_tokn_ratio(char *target, const char *token, va_list *pargs) {
     }
     if (tokn_specif == SPECIFS[5]) {
         target += s21_trgt_print_uldouble(target, tokn_ratio, precis_len);
-
-    } if (tokn_specif == SPECIFS[3]
+    } else if (tokn_specif == SPECIFS[3]
         || tokn_specif == SPECIFS[4]) {
         target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
                     e_sign);
 
-    } if (tokn_specif == SPECIFS[6]
+    } else if (tokn_specif == SPECIFS[6]
           || tokn_specif == SPECIFS[7]) {
         if (is_e_shorter) {
             target += s21_trgt_print_e_uldouble(target, tokn_ratio, precis_len,
@@ -899,8 +900,10 @@ int s21_uratio_precis_get_str_len(long double ld, int precis_len) {
     char buff[500];
     s21_trgt_print_uldouble(buff, ld, precis_len);
 
-    int i;
-    for (i = precis_len - 1; buff[2 + i] == '0'; i--);
+    int i = precis_len - 1;
+    while (buff[2 + i] == '0') {
+        i--;
+    }
     /*  2 --- чтобы пропустить часть "0." */
 
     return i + 1;

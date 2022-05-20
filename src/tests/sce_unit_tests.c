@@ -4,6 +4,7 @@
 #include <check.h>
 #include "../s21_string.h"
 #include <stdarg.h>
+#include <stdio.h>
 
 
 START_TEST(test_s21_strstr)
@@ -754,6 +755,26 @@ START_TEST(test_s21_sprintf)
     format = "%#05x";
     right = sprintf(buff_right, format, 21);
     out = s21_sprintf(buff, format, 21);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "%+-12.4k";
+    right = sprintf(buff_right, format, 21);
+    out = s21_sprintf(buff, format, 21);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "%d";
+    right = sprintf(buff_right, format, 2.5);
+    out = s21_sprintf(buff, format, 2.5);
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
+
+    format = "%f";
+    out = s21_sprintf(buff, format, 2);
+    right = sprintf(buff_right, format, 6.5);
+    puts(buff_right);
+    puts(buff);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 }

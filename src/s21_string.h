@@ -1,12 +1,7 @@
 #ifndef SRC_S21_STRING_H_
 
 #include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <limits.h>
-#include <float.h>
-
+#include <stdarg.h>
 
 
 typedef unsigned long s21_size_t;
