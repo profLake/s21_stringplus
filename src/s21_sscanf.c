@@ -15,15 +15,15 @@ void s_stroka(const char *stra, int *i, char *o);
 void c_simvol(const char *stra, int *i, char *o);
 int s21_sscanf(const char *stra, const char *format, ...);
 
-int main() {
-  char str[20] = "1234567890";  // str1[20];  // str2[20];
-  short int a;
-  // s21_sscanf(str, "%p %s", &a, str1);
-  // printf("%p %s\n", a, str1);
-  sscanf(str, "%hd", &a);
-  printf("%hd", a);
-  return 0;
-}
+// int main() {
+//   char str[20] = "1234567890";  // str1[20];  // str2[20];
+//   float a;
+//   // s21_sscanf(str, "%f", &a);
+//   // printf("%f\n", a);
+//   sscanf(str, "%f", &a);
+//   printf("%f", a);
+//   return 0;
+// }
 
 // c s u d f i e E X x o g G p
 
@@ -186,8 +186,8 @@ void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e) {
         }
       }
       if (qi != 0) fl = -fl;
-      *p = fl;
     }
+    *p = fl;
   } else {
     error++;
     *er = error;
