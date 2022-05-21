@@ -1,6 +1,6 @@
 #include "s21_string.h"
 
-size_t s21_strcspn(const char *str1, const char *str2) {
+s21_size_t s21_strcspn(const char *str1, const char *str2) {
     s21_size_t k = 0, score = 0;
 
   for (s21_size_t i = 0; *(str1 + i) != '\0'; i++) {

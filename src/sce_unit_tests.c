@@ -1569,6 +1569,21 @@ START_TEST(test_s21_trgt_print_e_uldouble)
 }
 END_TEST
 
+START_TEST(test_all_flags_sscanf) {
+  char str[20] = { 0 };
+  char str1[20] = { 0 };
+  char *s = "strochechka";
+  char k = 'i';
+  int u = -69;
+  float f = 3.14;
+  int skucno = 33;
+  int jujik;
+  sscanf(str, "%s %c %d %f %i %n", s, &k, &u, &f, &skucno, &jujik);
+  s21_sscanf(str1, "%s %c %d %f %i %n", s, &k, &u, &f, &skucno, &jujik);
+  ck_assert_str_eq(str, str1);
+}
+END_TEST
+
 Suite* sce_s21_string_suite()
 {
     Suite *s;
@@ -1623,6 +1638,7 @@ Suite* sce_s21_string_suite()
     tcase_add_test(tc_core, test_s21_trgt_print_tokn_ptr);
 //  tcase_add_test(tc_core, test_s21_uratio_precis_get_str_len);
     tcase_add_test(tc_core, test_s21_trgt_print_e_uldouble);
+    tcase_add_test(tc_core, test_all_flags_sscanf);
 
     suite_add_tcase(s, tc_core);
 

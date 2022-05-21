@@ -87,6 +87,9 @@ int s21_e_uratio_get_e(long double ld);
 #define LOG(...)  sprintf(_buff, __VA_ARGS__); puts(_buff);
 
 
+int s21_sscanf(const char *stra, const char *format, ...);
+
+
 /* Для s21_strerror() */
 
 #ifdef __APPLE__
