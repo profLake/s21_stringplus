@@ -226,15 +226,17 @@ END_TEST
 
 START_TEST(test_s21_memset)
 {
-    char str[30] = "____ zelenoglazoe taksi";
-    char str1[30] = "____ zelenoglazoe taksi";
+    char str[30] = { 0 }; 
+    memcpy(str, "____ zelenoglazoe taksi", 23);
+    char str1[30] = { 0 };
+    memcpy(str1, "____ zelenoglazoe taksi", 23);
 
     ck_assert_str_eq(memset(str, 'O', 3), s21_memset(str1, 'O', 3));
     ck_assert_str_eq(memset(str, '0', 3), s21_memset(str1, '0', 3));
     ck_assert_str_eq(memset(str, 'g', 15), s21_memset(str1, 'g', 15));
     ck_assert_str_eq(memset(str, '\0', 20), s21_memset(str1, '\0', 20));
     ck_assert_str_eq(memset(str, '\n', 5), s21_memset(str1, '\n', 5));
-    ck_assert_str_eq(memset(str, '.', 30), s21_memset(str1, '.', 30));
+    ck_assert_str_eq(memset(str, '.', 29), s21_memset(str1, '.', 29));
 }
 END_TEST
 
@@ -785,6 +787,12 @@ START_TEST(test_s21_sprintf)
     out = s21_sprintf(buff, format, 6.5);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "heelo %c 325";
+    right = sprintf(buff_right, format, '\0');
+    out = s21_sprintf(buff, format, '\0');
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
@@ -1155,6 +1163,7 @@ START_TEST(test_s21_to_lower)
     char stx[20] = "hello";
     char *src = s21_to_lower(str);
     ck_assert_str_eq(src, stx);
+    free(src);
 }
 END_TEST
 
@@ -1163,7 +1172,10 @@ START_TEST(test_s21_to_upper)
     char str[20] = "hello";
     char stx[20] = "HELLO";
     char *src = s21_to_upper(str);
-    ck_assert_str_eq(src, stx);
+    if (src) {
+        ck_assert_str_eq(src, stx);
+        free(src);
+    }
 }
 END_TEST
 

@@ -13,13 +13,14 @@ SOURCES=$(wildcard s21_*.c)
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
-ifeq ("$(shell uname -s)", "Linux")
-	CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
-	####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-	####    использует эти библиотеки
-else
-	CLIBS=-lm -lcheck
-endif
+#ifeq ("$(shell uname -s)", "Linux")
+#	CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
+#	####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
+#	####    использует эти библиотеки
+#else
+#	CLIBS=-lm -lcheck
+#endif
+CLIBS=-lm $(shell pkg-config --cflags --libs check)
 
 
 all: clean s21_string.a
@@ -44,12 +45,12 @@ test: ./sce_unit_tests.c $(SOURCES)
 	clear
 
 	$(CC) $(CFLAGS) \
-		-fprofile-arcs -ftest-coverage \
+		-fprofile-arcs -ftest-coverage -g \
 		$^ \
 		-o ./unit_tests.out \
 		$(CLIBS)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
-		####
+		####...-g --- for debug info
 	./unit_tests.out; exit 0
 
 
@@ -100,13 +101,17 @@ cpplint:
 
 
 valgrind: test
-	#valgrind ./tests/sce_extra_unit_tests.out
 	valgrind \
-        -s \
-		--leak-check=full \
-		--leak-resolution=med \
 		--log-file=RESULT_VALGRIND.txt \
+		-s \
+		--track-origins=yes \
 		./unit_tests.out
+	#valgrind \
+    #   -s \
+	#	--leak-check=full \
+	#	--leak-resolution=med \
+	#	--log-file=RESULT_VALGRIND.txt \
+	#	./unit_tests.out
 	#valgrind \
 	#	--show-leak-kinds=all \
 	#	--track-origins=no \
