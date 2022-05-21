@@ -3,9 +3,9 @@
 #include "s21_string.h"
 
 void *s21_to_lower(const char *str) {
-  int i;
+  s21_size_t i;
   i = 0;
-  int j;
+  s21_size_t j;
   j = 0;
   while (str[i] != '\0') {
     i++;
@@ -14,7 +14,7 @@ void *s21_to_lower(const char *str) {
   if (scopy == s21_NULL) {
       return s21_NULL;
   }
-  int q;
+  s21_size_t q;
   for (q = 0; str[q] != '\0'; q++) {
     scopy[q] = str[q];
   }

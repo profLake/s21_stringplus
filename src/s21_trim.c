@@ -4,8 +4,8 @@
 
 void *s21_trim(const char *src, const char *trim_chars) {
   char *new = (char *)src;
-  s21_size_t i = 0, firch = 0, endch = 0, nch = 0;
   if (trim_chars != s21_NULL && *trim_chars) {
+    s21_size_t i = 0, firch = 0, endch;
     endch = s21_strlen(src);
     while (src[firch] && trim_chars[i]) {
       i = 0;
@@ -17,6 +17,7 @@ void *s21_trim(const char *src, const char *trim_chars) {
       firch++;
     }
     if (firch < endch) {
+      s21_size_t nch = 0;
       i = 0;
       while (src[endch - 1] && trim_chars[i]) {
         i = 0;
