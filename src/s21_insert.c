@@ -1,11 +1,10 @@
 #include <stdlib.h>
+
 #include "s21_string.h"
 
 void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
   s21_size_t i = 0;
   s21_size_t q = 0;
-  s21_size_t r;
-  s21_size_t k = 0;
   char *m = s21_NULL;
 
   while (src[i] != '\0') {
@@ -17,13 +16,15 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
   }
 
   if (i >= start_index) {
+    s21_size_t r;
+    s21_size_t k = 0;
     m = malloc((i + q + 1) * sizeof(char));
 
     for (r = 0; r < i + q; r++) {
       if (r < start_index) {
         m[r] = src[r];
 
-      } else if (r >= start_index && str[k] != '\0') {
+      } else if (str[k] != '\0') {
         m[r] = str[k];
         k++;
       }
