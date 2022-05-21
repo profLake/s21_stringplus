@@ -1,8 +1,6 @@
 #ifndef SRC_S21_STRING_H_
 
-#include <errno.h>
 #include <stdarg.h>
-
 
 typedef unsigned long s21_size_t;
 #define s21_NULL (void*)0

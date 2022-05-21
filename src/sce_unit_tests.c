@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
-#include "../s21_string.h"
+#include "s21_string.h"
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -387,14 +387,14 @@ START_TEST(test_s21_strcmp)
           *empty1 = "",
           *ichni = "1234SZR",
           *end = "\0", *end1 = "\0";
-    ck_assert_int_eq(s21_strcmp(h, "!fvgb9876"), strcmp(h, "!fvgb9876"));
-    ck_assert_int_eq(s21_strcmp(gh, "!.76"), strcmp(gh, "!.76"));
-    ck_assert_int_eq(s21_strcmp(empty, "ryhEF"), strcmp(empty, "ryhEF"));
-    ck_assert_int_eq(s21_strcmp(ichni, empty), strcmp(ichni, empty));
-    ck_assert_int_eq(s21_strcmp("Sold it!", "Sold it!"),
-            strcmp("Sold it!", "Sold it!"));
-    ck_assert_int_eq(s21_strcmp(empty, empty1), strcmp(empty, empty1));
-    ck_assert_int_eq(s21_strcmp(end, end1), strcmp(end, end1));
+    ck_assert(s21_strcmp(h, "!fvgb9876") > 0 && strcmp(h, "!fvgb9876") > 0);
+    ck_assert(s21_strcmp(gh, "!.76") > 0 && strcmp(gh, "!.76") > 0);
+    ck_assert(s21_strcmp(empty, "ryhEF") < 0 && strcmp(empty, "ryhEF") < 0);
+    ck_assert(s21_strcmp(ichni, empty) > 0 && strcmp(ichni, empty) > 0);
+    ck_assert(s21_strcmp("Sold it!", "Sold it!") == 0
+            && strcmp("Sold it!", "Sold it!") == 0);
+    ck_assert(s21_strcmp(empty, empty1) == 0 && strcmp(empty, empty1) == 0);
+    ck_assert(s21_strcmp(end, end1) == 0 && strcmp(end, end1) == 0);
 }
 END_TEST
 
@@ -402,11 +402,11 @@ START_TEST(test_s21_strncmp)
 {
     char h[10] = "hello", *hr = "hellr", *p = "PRISE", *s = "shitty", *sh = "sh...", *shout = "shout, shout", *t = ".", *otchet = ".0123", *end = " endOFsPAACE", *empty = "";
     ck_assert_int_eq(s21_strncmp(h, hr, 4), strncmp(h, hr, 4));
-    ck_assert_int_eq(s21_strncmp(h, hr, 5), strncmp(h, hr, 5));
+    ck_assert(s21_strncmp(h, hr, 5) < 0 && strncmp(h, hr, 5) < 0);
     ck_assert_int_eq(s21_strncmp(hr, hr, 5), strncmp(hr, hr, 5));
-    ck_assert_int_eq(s21_strncmp(p, s, 5), strncmp(p, s, 5));
-    ck_assert_int_eq(s21_strncmp(sh, shout, 5), strncmp(sh, shout, 5));
-    ck_assert_int_eq(s21_strncmp(t, otchet, 3), strncmp(t, otchet, 3));
+    ck_assert(s21_strncmp(p, s, 5) < 0 && strncmp(p, s, 5) < 0);
+    ck_assert(s21_strncmp(sh, shout, 5) < 0 && strncmp(sh, shout, 5) < 0);
+    ck_assert(s21_strncmp(t, otchet, 3) < 0 && strncmp(t, otchet, 3) < 0);
     ck_assert_int_eq(s21_strncmp(empty, end, 1), strncmp(empty, end, 1));
 }
 END_TEST

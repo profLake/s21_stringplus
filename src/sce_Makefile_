@@ -1,11 +1,11 @@
 #
-# Если хочешь знать, как это работает, загляни в
-#   https://habr.com/ru/post/155201/.
-# Если этого мало, отведай https://stackoverflow.com/questions/2734719/how-to-compile-a-static-library-in-linux
-#
+#   Если хочешь знать, как это работает, загляни в
+#       https://habr.com/ru/post/155201/.
+#   Если этого мало, отведай https://stackoverflow.com/questions/2734719/
+#       how-to-compile-a-static-library-in-linux
 #
 
-SHELL := /bin/bash
+#SHELL := /bin/bash
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 LDFLAGS=
@@ -22,51 +22,69 @@ else
 endif
 
 
-all: clean sce_check gcov_test
+all: clean s21_string.a
 
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $^ -o $@
 
 
-s21_string.a: $(OBJECTS)
+s21_string.a: $(OBJECTS) ./s21_string.h
 	ar -rcs $@ $^
 
 
 gcov_report:
-	##gcov ./tests/*.gcda
-	####gcov --- выводит профилировачную инфу в консоль
 	geninfo ./*.gcda
 	genhtml ./*.info --output-directory ./
+	####geninfo,genhtml --- входят в состав gcov. Выводят профилировачную
+	####    инфу в консоль
 
 
-sce_test: ./tests/sce_unit_tests.c $(SOURCES)
-	make -f ./sce_Makefile_ clean
+test: ./sce_unit_tests.c $(SOURCES)
 	clear
 
 	$(CC) $(CFLAGS) \
 		-fprofile-arcs -ftest-coverage \
 		$^ \
-		-o ./tests/unit_tests.out \
+		-o ./unit_tests.out \
 		$(CLIBS)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
-	./tests/unit_tests.out; exit 0
+	./unit_tests.out; exit 0
 
-sce_extra_test: ./tests/extra_unit_tests.c $(SOURCES)
+
+clean:
+	find ./ \( -iname "*.gcda" \
+		-or -iname "*.gcov" \
+		-or -iname "*.gcno" \
+		-or -iname "*.out" \
+		-or -iname "*.o" \
+		-or -iname "*.a" \
+		-or -iname "*.html" \
+		-or -iname "*.info" \
+		-or -iname "*.css" \
+		-or -iname "*.png" \
+	\) -delete
+
+	rm -rf ./tests/src/ \
+		./.DS_Store \
+
+
+extra_test: ./tests/extra_unit_tests.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
 	clear
 
 	$(CC) \
 		-fprofile-arcs -ftest-coverage \
 		$^ \
-		-o ./tests/sce_extra_unit_tests.out \
+		-o ./sce_extra_unit_tests.out \
 		$(CLIBS) 2> /tmp/delme
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
 		####
-	./tests/sce_extra_unit_tests.out
+	./sce_extra_unit_tests.out
 
-sce_sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
+
+sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
 	clear
 
@@ -76,17 +94,25 @@ sce_sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
 
 cpplint:
 	cp ../materials/linters/CPPLINT.cfg ./
-	python3 ../materials/linters/cpplint.py --extensions=c ./s21_*.c ./s21_*.h \
-        #./tests/
+	python3 ../materials/linters/cpplint.py --extensions=c \
+		./s21_*.c \
+    	./s21_*.h
 
 
-valgrind:
+valgrind: test
 	#valgrind ./tests/sce_extra_unit_tests.out
 	valgrind \
-		--show-leak-kinds=all \
-		--track-origins=no \
+        -s \
+		--leak-check=full \
+		--leak-resolution=med \
 		--log-file=RESULT_VALGRIND.txt \
-		./tests/sce_extra_unit_tests.out
+		./unit_tests.out
+	#valgrind \
+	#	--show-leak-kinds=all \
+	#	--track-origins=no \
+	#	--log-file=RESULT_VALGRIND.txt \
+	#	-s \
+	#	./unit_tests.out
 		#--leak-check=full --- "each individual leak will be shown in detail"
 		#--show-leak-kinds=all --- Show all of "definite, indirect, possible,
 		#   reachable" leak kinds in the "full" report.
@@ -141,6 +167,3 @@ clean:
 		./.DS_Store \
 
 	
-sce_checkout:
-	git checkout ./s21_strcspn.c ./s21_strspn.c ./s21_strncat.c
-

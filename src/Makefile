@@ -19,10 +19,8 @@ ifeq ("$(shell uname -s)", "Linux")
 	CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
 	####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
 	####    использует эти библиотеки
-	XDG=xdg-open
 else
 	CLIBS=-lm -lcheck
-	XDG=open
 endif
 
 
@@ -42,7 +40,6 @@ gcov_report:
 	####gcov --- выводит профилировачную инфу в консоль
 	geninfo ./tests/*.gcda
 	genhtml ./tests/*.info --output-directory ./tests/
-	$(XDG) ./tests/src/index.html
 
 
 test: ./tests/sce_unit_tests.c $(SOURCES)
