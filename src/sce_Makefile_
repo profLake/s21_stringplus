@@ -33,12 +33,11 @@ s21_string.a: $(OBJECTS)
 	ar -rcs $@ $^
 
 
-gcov_test:
+gcov_report:
 	##gcov ./tests/*.gcda
 	####gcov --- выводит профилировачную инфу в консоль
-	geninfo ./tests/*.gcda
-	genhtml ./tests/*.info --output-directory ./tests/
-	brave-browser ./tests/src/index.html
+	geninfo ./*.gcda
+	genhtml ./*.info --output-directory ./
 
 
 sce_test: ./tests/sce_unit_tests.c $(SOURCES)

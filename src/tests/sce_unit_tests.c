@@ -758,17 +758,27 @@ START_TEST(test_s21_sprintf)
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 
+    /*
     format = "%+-12.4k";
     right = sprintf(buff_right, format, 21);
     out = s21_sprintf(buff, format, 21);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+    */
+    /*  ****Known issue. glibc works fine with that, sprintf from there doesn't
+     *      recognize the format as valid token. Macos libc does.
+     */
 
+    /*
     format = "%d";
     right = sprintf(buff_right, format, 2.5);
     out = s21_sprintf(buff, format, 2.5);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+    */
+    /*  ****Known issue. With glibc the test works fine. With libc (macos)
+     *      it doesn't (random nums are given in both cases)
+     */
 
     format = "%f";
     right = sprintf(buff_right, format, 6.5);
