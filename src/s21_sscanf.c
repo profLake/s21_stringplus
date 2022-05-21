@@ -217,8 +217,9 @@ void i_chislo(const char *stra, int *i, int *p, int *erro) {
           if (stra[ii + 1] >= 'a' && stra[ii + 1] <= 'f') {
             ii++;
             qi++;
-          } else
+          } else {
             break;
+          }
         }
       }
     }

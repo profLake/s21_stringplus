@@ -1,8 +1,7 @@
 check:
 	clear
-	#gcc -Wall -Wextra -Werror \
-	gcc \
-		./tests/newfntests.c \
+	gcc -Wall -Wextra -Werror \
+		./tests/unit_testsvickey.c \
 		./s21_strlen.c \
 		./s21_memcmp.c \
 		./s21_memcpy.c \
@@ -28,8 +27,10 @@ check:
 		./s21_strerror.c \
 		./s21_to_lower.c \
 		./s21_sprintf.c \
+		./s21_sscanf.c \
 		-o ./tests/unit_tests.out \
-		-lcheck -lm -lsubunit -lrt -lpthread
+		-lcheck 
+		#-lm -lsubunit -lrt -lpthread
 		####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
 		####    используетэти библиотеки
 	./tests/unit_tests.out

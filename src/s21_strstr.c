@@ -2,7 +2,7 @@
 
 char *s21_strstr(const char *haystack, const char *needle) {
   char *ret = (char *)haystack;
-  if (needle[0] != 0 && needle != s21_NULL) {
+  if (needle[0]) {
     while (*haystack && *haystack != *needle) {
       haystack++;
     }
