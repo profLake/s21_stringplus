@@ -1,6 +1,12 @@
 #ifndef SRC_S21_STRING_H_
 #define SRC_S21_STRING_H_
 
+#ifndef __APPLE__
+    #ifndef __GLIBC__
+        #define __MUSL__
+    #endif
+#endif
+
 #include <stdarg.h>
 
 typedef unsigned long s21_size_t;
@@ -93,7 +99,9 @@ int s21_sscanf(const char *stra, const char *format, ...);
 /* Для s21_strerror() */
 
 #ifdef __APPLE__
+
 #define ERR_MSGS_COUNT 106
+#define ERR_MSG_UNKNOWN "Unknown error: "
 #define ERR_MSGS { "Operation not permitted", \
 "No such file or directory", \
 "No such process", \
@@ -201,9 +209,149 @@ int s21_sscanf(const char *stra, const char *format, ...);
 "Previous owner died", \
 "Interface output queue is full"}
 
+#elif defined(__MUSL__)
+
+#define ERR_MSGS_COUNT 132
+#define ERR_MSG_UNKNOWN "No error information"
+#define ERR_MSGS { \
+"No error information", \
+"Operation not permitted", \
+"No such file or directory", \
+"No such process", \
+"Interrupted system call", \
+"I/O error", \
+"No such device or address", \
+"Argument list too long", \
+"Exec format error", \
+"Bad file descriptor", \
+"No child process", \
+"Resource temporarily unavailable", \
+"Out of memory", \
+"Permission denied", \
+"Bad address", \
+"Block device required", \
+"Resource busy", \
+"File exists", \
+"Cross-device link", \
+"No such device", \
+"Not a directory", \
+"Is a directory", \
+"Invalid argument", \
+"Too many open files in system", \
+"No file descriptors available", \
+"Not a tty", \
+"Text file busy", \
+"File too large", \
+"No space left on device", \
+"Invalid seek", \
+"Read-only file system", \
+"Too many links", \
+"Broken pipe", \
+"Domain error", \
+"Result not representable", \
+"Resource deadlock would occur", \
+"Filename too long", \
+"No locks available", \
+"Function not implemented", \
+"Directory not empty", \
+"Symbolic link loop", \
+"No error information", \
+"No message of desired type", \
+"Identifier removed", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Device not a stream", \
+"No data available", \
+"Device timeout", \
+"Out of streams resources", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Link has been severed", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Protocol error", \
+"Multihop attempted", \
+"No error information", \
+"Bad message", \
+"Value too large for data type", \
+"No error information", \
+"File descriptor in bad state", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Illegal byte sequence", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Not a socket", \
+"Destination address required", \
+"Message too large", \
+"Protocol wrong type for socket", \
+"Protocol not available", \
+"Protocol not supported", \
+"Socket type not supported", \
+"Not supported", \
+"Protocol family not supported", \
+"Address family not supported by protocol", \
+"Address in use", \
+"Address not available", \
+"Network is down", \
+"Network unreachable", \
+"Connection reset by network", \
+"Connection aborted", \
+"Connection reset by peer", \
+"No buffer space available", \
+"Socket is connected", \
+"Socket not connected", \
+"Cannot send after socket shutdown", \
+"No error information", \
+"Operation timed out", \
+"Connection refused", \
+"Host is down", \
+"Host is unreachable", \
+"Operation already in progress", \
+"Operation in progress", \
+"Stale file handle", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Remote I/O error", \
+"Quota exceeded", \
+"No medium found", \
+"Wrong medium type", \
+"Operation canceled", \
+"No error information", \
+"No error information", \
+"No error information", \
+"No error information", \
+"Previous owner died", \
+"State not recoverable" \
+}
+
 #else  // For GNU/Linux
 
 #define ERR_MSGS_COUNT 134
+#define ERR_MSG_UNKNOWN "Unknown error "
 #define ERR_MSGS {"Success", \
 "Operation not permitted", \
 "No such file or directory", \
