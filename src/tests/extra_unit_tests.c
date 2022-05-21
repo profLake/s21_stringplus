@@ -5,6 +5,8 @@
 #include "../s21_string.h"
 #include <stdarg.h>
 
+#include <stdio.h>
+
 
 START_TEST(test_s21_strstr)
 {

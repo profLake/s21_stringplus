@@ -771,10 +771,8 @@ START_TEST(test_s21_sprintf)
     ck_assert_int_eq(right, out);
 
     format = "%f";
-    out = s21_sprintf(buff, format, 2);
     right = sprintf(buff_right, format, 6.5);
-    puts(buff_right);
-    puts(buff);
+    out = s21_sprintf(buff, format, 6.5);
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
 }

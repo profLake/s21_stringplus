@@ -98,14 +98,6 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
     return (char *)token;
 }
 
-char s21_tokn_get_flag(const char *token, int i) {
-    token += i;
-    if (s21_strchr(FLAGS, *token)) {
-        return *token;
-    }
-    return '\0';
-}
-
 int s21_tokn_have_flag(const char *token, char flag) {
     while (s21_strchr(FLAGS, *token)) {
         if (*token == flag)

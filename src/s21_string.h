@@ -59,7 +59,6 @@ int s21_sprintf(char *target, const char *format, ...);
 
 int s21_frmt_is_tokn(const char *format);
 char *s21_tokn_skip_part(const char *token, unsigned int i);
-char s21_tokn_get_flag(const char *token, int i);
 int s21_tokn_have_flag(const char *token, char flag);
 int s21_tokn_get_width(const char *token);
 int s21_tokn_get_precision(const char *token);
