@@ -1142,10 +1142,8 @@ START_TEST(test_s21_to_upper) {
     char str[20] = "hello";
     char stx[20] = "HELLO";
     char *src = s21_to_upper(str);
-    if (src) {
-        ck_assert_str_eq(src, stx);
-        free(src);
-    }
+    ck_assert_str_eq(src, stx);
+    free(src);
 
     char *s1 = "";
     char *s2 = "School is Cool";
