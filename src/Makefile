@@ -33,9 +33,7 @@ gcov_report:
 	####    инфу в консоль
 
 
-test: ./sce_unit_tests.c $(SOURCES)
-	clear
-
+test: $(SOURCES) $(TEST_SOURCES)
 	$(CC) $(CFLAGS) \
 		-fprofile-arcs -ftest-coverage -g \
 		$^ \
@@ -60,12 +58,14 @@ clean:
 	\) -delete
 
 	rm -rf ./tests/src/ \
-		./.DS_Store \
+		./.DS_Store/ \
+		./src/ \
+		./usr/ \
+		./unit_tests.out.dSYM/ \
 
 
 extra_test: $(SOURCES) ./will_be_cutted/extra_unit_tests.c 
 	make -f ./sce_Makefile_ clean
-	clear
 
 	$(CC) \
 		-fprofile-arcs -ftest-coverage \
@@ -79,7 +79,6 @@ extra_test: $(SOURCES) ./will_be_cutted/extra_unit_tests.c
 
 sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
 	make -f ./sce_Makefile_ clean
-	clear
 
 	$(CC) $^ -lm -o ./tests/sce_sprintf_test.out
 	./tests/sce_sprintf_test.out
@@ -123,7 +122,5 @@ valgrind: test
 
 
 cppcheck:
-	clear
 	cppcheck --enable=all --suppress=missingIncludeSystem $(SOURCES)
-    
 

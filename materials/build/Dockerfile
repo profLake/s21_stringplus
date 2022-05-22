@@ -11,7 +11,9 @@ RUN apk --no-cache --upgrade add \
     valgrind \
     cppcheck \
 	alpine-sdk \
-	pcre-dev
+	pcre-dev \
+    check-dev \
+    vim
 
 RUN mkdir /test 
 
@@ -22,4 +24,4 @@ COPY materials/linters /project/tests/linters
 
 WORKDIR "/project"
 
-ENTRYPOINT ["/bin/bash","ci-scripts/test.sh"]
+#ENTRYPOINT ["/bin/bash","ci-scripts/test.sh"]
