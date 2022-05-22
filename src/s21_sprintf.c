@@ -92,7 +92,7 @@ char *s21_tokn_skip_part(const char *token, unsigned int i) {
     if (i--)    /* length-specifier */
         if (*token && s21_strchr(TOKN_LENS, *token))
             token++;
-    if (i--)    /* specifier */
+    if (i)    /* specifier */
         if (*token && s21_strchr(SPECIFS, *token))
             token++;
     return (char *)token;
@@ -794,10 +794,10 @@ int s21_trgt_print_tokn_ptr(char *target, const char *token, va_list *pargs) {
     if (zero_prefix_len < 0) {
         zero_prefix_len = 0;
     }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__MUSL__)
     zero_prefix_len = 0;
-    /*  ... = 0 --- apple's libc doesn't print prefix extra zeros on pointers
-     *      like 0x00052ab3f1c9b */
+    /*  ... = 0 --- apple's libc and musl doesn't print prefix extra zeros on
+     *      pointers like 0x00052ab3f1c9b. They print just 0x52ab3f1c9b. */
 #endif
 
     int fill_len = width - 2 - zero_prefix_len - p_len;

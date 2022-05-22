@@ -780,6 +780,12 @@ START_TEST(test_s21_sprintf) {
     out = s21_sprintf(buff, format, '\0');
     ck_assert_str_eq(buff_right, buff);
     ck_assert_int_eq(right, out);
+
+    format = "heelo \0%c 325";
+    right = sprintf(buff_right, format, 'b');
+    out = s21_sprintf(buff, format, 'b');
+    ck_assert_str_eq(buff_right, buff);
+    ck_assert_int_eq(right, out);
 }
 END_TEST
 
