@@ -7,8 +7,7 @@
 #include <stdio.h>
 
 
-START_TEST(test_s21_strstr)
-{
+START_TEST(test_s21_strstr) {
     char *str1;
     char *str2;
 
@@ -24,8 +23,7 @@ START_TEST(test_s21_strstr)
 }
 END_TEST
 
-START_TEST(test_s21_memchr)
-{
+START_TEST(test_s21_memchr) {
     char *ptr;
     int value;
     int n;
@@ -42,8 +40,7 @@ START_TEST(test_s21_memchr)
 }
 END_TEST
 
-START_TEST(test_s21_memcmp)
-{
+START_TEST(test_s21_memcmp) {
     char *str1;
     char *str2;
     int n;
@@ -94,8 +91,7 @@ START_TEST(test_s21_memcmp)
 }
 END_TEST
 
-START_TEST(test_s21_memcpy)
-{
+START_TEST(test_s21_memcpy) {
     char dest[50];
     s21_memcpy(dest, "hello", 5);
     ck_assert(strncmp(dest, "hellr", 4) == 0);
@@ -103,16 +99,14 @@ START_TEST(test_s21_memcpy)
 }
 END_TEST
 
-START_TEST(test_s21_strlen)
-{
+START_TEST(test_s21_strlen) {
     int out;
     out = s21_strlen("1969");
     ck_assert_int_eq(out, 4);
 }
 END_TEST
 
-START_TEST(test_s21_strpbrk)
-{
+START_TEST(test_s21_strpbrk) {
     char *str1 = "0123456789";
     char *str2 = "369";
 
@@ -128,8 +122,7 @@ START_TEST(test_s21_strpbrk)
 }
 END_TEST
 
-START_TEST(test_s21_strtok)
-{
+START_TEST(test_s21_strtok) {
     char str1[500];
     char str2[500];
     char *delim;
@@ -190,8 +183,7 @@ START_TEST(test_s21_strtok)
 }
 END_TEST
 
-START_TEST(test_s21_strrchr)
-{
+START_TEST(test_s21_strrchr) {
     const char str[12] = "1534a5E,";
     char * empt = "";
     ck_assert_ptr_eq(s21_strrchr(str, '3'), strrchr(str, '3'));
@@ -203,17 +195,14 @@ START_TEST(test_s21_strrchr)
 }
 END_TEST
 
-START_TEST(test_s21_strerror)
-{
+START_TEST(test_s21_strerror) {
     for (int i = -150; i < 150; i++) {
-        printf("i:%d\n", i);
         ck_assert_str_eq(s21_strerror(i), strerror(i));
     }
 }
 END_TEST
 
-START_TEST(test_s21_strcat)
-{
+START_TEST(test_s21_strcat) {
     char str[15] = "Hi", str1[15] = "Hi", src[25] = "It's ", src1[25] = "It's ", pl[20] = "Please, be gentl",
     pl1[20] = "Please, be gentl";
     ck_assert_str_eq(s21_strcat(str, ", People!"),  strcat(str1, ", People!"));
@@ -225,9 +214,8 @@ START_TEST(test_s21_strcat)
 }
 END_TEST
 
-START_TEST(test_s21_memset)
-{
-    char str[30] = { 0 }; 
+START_TEST(test_s21_memset) {
+    char str[30] = { 0 };
     memcpy(str, "____ zelenoglazoe taksi", 23);
     char str1[30] = { 0 };
     memcpy(str1, "____ zelenoglazoe taksi", 23);
@@ -241,23 +229,27 @@ START_TEST(test_s21_memset)
 }
 END_TEST
 
-START_TEST(test_s21_memmove)
-{
+START_TEST(test_s21_memmove) {
     char src[200] = "88, 89, 90";
     char src1[200] = "88, 89, 90";
-    
+
     ck_assert_str_eq(memmove(src, "86, 87", 5), s21_memmove(src1, "86, 87", 5));
     ck_assert_str_eq(memmove(&src[5], "Q", 1), s21_memmove(&src1[5], "Q", 1));
-    ck_assert_str_eq(memmove(&src[11], "\n\0!", 4), s21_memmove(&src1[11], "\n\0!", 4));
-    ck_assert_str_eq(memmove(&src[0], "\0.)\0", 4), s21_memmove(&src1[0], "\0.)\0", 4));
-    ck_assert_str_eq(memmove(&src[0], "One question... when it \0will end???TU!\n\0", 25), s21_memmove(&src1[0], "One question... when it \0will end???TU!\n\0", 25));
-    ck_assert_str_eq(memmove(&src[25], "\0\nwill never gon\0 na be QA\n\0", 24), s21_memmove(&src1[0], "\0\nwill never gon\0 na be QA\n\0", 24));
+    ck_assert_str_eq(memmove(&src[11], "\n\0!", 4),
+        s21_memmove(&src1[11], "\n\0!", 4));
+    ck_assert_str_eq(memmove(&src[0], "\0.)\0", 4),
+        s21_memmove(&src1[0], "\0.)\0", 4));
+    ck_assert_str_eq(
+        memmove(&src[0], "One question... when it \0will end???TU!\n\0", 25),
+        s21_memmove(&src1[0], "One question... when it \0will end???TU!\n\0",
+            25));
+    ck_assert_str_eq(memmove(&src[25], "\0\nwill never gon\0 na be QA\n\0", 24),
+        s21_memmove(&src1[0], "\0\nwill never gon\0 na be QA\n\0", 24));
 }
 END_TEST
 
 
-START_TEST(test_s21_strchr)
-{
+START_TEST(test_s21_strchr) {
     const char *str = "1234a5E,",  empt[] = "";
     ck_assert_ptr_eq(s21_strchr(str, '3'), strchr(str, '3'));
     ck_assert_ptr_eq(s21_strchr(str, 'a'), strchr(str, 'a'));
@@ -276,10 +268,9 @@ START_TEST(test_s21_strchr)
 }
 END_TEST
 
-START_TEST(test_s21_strcpy)
-{
+START_TEST(test_s21_strcpy) {
     char sp[] = "ahh, so boring..", sp1[] = "ahh, so boring..";
-    
+
     ck_assert_str_eq(s21_strcpy(sp, "sp"), strcpy(sp1, "sp"));
     ck_assert_str_eq(s21_strcpy(sp, "dc\0b"), strcpy(sp1, "dc\0b"));
     ck_assert_str_eq(s21_strcpy(sp, "WE12\0\n#@!yu."),
@@ -291,28 +282,24 @@ START_TEST(test_s21_strcpy)
 }
 END_TEST
 
-START_TEST(test_s21_strncpy)
-{
+START_TEST(test_s21_strncpy) {
     char str[28] = "So many test/000/ f*hh..",
          str1[28] = "So many test/000/ f*hh..",
-         //src[100]
-         //= "   /00never gonna give you up, never gonna let them down...",
-         // src[100] = "..." --- превышает 80 символов
          src1[10] = "",
          src11[2] = "",
          src2[9] = "/000/",
          src3[6] = "/0",
          src33[6] = "/0",
          src4[20] = "just like that";
-    
-    //ck_assert_str_eq(s21_strncpy(src, str1, 28), strncpy(src, str, 28));
+
+    //  ck_assert_str_eq(s21_strncpy(src, str1, 28), strncpy(src, str, 28));
     /*  ****src[100] закомментирован */
     ck_assert_str_eq(s21_strncpy(str1, src1, 4), strncpy(str, src1, 4));
     ck_assert_str_eq(s21_strncpy(src1, str1, 1), strncpy(src11, str, 1));
     ck_assert_str_eq(s21_strncpy(str1, src2, 5), strncpy(str, src2, 5));
     ck_assert_str_eq(s21_strncpy(src3, str1, 2), strncpy(src33, str, 2));
     ck_assert_str_eq(s21_strncpy(str1, src4, 16), strncpy(str, src4, 16));
-    //ck_assert_str_eq(s21_strncpy(str1, "3oi", 0), strncpy(str, "3oi", 0));
+    ck_assert_str_eq(s21_strncpy(str1, "3oi", 0), strncpy(str, "3oi", 0));
     /*  ****error: ‘strncpy’ destination unchanged after copying no bytes from
      *      a string of length 3
      */
@@ -335,43 +322,47 @@ START_TEST(test_s21_strncpy)
 }
 END_TEST
 
-START_TEST(test_s21_strncat)
-{
+START_TEST(test_s21_strncat) {
     char str[108] = "IT's fin,I p_se", str1[108] = "IT's fin,I p_se";
-   char src[] = "Fi3", src1[] = "Fi3";
+    char src[] = "Fi3", src1[] = "Fi3";
     ck_assert_str_eq(s21_strncat(str, "\0r\n", 7), strncat(str1, "\0r\n", 7));
-    //ck_assert_str_eq(s21_strncat(str, "0", 1), strncat(str1, "0", 1));
+    ck_assert_str_eq(s21_strncat(str, "0", 1), strncat(str1, "0", 1));
     /* ****error: ‘strncat’ specified bound 1 equals source length */
-    ck_assert_str_eq(s21_strncat(str, "TU, s-ly", 12), strncat(str1, "TU, s-ly", 12));
+    ck_assert_str_eq(s21_strncat(str, "TU, s-ly", 12),
+        strncat(str1, "TU, s-ly", 12));
     ck_assert_str_eq(s21_strncat(str, src, 3), strncat(str1, src1, 3));
     ck_assert_str_eq(s21_strncat(str, "\000/", 2), strncat(str1, "\000/", 2));
-    //ck_assert_str_eq(s21_strncat(str, "GAGA, rama", 10), strncat(str1, "GAGA, rama", 10));
+    ck_assert_str_eq(s21_strncat(str, "GAGA, rama", 10),
+        strncat(str1, "GAGA, rama", 10));
     /* ****error: ‘strncat’ specified bound 10 equals source length */
     ck_assert_str_eq(s21_strncat(str, "\nOuPS", 10), strncat(str1, "\nOuPS", 10));
 }
 END_TEST
 
-START_TEST(test_s21_strspn)
-{
-    char src[] = "WE ARE THE CHAMPIONS!", src1[] = "WE ", src2[] = "no we're not", src3[] = "oprs", src4[] = "sroopsrrops";
-    
-    ck_assert_int_eq(strspn(src,src1), s21_strspn(src, src1));
-    ck_assert_int_eq(strspn(src,src2), s21_strspn(src, src2));
+START_TEST(test_s21_strspn) {
+    char src[] = "WE ARE THE CHAMPIONS!", src1[] = "WE ",
+        src2[] = "no we're not", src3[] = "oprs", src4[] = "sroopsrrops";
+
+    ck_assert_int_eq(strspn(src, src1), s21_strspn(src, src1));
+    ck_assert_int_eq(strspn(src, src2), s21_strspn(src, src2));
     ck_assert_int_eq(strspn(src4, src3), s21_strspn(src4, src3));
-    ck_assert_int_eq(strspn("aaaaeeeerrrrAER", "aerB"), s21_strspn("aaaaeeeerrrrAER", "aerB"));
-    ck_assert_int_eq(strspn(".!...!...??", "!."), s21_strspn(".!...!...??", "!."));
-    ck_assert_int_eq(strspn("what?\n\0", "ahat\0"), s21_strspn("what?\n\0", "ahat\0"));
-    ck_assert_int_eq(strspn("TheesaIm\n\0", "TheeSAImee\n\0"), s21_strspn("TheeSAImee\n\0", "TheesaIm\n\0"));
+    ck_assert_int_eq(strspn("aaaaeeeerrrrAER", "aerB"),
+        s21_strspn("aaaaeeeerrrrAER", "aerB"));
+    ck_assert_int_eq(strspn(".!...!...??", "!."),
+        s21_strspn(".!...!...??", "!."));
+    ck_assert_int_eq(strspn("what?\n\0", "ahat\0"),
+        s21_strspn("what?\n\0", "ahat\0"));
+    ck_assert_int_eq(strspn("TheesaIm\n\0", "TheeSAImee\n\0"),
+        s21_strspn("TheeSAImee\n\0", "TheesaIm\n\0"));
     ck_assert_int_eq(strspn("Z\0", "Z\0"), s21_strspn("Z\0", "Z\0"));
 }
 END_TEST
 
-START_TEST(test_s21_strcspn)
-{
+START_TEST(test_s21_strcspn) {
     char str1[20] = "1234567890", str2[20] = "098", str[] = "edr";
-    
-    ck_assert_int_eq(strcspn(str1, str2),s21_strcspn(str1, str2));
-    ck_assert_int_eq(strcspn(str, str2),s21_strcspn(str, str2));
+
+    ck_assert_int_eq(strcspn(str1, str2), s21_strcspn(str1, str2));
+    ck_assert_int_eq(strcspn(str, str2), s21_strcspn(str, str2));
     ck_assert_int_eq(strcspn(str, "EDR.;e"), s21_strcspn(str, "EDR.;e"));
     ck_assert_int_eq(strcspn("", "  "), s21_strcspn("", "  "));
     ck_assert_int_eq(strcspn("\00", "0"), s21_strcspn("\00", "0"));
@@ -382,8 +373,7 @@ START_TEST(test_s21_strcspn)
 END_TEST
 
 
-START_TEST(test_s21_strcmp)
-{
+START_TEST(test_s21_strcmp) {
     const char *h = "h",
           *gh = "GHTH",
           *empty = "",
@@ -401,9 +391,10 @@ START_TEST(test_s21_strcmp)
 }
 END_TEST
 
-START_TEST(test_s21_strncmp)
-{
-    char h[10] = "hello", *hr = "hellr", *p = "PRISE", *s = "shitty", *sh = "sh...", *shout = "shout, shout", *t = ".", *otchet = ".0123", *end = " endOFsPAACE", *empty = "";
+START_TEST(test_s21_strncmp) {
+    char h[10] = "hello", *hr = "hellr", *p = "PRISE", *s = "shitty",
+        *sh = "sh...", *shout = "shout, shout", *t = ".", *otchet = ".0123",
+        *end = " endOFsPAACE", *empty = "";
     ck_assert_int_eq(s21_strncmp(h, hr, 4), strncmp(h, hr, 4));
     ck_assert(s21_strncmp(h, hr, 5) < 0 && strncmp(h, hr, 5) < 0);
     ck_assert_int_eq(s21_strncmp(hr, hr, 5), strncmp(hr, hr, 5));
@@ -414,8 +405,7 @@ START_TEST(test_s21_strncmp)
 }
 END_TEST
 
-START_TEST(test_s21_trim)
-{
+START_TEST(test_s21_trim) {
     const char *nine = "1 2", *str = "1 aaaa  1";
     char * new = s21_trim(str, nine);
     char *right = "aaaa";
@@ -424,8 +414,7 @@ START_TEST(test_s21_trim)
 }
 END_TEST
 
-START_TEST(test_s21_insert)
-{
+START_TEST(test_s21_insert) {
     char * q = "aaabbbccc", * k = "baz", * qk = "aaabazbbbccc", * p = " ",
     * qp = "aaab bbccc";
     char * new = s21_insert(q, k, 3);
@@ -440,8 +429,7 @@ START_TEST(test_s21_insert)
 }
 END_TEST
 
-START_TEST(test_s21_sprintf)
-{
+START_TEST(test_s21_sprintf) {
     char buff[500];
     char buff_right[500];
 
@@ -797,8 +785,7 @@ START_TEST(test_s21_sprintf)
 }
 END_TEST
 
-START_TEST(test_s21_base_unum_get_str_len)
-{
+START_TEST(test_s21_base_unum_get_str_len) {
     unsigned long n;
     char *base;
     int right;
@@ -848,27 +835,26 @@ START_TEST(test_s21_base_unum_get_str_len)
 }
 END_TEST
 
-START_TEST(test_s21_frmt_is_tokn)
-{
+START_TEST(test_s21_frmt_is_tokn) {
     char *str;
     int right;
     int out;
-   
+
     str  = "%i";
     right = 1;
     out = s21_frmt_is_tokn(str);
     ck_assert_int_eq(right, out);
-   
+
     str  = "%-";
     right = 0;
     out = s21_frmt_is_tokn(str);
     ck_assert_int_eq(right, out);
-   
+
     str  = "%0.5f";
     right = 1;
     out = s21_frmt_is_tokn(str);
     ck_assert_int_eq(right, out);
-   
+
     str  = "%0.^5f";
     right = 0;
     out = s21_frmt_is_tokn(str);
@@ -881,40 +867,33 @@ START_TEST(test_s21_frmt_is_tokn)
 }
 END_TEST
 
-START_TEST(test_s21_tokn_skip_part)
-{
+START_TEST(test_s21_tokn_skip_part) {
     char *token;
     unsigned int i;
     char *right;
     char *out;
-   
+
     token  = "c";
     i = 4;
     right = token + 0;
     out = s21_tokn_skip_part(token, i);
     ck_assert_ptr_eq(right, out);
-   
+
     token  = ".5s";
     i = 4;
     right = token + 2;
     out = s21_tokn_skip_part(token, i);
     ck_assert_ptr_eq(right, out);
-   
+
     token  = "0*.*f";
     i = 4;
     right = token + 4;
     out = s21_tokn_skip_part(token, i);
     ck_assert_ptr_eq(right, out);
-   
+
     token  = "i";
     i = 2;
     right = token + 1;
-    out = s21_tokn_skip_part(token, i);
-    ck_assert_ptr_eq(right, out);
-   
-    token  = ".05d";
-    i = 2;
-    right = token + 0;
     out = s21_tokn_skip_part(token, i);
     ck_assert_ptr_eq(right, out);
 
@@ -926,8 +905,7 @@ START_TEST(test_s21_tokn_skip_part)
 }
 END_TEST
 
-START_TEST(test_s21_tokn_get_str_len)
-{
+START_TEST(test_s21_tokn_get_str_len) {
     char * token;
     int right;
     int out;
@@ -954,8 +932,7 @@ START_TEST(test_s21_tokn_get_str_len)
 }
 END_TEST
 
-START_TEST(test_s21_tokn_have_flag)
-{
+START_TEST(test_s21_tokn_have_flag) {
     char *token;
     char flag;
     int right;
@@ -987,8 +964,7 @@ START_TEST(test_s21_tokn_have_flag)
 }
 END_TEST
 
-START_TEST(test_s21_tokn_get_width)
-{
+START_TEST(test_s21_tokn_get_width) {
     char *token;
     int right;
     int out;
@@ -1021,8 +997,7 @@ START_TEST(test_s21_tokn_get_width)
 END_TEST
 
 /*
-START_TEST(test_s21_trgt_print_uint)
-{
+START_TEST(test_s21_trgt_print_uint) {
     char target[500] = { 0 };
     for (int i = 0; i < 500; i++) {
         target[i] = 0;
@@ -1050,8 +1025,7 @@ START_TEST(test_s21_trgt_print_uint)
 END_TEST
 */
 
-START_TEST(test_s21_ulong_get_pow)
-{
+START_TEST(test_s21_ulong_get_pow) {
     int n;
     int pow;
     int right;
@@ -1087,12 +1061,11 @@ int vatest_s21_trgt_print_tokn_num(char *target, const char *token, ...) {
     va_list args;
     va_start(args, token);
     int result;
-    result =s21_trgt_print_tokn_num(target, token, &args);
+    result = s21_trgt_print_tokn_num(target, token, &args);
     va_end(args);
     return result;
 }
-START_TEST(test_s21_trgt_print_tokn_num)
-{
+START_TEST(test_s21_trgt_print_tokn_num) {
     char target[500] = { 0 };
 
     char *token;
@@ -1158,8 +1131,7 @@ START_TEST(test_s21_trgt_print_tokn_num)
 }
 END_TEST
 
-START_TEST(test_s21_to_lower)
-{
+START_TEST(test_s21_to_lower) {
     char str[20] = "HELLO";
     char stx[20] = "hello";
     char *src = s21_to_lower(str);
@@ -1168,8 +1140,7 @@ START_TEST(test_s21_to_lower)
 }
 END_TEST
 
-START_TEST(test_s21_to_upper)
-{
+START_TEST(test_s21_to_upper) {
     char str[20] = "hello";
     char stx[20] = "HELLO";
     char *src = s21_to_upper(str);
@@ -1177,6 +1148,34 @@ START_TEST(test_s21_to_upper)
         ck_assert_str_eq(src, stx);
         free(src);
     }
+
+    char *s1 = "";
+    char *s2 = "School is Cool";
+    char *s3 = "amogus";
+    char *s4 = "Shrek is amogus";
+    char *s5 = "what";
+
+    char *r1 = s21_to_upper(s1);
+    char *r2 = s21_to_upper(s2);
+    char *r3 = s21_to_upper(s3);
+    char *r4 = s21_to_upper(s4);
+    char *r5 = s21_to_upper(s5);
+
+    ck_assert_str_eq(r1, "");
+    printf("%p\n", r1);
+    free(r1);
+    ck_assert_str_eq(r2, "SCHOOL IS COOL");
+    printf("%p\n", r2);
+    free(r2);
+    ck_assert_str_eq(r3, "AMOGUS");
+    printf("%p\n", r3);
+    free(r3);
+    ck_assert_str_eq(r4, "SHREK IS AMOGUS");
+    printf("%p\n", r4);
+    free(r4);
+    ck_assert_str_eq(r5, "WHAT");
+    printf("%p\n", r5);
+    free(r5);
 }
 END_TEST
 
@@ -1189,8 +1188,7 @@ int vatest_s21_trgt_print_tokn_str(char *target, const char *token, ...) {
 
     return out;
 }
-START_TEST(test_s21_trgt_print_tokn_str)
-{
+START_TEST(test_s21_trgt_print_tokn_str) {
     char target[500] = { 0 };
     char *target_right;
 
@@ -1238,8 +1236,7 @@ START_TEST(test_s21_trgt_print_tokn_str)
 }
 END_TEST
 
-START_TEST(test_s21_trgt_print_ulong)
-{
+START_TEST(test_s21_trgt_print_ulong) {
     char target[500] = { 0 };
     char *target_right;
 
@@ -1264,8 +1261,7 @@ START_TEST(test_s21_trgt_print_ulong)
 }
 END_TEST
 
-START_TEST(test_s21_trgt_print_uldouble)
-{
+START_TEST(test_s21_trgt_print_uldouble) {
     char target[500] = { 0 };
     char *target_right;
 
@@ -1363,8 +1359,7 @@ int vatest_s21_trgt_print_tokn_ratio(char *target, char *token, ...) {
     va_end(args);
     return result;
 }
-START_TEST(test_s21_trgt_print_tokn_ratio)
-{
+START_TEST(test_s21_trgt_print_tokn_ratio) {
     char target[500] = {0};
     char *target_right;
 
@@ -1423,8 +1418,7 @@ START_TEST(test_s21_trgt_print_tokn_ratio)
 }
 END_TEST
 
-START_TEST(test_s21_trgt_print_base_ulong)
-{
+START_TEST(test_s21_trgt_print_base_ulong) {
     char target[500] = {0};
     unsigned long n;
     char *base;
@@ -1487,14 +1481,13 @@ int vatest_s21_trgt_print_tokn_ptr(char *target, const char *token, ...) {
     va_end(args);
     return result;
 }
-START_TEST(test_s21_trgt_print_tokn_ptr)
-{
+START_TEST(test_s21_trgt_print_tokn_ptr) {
     char target[500];
     char *token;
     char target_right[500];
     int right;
     int out;
-    
+
     token = "p";
     right = sprintf(target_right, "%p", &right);
     out = vatest_s21_trgt_print_tokn_ptr(target, token, &right);
@@ -1504,8 +1497,7 @@ START_TEST(test_s21_trgt_print_tokn_ptr)
 END_TEST
 
 /*
-START_TEST(test_s21_uratio_precis_get_str_len)
-{
+START_TEST(test_s21_uratio_precis_get_str_len) {
     long double ld;
     int precis_len;
     int right;
@@ -1538,8 +1530,7 @@ START_TEST(test_s21_uratio_precis_get_str_len)
 END_TEST
 */
 
-START_TEST(test_s21_trgt_print_e_uldouble)
-{
+START_TEST(test_s21_trgt_print_e_uldouble) {
     char target[500] = { 0 };
     long double ld;
     int precis_len;
@@ -1585,8 +1576,7 @@ START_TEST(test_all_flags_sscanf) {
 }
 END_TEST
 
-Suite* sce_s21_string_suite()
-{
+Suite* sce_s21_string_suite() {
     Suite *s;
     TCase *tc_core;
 
@@ -1615,12 +1605,12 @@ Suite* sce_s21_string_suite()
     tcase_add_test(tc_core, test_s21_strcspn);
     tcase_add_test(tc_core, test_s21_strcmp);
     tcase_add_test(tc_core, test_s21_strncmp);
-    
+
     tcase_add_test(tc_core, test_s21_to_lower);
     tcase_add_test(tc_core, test_s21_to_upper);
     tcase_add_test(tc_core, test_s21_trim);
     tcase_add_test(tc_core, test_s21_insert);
-    
+
     tcase_add_test(tc_core, test_s21_sprintf);
     tcase_add_test(tc_core, test_s21_base_unum_get_str_len);
     tcase_add_test(tc_core, test_s21_frmt_is_tokn);
@@ -1646,8 +1636,7 @@ Suite* sce_s21_string_suite()
     return s;
 }
 
-int main()
-{
+int main() {
     int number_failed;
     Suite *s;
     SRunner *sr;

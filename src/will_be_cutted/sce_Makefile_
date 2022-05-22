@@ -10,6 +10,7 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 LDFLAGS=
 SOURCES=$(wildcard s21_*.c)
+TEST_SOURCES=sce_unit_tests.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
 
@@ -96,8 +97,8 @@ sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
 cpplint:
 	cp ../materials/linters/CPPLINT.cfg ./
 	python3 ../materials/linters/cpplint.py --extensions=c \
-		./s21_*.c \
-    	./s21_*.h
+        ./*.c \
+    	./*.h
 
 
 valgrind: test

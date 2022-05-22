@@ -1,56 +1,49 @@
 #
-#	Если хочешь знать, как это работает, загляни в
-#		https://habr.com/ru/post/155201/.
-# 	Если этого мало, отведай https://stackoverflow.com/questions/2734719/
-# 		how-to-compile-a-static-library-in-linux
-#
+#   Если хочешь знать, как это работает, загляни в
+#       https://habr.com/ru/post/155201/.
+#   Если этого мало, отведай https://stackoverflow.com/questions/2734719/
+#       how-to-compile-a-static-library-in-linux
 #
 
-SHELL := /bin/bash
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 LDFLAGS=
 SOURCES=$(wildcard s21_*.c)
-HEADERS=$(wildcard s21_*.h)
+TEST_SOURCES=unit_tests.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=
-
-ifeq ("$(shell uname -s)", "Linux")
-	CLIBS=-lm -lcheck -lsubunit -lrt -lpthread
-	####...-lsubunit -lrt -lpthread -lm --- lcheck, видимо,
-	####    использует эти библиотеки
-else
-	CLIBS=-lm -lcheck
-endif
+CLIBS=-lm $(shell pkg-config --cflags --libs check)
 
 
-all: clean test gcov_report
+all: clean s21_string.a
 
 
-%.o: %.c $(HEADERS)
-	$(CC) -c $(CFLAGS) $< -o $@
+%.o: %.c
+	$(CC) -c $(CFLAGS) $^ -o $@
 
 
-s21_string.a: $(OBJECTS)
+s21_string.a: $(OBJECTS) ./s21_string.h
 	ar -rcs $@ $^
 
 
 gcov_report:
-	##gcov ./tests/*.gcda
-	####gcov --- выводит профилировачную инфу в консоль
-	geninfo ./tests/*.gcda
-	genhtml ./tests/*.info --output-directory ./tests/
+	geninfo ./*.gcda
+	genhtml ./*.info --output-directory ./
+	####geninfo,genhtml --- входят в состав gcov. Выводят профилировачную
+	####    инфу в консоль
 
 
-test: ./tests/sce_unit_tests.c $(SOURCES)
+test: ./sce_unit_tests.c $(SOURCES)
+	clear
+
 	$(CC) $(CFLAGS) \
-		-fprofile-arcs -ftest-coverage \
+		-fprofile-arcs -ftest-coverage -g \
 		$^ \
-		-o ./tests/unit_tests.out \
+		-o ./unit_tests.out \
 		$(CLIBS)
 		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
-		####
-	./tests/unit_tests.out; exit 0
+		####...-g --- for debug info
+	./unit_tests.out; exit 0
 
 
 clean:
@@ -64,9 +57,73 @@ clean:
 		-or -iname "*.info" \
 		-or -iname "*.css" \
 		-or -iname "*.png" \
-		-or -iname "*.png" \
-		-or -iname "*.out" \
 	\) -delete
 
 	rm -rf ./tests/src/ \
 		./.DS_Store \
+
+
+extra_test: $(SOURCES) ./will_be_cutted/extra_unit_tests.c 
+	make -f ./sce_Makefile_ clean
+	clear
+
+	$(CC) \
+		-fprofile-arcs -ftest-coverage \
+		$^ \
+		-o ./sce_extra_unit_tests.out \
+		$(CLIBS) 2> ./gcc_extra_test_logs.txt
+		####...-fprofile-arcs -ftest-coverage --- это для gcov-теста
+		####
+	./sce_extra_unit_tests.out
+
+
+sprintf_test: ./tests/sce_sprintf_test.c $(SOURCES)
+	make -f ./sce_Makefile_ clean
+	clear
+
+	$(CC) $^ -lm -o ./tests/sce_sprintf_test.out
+	./tests/sce_sprintf_test.out
+	
+
+cpplint:
+	cp ../materials/linters/CPPLINT.cfg ./
+	python3 ../materials/linters/cpplint.py --extensions=c \
+        ./*.c \
+    	./*.h
+
+
+valgrind: test
+	valgrind \
+		--log-file=RESULT_VALGRIND.txt \
+		-s \
+		--track-origins=yes \
+		./unit_tests.out
+	#valgrind \
+    #   -s \
+	#	--leak-check=full \
+	#	--leak-resolution=med \
+	#	--log-file=RESULT_VALGRIND.txt \
+	#	./unit_tests.out
+	#valgrind \
+	#	--show-leak-kinds=all \
+	#	--track-origins=no \
+	#	--log-file=RESULT_VALGRIND.txt \
+	#	-s \
+	#	./unit_tests.out
+		#--leak-check=full --- "each individual leak will be shown in detail"
+		#--show-leak-kinds=all --- Show all of "definite, indirect, possible,
+		#   reachable" leak kinds in the "full" report.
+		#--track-origins=yes --- Favor useful output over speed. This tracks
+		#   the origins of uninitialized values, which could be very useful for
+		#   memory errors. Consider turning off if Valgrind is unacceptably
+		#   slow.
+		#--verbose: Can tell you about unusual behavior of your program. Repeat
+		#   for more verbosity.
+		#--log-file: Write to a file. Useful when output exceeds terminal space.
+
+
+cppcheck:
+	clear
+	cppcheck --enable=all --suppress=missingIncludeSystem $(SOURCES)
+    
+
