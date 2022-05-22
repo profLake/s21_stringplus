@@ -292,14 +292,12 @@ START_TEST(test_s21_strncpy) {
          src33[6] = "/0",
          src4[20] = "just like that";
 
-    //  ck_assert_str_eq(s21_strncpy(src, str1, 28), strncpy(src, str, 28));
-    /*  ****src[100] закомментирован */
     ck_assert_str_eq(s21_strncpy(str1, src1, 4), strncpy(str, src1, 4));
     ck_assert_str_eq(s21_strncpy(src1, str1, 1), strncpy(src11, str, 1));
     ck_assert_str_eq(s21_strncpy(str1, src2, 5), strncpy(str, src2, 5));
     ck_assert_str_eq(s21_strncpy(src3, str1, 2), strncpy(src33, str, 2));
     ck_assert_str_eq(s21_strncpy(str1, src4, 16), strncpy(str, src4, 16));
-    //ck_assert_str_eq(s21_strncpy(str1, "3oi", 0), strncpy(str, "3oi", 0));
+    //  ck_assert_str_eq(s21_strncpy(str1, "3oi", 0), strncpy(str, "3oi", 0));
     /*  ****error: ‘strncpy’ destination unchanged after copying no bytes from
      *      a string of length 3
      */
@@ -326,14 +324,14 @@ START_TEST(test_s21_strncat) {
     char str[108] = "IT's fin,I p_se", str1[108] = "IT's fin,I p_se";
     char src[] = "Fi3", src1[] = "Fi3";
     ck_assert_str_eq(s21_strncat(str, "\0r\n", 7), strncat(str1, "\0r\n", 7));
-    ck_assert_str_eq(s21_strncat(str, "0", 1), strncat(str1, "0", 1));
-    /* ****error: ‘strncat’ specified bound 1 equals source length */
+    //  ck_assert_str_eq(s21_strncat(str, "0", 1), strncat(str1, "0", 1));
+    /*  ****error: ‘strncat’ specified bound 1 equals source length */
     ck_assert_str_eq(s21_strncat(str, "TU, s-ly", 12),
         strncat(str1, "TU, s-ly", 12));
     ck_assert_str_eq(s21_strncat(str, src, 3), strncat(str1, src1, 3));
     ck_assert_str_eq(s21_strncat(str, "\000/", 2), strncat(str1, "\000/", 2));
-    ck_assert_str_eq(s21_strncat(str, "GAGA, rama", 10),
-        strncat(str1, "GAGA, rama", 10));
+    //  ck_assert_str_eq(s21_strncat(str, "GAGA, rama", 10),
+    //      strncat(str1, "GAGA, rama", 10));
     /* ****error: ‘strncat’ specified bound 10 equals source length */
     ck_assert_str_eq(s21_strncat(str, "\nOuPS", 10), strncat(str1, "\nOuPS", 10));
 }
@@ -1162,19 +1160,14 @@ START_TEST(test_s21_to_upper) {
     char *r5 = s21_to_upper(s5);
 
     ck_assert_str_eq(r1, "");
-    printf("%p\n", r1);
     free(r1);
     ck_assert_str_eq(r2, "SCHOOL IS COOL");
-    printf("%p\n", r2);
     free(r2);
     ck_assert_str_eq(r3, "AMOGUS");
-    printf("%p\n", r3);
     free(r3);
     ck_assert_str_eq(r4, "SHREK IS AMOGUS");
-    printf("%p\n", r4);
     free(r4);
     ck_assert_str_eq(r5, "WHAT");
-    printf("%p\n", r5);
     free(r5);
 }
 END_TEST
