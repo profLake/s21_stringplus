@@ -1473,9 +1473,9 @@ int vatest_s21_trgt_print_tokn_ptr(char *target, const char *token, ...) {
     return result;
 }
 START_TEST(test_s21_trgt_print_tokn_ptr) {
-    char target[500];
+    char target[500] = { 0 };
     char *token;
-    char target_right[500];
+    char target_right[500] = { 0 };
     int right;
     int out;
 
