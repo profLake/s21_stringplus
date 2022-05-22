@@ -5,9 +5,9 @@
 
 #include "s21_string.h"
 
-// c s u d f i e E X x o g G
+// c s u d f i e E X x o g G p
 
-// void p_po(const char *st, int *i, void *v, int *er, int *e);
+void p_po(const char *st, int *i, va_list A);
 void i_chislo(const char *stra, int *i, int *p, int *erro);
 void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e);
 void d_u_chislo(const char *stra, int *i, int *p, int *erro);
@@ -16,15 +16,16 @@ void c_simvol(const char *stra, int *i, char *o);
 int s21_sscanf(const char *stra, const char *format, ...);
 
 // int main() {
-//   char str[20] = "0xAF Hello_World!", str1[20];  // str2[20];
-//   int a;
-//   s21_sscanf(str, "%s %n", str1, &a);
-//   // sscanf(str, "%s %n", str1, &a);
-//   printf("%s %d", str1, a);
+//   char str[20] = "1234567890";  // str1[20];  // str2[20];
+//   float a;
+//   // s21_sscanf(str, "%f", &a);
+//   // printf("%f\n", a);
+//   sscanf(str, "%f", &a);
+//   printf("%f", a);
 //   return 0;
 // }
 
-// c s u d f i e E X x o g G
+// c s u d f i e E X x o g G p
 
 int s21_sscanf(const char *stra, const char *format, ...) {
   va_list A;
@@ -65,11 +66,11 @@ int s21_sscanf(const char *stra, const char *format, ...) {
         *p = i;
         e++;
       }
-      /*if (format[e] == 'p') {
-        void *v = va_arg(A, void *);
-        p_po(stra, &i, &v, error, &e);
+      if (format[e] == 'p') {
+        // void *v = va_arg(A, void *);
+        p_po(stra, &i, A);
         e++;
-      }*/
+      }
     }
     if (stra[i] == ' ') i++;
     if (format[e] == ' ') e++;
@@ -79,15 +80,15 @@ int s21_sscanf(const char *stra, const char *format, ...) {
   return 0;
 }
 
-// c s u d f i e E X x o g G
+// c s u d f i e E X x o g G p
 
 void c_simvol(const char *stra, int *i, char *o) {
-  int q = 0;
+  size_t q = 0;
   o[q] = stra[*i];
 }
 
 void s_stroka(const char *stra, int *i, char *o) {
-  int q = 0, ii = *i;
+  size_t q = 0, ii = *i;
   while (stra[ii] != ' ' && stra[ii] != '\0') {
     o[q] = stra[ii];
     q++;
@@ -97,7 +98,7 @@ void s_stroka(const char *stra, int *i, char *o) {
 }
 
 void d_u_chislo(const char *stra, int *i, int *p, int *erro) {
-  int q = 0, qi = 0, ii = *i, error = 0, f;
+  size_t q = 0, qi = 0, ii = *i, error = 0, f;
   if (stra[ii] == '-' && stra[ii + 1] >= '0' && stra[ii + 1] <= '9') {
     qi++;
     ii++;
@@ -124,7 +125,7 @@ void d_u_chislo(const char *stra, int *i, int *p, int *erro) {
 }
 
 void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e) {
-  int q = 1, qi = 0, /*f = 0,*/ g = 0, ii = *i, ei, error = *er, ee = *e;
+  size_t q = 1, qi = 0, g = 0, ii = *i, ei, error = *er, ee = *e;
   float fl, ql;
   if (st[ii] == '-' && st[ii + 1] >= '0' && st[ii + 1] <= '9') {
     qi++;
@@ -163,7 +164,7 @@ void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e) {
             ei = ei * 10;
             ei = ei + (st[ii] - '0');
           }
-          for (int z = 0; z != ei; z++) {
+          for (size_t z = 0; z != ei; z++) {
             fl = fl * 10;
           }
         }
@@ -179,14 +180,14 @@ void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e) {
             ei = ei / 10;
             ei = ei + (st[ii] - '0');
           }
-          for (int z = 0; z != ei; z++) {
+          for (size_t z = 0; z != ei; z++) {
             fl = fl / 10;
           }
         }
       }
       if (qi != 0) fl = -fl;
-      *p = fl;
     }
+    *p = fl;
   } else {
     error++;
     *er = error;
@@ -196,7 +197,7 @@ void f_ch(const char *st, int *i, float *p, int *er, const char *fo, int *e) {
 }
 
 void i_chislo(const char *stra, int *i, int *p, int *erro) {
-  int q = 0, qi = 0, ii = *i, w, f = 0, error = *erro;
+  size_t q = 0, qi = 0, ii = *i, w, f = 0, error = *erro;
   if (stra[ii] == '-') {
     q++;
     ii++;
@@ -281,7 +282,64 @@ void i_chislo(const char *stra, int *i, int *p, int *erro) {
   *i = ii;
 }
 
-// void p_po(const char *st, int *i, void *v, int *er, int *e) {
-//   int q;
-//   q = 0;
-// }
+void p_po(const char *stra, int *i, va_list A) {
+  size_t q = 0, f = 0, qi = 0, ii = *i, w;
+  if (stra[ii] == '-') {
+    q++;
+    ii++;
+  }
+  if (stra[ii] == '+') ii++;
+  if (stra[ii] == '0' && stra[ii + 1] == 'x') {
+    ii++;
+    ii++;
+  }
+  while (stra[ii] != ' ' && stra[ii] != '\0') {
+    if (stra[ii + 1] >= '0' || stra[ii + 1] <= '9') {
+      ii++;
+      qi++;
+    } else {
+      if (stra[ii + 1] >= 'A' && stra[ii + 1] <= 'F') {
+        ii++;
+        qi++;
+      } else {
+        if (stra[ii + 1] >= 'a' && stra[ii + 1] <= 'f') {
+          ii++;
+          qi++;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+  ii = ii - qi;
+  qi--;
+  while (stra[ii] != ' ' && stra[ii] != '\0') {
+    if (stra[ii] >= '0' && stra[ii] <= '9') {
+      w = stra[ii] - '0';
+      w = w * (pow(16, qi));
+      ii++;
+      qi--;
+      f = f + w;
+    }
+    if (stra[ii] >= 'A' && stra[ii] <= 'F') {
+      w = stra[ii] - 65;
+      w = w + 10;
+      w = w * (pow(16, qi));
+      ii++;
+      qi--;
+      f = f + w;
+    }
+    if (stra[ii] >= 'a' && stra[ii] <= 'f') {
+      w = stra[ii] - 97;
+      w = w + 10;
+      w = w * (pow(16, qi));
+      ii++;
+      qi--;
+      f = f + w;
+    }
+  }
+  if (q != 0) f = -f;
+  void **v = va_arg(A, void **);
+  *v = (void *)(0x0 + f);
+  *i = ii;
+}
